@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>الخولاجي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* التدرج الذهبي مع الكحلي الدافئ */
+      --bg-light: #f8fafc;
+      --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
+      --text-light: #1e293b;
+      --card-bg-light: rgba(255, 255, 255, 0.85);
+      
+      --bg-dark: #0f172a;
+      --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
+      --text-dark: #f8fafc;
+      --card-bg-dark: rgba(30, 41, 59, 0.85);
+
+      --gold-primary: #d4af37;
+      --gold-dark: #b8860b;
+      --navy-primary: #1a2a40;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+      background: var(--bg-gradient-light);
+      background-attachment: fixed;
+      color: var(--text-light);
+      transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease;
+      opacity: 0;
+      min-height: 100vh;
+    }
+
+    body.visible {
+      opacity: 1;
+    }
+
+    body.dark-mode {
+      background: var(--bg-gradient-dark);
+      background-attachment: fixed;
+      color: var(--text-dark);
+    }
+
+    /* الشريط العلوي */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      height: 65px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+
+    body.dark-mode .top-navbar {
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar-left img {
+      height: 42px;
+      width: 42px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+    }
+
+    .site-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--navy-primary);
+      transition: color 0.4s;
+    }
+
+    body.dark-mode .site-title {
+      color: var(--gold-primary);
+    }
+
+    /* زر التبديل العصري للوضع الداكن (Toggle Switch) */
+    .theme-switch-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-switch {
+      display: inline-block;
+      height: 30px;
+      position: relative;
+      width: 60px;
+    }
+
+    .theme-switch input {
+      display: none;
+    }
+
+    .slider {
+      background-color: #cbd5e1;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: 0.4s;
+      border-radius: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .slider .icon {
+      font-size: 14px;
+      user-select: none;
+    }
+
+    .slider:before {
+      background-color: #fff;
+      bottom: 3px;
+      content: "";
+      height: 22px;
+      left: 3px;
+      position: absolute;
+      transition: 0.4s;
+      width: 22px;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: var(--navy-primary);
+      border-color: var(--gold-primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(30px);
+      background-color: var(--gold-primary);
+    }
+
+    /* المحتوى الرئيسي */
+    .content {
+      padding: 95px 15px 30px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+    }
+
+    body.dark-mode h2 {
+      color: var(--gold-primary);
+    }
+
+    .buttons-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 22px;
+    }
+
+    .button-card {
+      flex: 1 1 220px;
+      max-width: 260px;
+      background: var(--card-bg-light);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 20px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark-mode .button-card {
+      background: var(--card-bg-dark);
+      border-color: rgba(212, 175, 55, 0.15);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .button-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2);
+    }
+
+    /* ضبط تحسين دقة ووضوح الصور */
+    .button-card img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 14px;
+      margin-bottom: 15px;
+      image-rendering: -webkit-optimize-contrast;
+    }
+
+    .button-card button {
+      margin-top: auto;
+      background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
+      color: var(--gold-primary);
+      border: 1px solid var(--gold-primary);
+      border-radius: 12px;
+      padding: 12px;
+      width: 100%;
+      font-size: 1rem;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(26, 42, 64, 0.2);
+    }
+
+    .button-card button:hover {
+      background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+      color: #ffffff;
+      border-color: transparent;
+      transform: scale(1.02);
+    }
+
+    /* تحسينات خاصة بالموبايل لضمان ووضوح الصور والشاشات */
+    @media (max-width: 600px) {
+      .top-navbar {
+        padding: 0 15px;
+      }
+
+      .site-title {
+        font-size: 0.95rem;
+      }
+
+      .content {
+        padding-top: 85px;
+      }
+
+      .button-card {
+        max-width: 100%;
+      }
+
+      /* إظهار الصور بدون أي قص أو مط على الموبايل */
+      .button-card img {
+        height: 140px;
+        object-fit: contain;
+        background-color: rgba(0, 0, 0, 0.02);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-navbar">
+    <div class="navbar-left">
+      <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
+      <span class="site-title">كنيسة مارمينا والأنبا توماس</span>
+    </div>
+
+    <!-- زر تبديل الوضع الداكن المطور -->
+    <div class="theme-switch-wrapper">
+      <label class="theme-switch" for="darkModeToggle">
+        <input type="checkbox" id="darkModeToggle" />
+        <div class="slider">
+          <span class="icon">☀️</span>
+          <span class="icon">🌙</span>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <div class="content">
+    <h2>الخولاجي</h2>
+    <div class="buttons-list">
+      <div class="button-card">
+        <img src="baker and ashia.jpg" alt="رفع بخور عشية و باكر">
+        <button onclick="location.href='baker.html'">رفع بخور عشية و باكر</button>
+      </div>
+      <div class="button-card">
+        <img src="pngtree-eucharist-elements-chalice-and-host-png-image_19461150.webp" alt="الحمل">
+        <button onclick="location.href='elhamal.html'">الحمل</button>
+      </div>
+      <div class="button-card">
+        <img src="Basilios.jpg" alt="القداس الباسيلي">
+        <button onclick="location.href='basily.html'">القداس الباسيلي</button>
+      </div>
+      <div class="button-card">
+        <img src="ghorygorus.webp" alt="القداس الغوريغوري">
+        <button onclick="location.href='geory.html'">القداس الغوريغوري</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const root = document.body;
+    const darkModeToggle = document.getElementById("darkModeToggle");
+
+    // زر التبديل للوضع الداكن
+    darkModeToggle.addEventListener("change", () => {
+      const enabled = darkModeToggle.checked;
+      if (enabled) {
+        root.classList.add("dark-mode");
+        localStorage.setItem("darkMode", "on");
+      } else {
+        root.classList.remove("dark-mode");
+        localStorage.setItem("darkMode", "off");
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // فحص الوضع الداكن المحفوظ
+      if (localStorage.getItem("darkMode") === "on") {
+        root.classList.add("dark-mode");
+        darkModeToggle.checked = true;
+      }
+      root.classList.add("visible");
+    });
+  </script>
+</body>
+</html>

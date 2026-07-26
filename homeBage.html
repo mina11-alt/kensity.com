@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>الصفحة الرئيسية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-light: #f8fafc;
+      --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
+      --text-light: #1e293b;
+      --card-bg-light: rgba(255, 255, 255, 0.85);
+      
+      --bg-dark: #0f172a;
+      --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
+      --text-dark: #f8fafc;
+      --card-bg-dark: rgba(30, 41, 59, 0.85);
+
+      --gold-primary: #d4af37;
+      --gold-dark: #b8860b;
+      --navy-primary: #1a2a40;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+      background: var(--bg-gradient-light);
+      background-attachment: fixed;
+      color: var(--text-light);
+      transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease;
+      opacity: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body.visible {
+      opacity: 1;
+    }
+
+    body.dark-mode {
+      background: var(--bg-gradient-dark);
+      background-attachment: fixed;
+      color: var(--text-dark);
+    }
+
+    /* حاوية الصلبان المتحركة في الخلفية */
+    #crosses-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-cross {
+      position: absolute;
+      color: var(--gold-primary);
+      opacity: 0.25;
+      font-size: 20px;
+      user-select: none;
+      animation: fall linear infinite;
+    }
+
+    body.dark-mode .bg-cross {
+      opacity: 0.35;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.3;
+      }
+      90% {
+        opacity: 0.3;
+      }
+      100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* الشريط العلوي */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      height: 65px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+
+    body.dark-mode .top-navbar {
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar-left img {
+      height: 42px;
+      width: 42px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+    }
+
+    .site-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--navy-primary);
+      transition: color 0.4s;
+    }
+
+    body.dark-mode .site-title {
+      color: var(--gold-primary);
+    }
+
+    /* زر التبديل للوضع الداكن */
+    .theme-switch-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-switch {
+      display: inline-block;
+      height: 30px;
+      position: relative;
+      width: 60px;
+    }
+
+    .theme-switch input {
+      display: none;
+    }
+
+    .slider {
+      background-color: #cbd5e1;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: 0.4s;
+      border-radius: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .slider .icon {
+      font-size: 14px;
+      user-select: none;
+    }
+
+    .slider:before {
+      background-color: #fff;
+      bottom: 3px;
+      content: "";
+      height: 22px;
+      left: 3px;
+      position: absolute;
+      transition: 0.4s;
+      width: 22px;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: var(--navy-primary);
+      border-color: var(--gold-primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(30px);
+      background-color: var(--gold-primary);
+    }
+
+    /* المحتوى الرئيسي */
+    .content {
+      padding: 95px 15px 30px;
+      max-width: 1000px;
+      margin: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+    }
+
+    body.dark-mode h2 {
+      color: var(--gold-primary);
+    }
+
+    .buttons-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 22px;
+    }
+
+    /* حركة طفو خفيفة للصورة داخل كارت الصلبان */
+    @keyframes floatCross {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+
+    .button-card {
+      flex: 1 1 200px;
+      max-width: 240px;
+      background: var(--card-bg-light);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 20px;
+      padding: 15px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      backdrop-filter: blur(8px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
+    }
+
+    body.dark-mode .button-card {
+      background: var(--card-bg-dark);
+      border-color: rgba(212, 175, 55, 0.15);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .button-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2);
+    }
+
+    .button-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 14px;
+      margin-bottom: 15px;
+    }
+
+    .button-card.cross-card img {
+      animation: floatCross 3s ease-in-out infinite;
+    }
+
+    .button-card button {
+      background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
+      color: var(--gold-primary);
+      border: 1px solid var(--gold-primary);
+      border-radius: 12px;
+      padding: 12px;
+      width: 100%;
+      font-size: 1.05rem;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(26, 42, 64, 0.2);
+    }
+
+    .button-card button:hover {
+      background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+      color: #ffffff;
+      border-color: transparent;
+      transform: scale(1.02);
+    }
+
+    /* صندوق التقويم */
+    #date-box {
+      background: var(--card-bg-light);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      margin: 30px auto 40px;
+      max-width: 500px;
+      border-radius: 16px;
+      padding: 18px;
+      text-align: center;
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.8;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+      color: var(--navy-primary);
+      transition: all 0.4s ease;
+    }
+
+    body.dark-mode #date-box {
+      background: var(--card-bg-dark);
+      color: #e2e8f0;
+      border-color: rgba(212, 175, 55, 0.2);
+    }
+
+    @media (max-width: 600px) {
+      .top-navbar { padding: 0 15px; }
+      .site-title { font-size: 0.95rem; }
+      .content { padding-top: 85px; }
+      .button-card { max-width: 100%; flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- حاوية أشكال الصلبان المتحركة -->
+  <div id="crosses-container"></div>
+
+  <div class="top-navbar">
+    <div class="navbar-left">
+      <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
+      <span class="site-title">كنيسة مارمينا والأنبا توماس</span>
+    </div>
+    
+    <div class="theme-switch-wrapper">
+      <label class="theme-switch" for="darkModeToggle">
+        <input type="checkbox" id="darkModeToggle" />
+        <div class="slider">
+          <span class="icon">☀️</span>
+          <span class="icon">🌙</span>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <div class="content">
+    <h2>القائمة الرئيسية</h2>
+    <div class="buttons-list">
+      <div class="button-card">
+        <img src="kholagyImage.webp" alt="القداس">
+        <button onclick="location.href='kholagy.html'">الخولاجي</button>
+      </div>
+      <div class="button-card">
+        <img src="duf.webp" alt="المردات والالحان">
+        <button onclick="location.href='alhan.html'">المردات والألحان</button>
+      </div>
+
+
+      <div class="button-card">
+        <img src="pngtree-cartoon-jesus-is-sitting-under-a-tree-with-kids-png-image_12604233.png" alt="العاب">
+        <button onclick="location.href='play.html'">ألعاب</button>
+      </div>
+    </div>
+
+    <div id="date-box">📅 جاري تحميل التاريخ...</div>
+  </div>
+
+  <script>
+    const root = document.body;
+    const darkModeToggle = document.getElementById("darkModeToggle");
+
+    // إنشاء الصلبان المتحركة في الخلفية
+    function createFloatingCrosses() {
+      const container = document.getElementById('crosses-container');
+      const count = 18; // عدد الصلبان المتحركة
+      
+      for (let i = 0; i < count; i++) {
+        const cross = document.createElement('div');
+        cross.className = 'bg-cross';
+        cross.innerText = '✟';
+        
+        // أحجام وسرعات وأماكن عشوائية
+        const size = Math.random() * 18 + 14;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 10 + 8;
+        const delay = Math.random() * 10;
+        
+        cross.style.fontSize = `${size}px`;
+        cross.style.left = `${left}%`;
+        cross.style.animationDuration = `${duration}s`;
+        cross.style.animationDelay = `${delay}s`;
+        
+        container.appendChild(cross);
+      }
+    }
+
+    // زر التبديل للوضع الداكن
+    darkModeToggle.addEventListener("change", () => {
+      const enabled = darkModeToggle.checked;
+      if (enabled) {
+        root.classList.add("dark-mode");
+        localStorage.setItem("darkMode", "on");
+      } else {
+        root.classList.remove("dark-mode");
+        localStorage.setItem("darkMode", "off");
+      }
+    });
+
+    // حساب التاريخ القبطي
+    function getCopticDate(gDate) {
+      const copticMonths = [
+        "توت", "بابه", "هاتور", "كيهك", "طوبه", "أمشير",
+        "برمهات", "برموده", "بشنس", "بؤونه", "أبيب", "مسري", "نسيء"
+      ];
+      const gYear = gDate.getFullYear();
+      let newYearDay = (gYear % 4 === 3) ? 12 : 11;
+      let copticNewYear = new Date(gYear, 8, newYearDay);
+      if (gDate < copticNewYear) {
+        const prevYear = gYear - 1;
+        newYearDay = (prevYear % 4 === 3) ? 12 : 11;
+        copticNewYear = new Date(prevYear, 8, newYearDay);
+      }
+      const diffDays = Math.floor((gDate - copticNewYear) / (1000 * 60 * 60 * 24));
+      const month = Math.floor(diffDays / 30);
+      const day = (diffDays % 30) + 1;
+      const copticYear = copticNewYear.getFullYear() - 283;
+      return { day, month: copticMonths[month], year: copticYear };
+    }
+
+    function displayDates() {
+      const today = new Date();
+      const days = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+      const dayName = days[today.getDay()];
+      const gDay = today.getDate();
+      const gMonth = today.toLocaleString('ar-EG', { month: 'long' });
+      const gYear = today.getFullYear();
+      const gregorian = `${gDay} ${gMonth} ${gYear}`;
+      const coptic = getCopticDate(today);
+      const copticDate = `${coptic.day} ${coptic.month} ${coptic.year} ش`;
+      
+      document.getElementById("date-box").innerHTML = `
+        📅 التقويم اليومي<br>
+        <span style="color: var(--gold-dark);">اليوم:</span> ${dayName}<br>
+        <span style="color: var(--gold-dark);">التاريخ الميلادي:</span> ${gregorian}<br>
+        <span style="color: var(--gold-dark);">التاريخ القبطي:</span> ${copticDate}
+      `;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      createFloatingCrosses();
+
+      if (localStorage.getItem("darkMode") === "on") {
+        root.classList.add("dark-mode");
+        darkModeToggle.checked = true;
+      }
+      root.classList.add("visible");
+      displayDates();
+
+      if (!sessionStorage.getItem("welcomeShown")) {
+        alert("👋 مرحبًا بك في تطبيق كنيسة مارمينا والأنبا توماس!");
+        sessionStorage.setItem("welcomeShown", "yes");
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>لعبة مين أنا؟</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* الألوان الموحدة للمشروع */
+      --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
+      --text-light: #1e293b;
+      --card-bg-light: rgba(255, 255, 255, 0.9);
+      
+      --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
+      --text-dark: #f8fafc;
+      --card-bg-dark: rgba(30, 41, 59, 0.9);
+
+      --gold-primary: #d4af37;
+      --gold-dark: #b8860b;
+      --navy-primary: #1a2a40;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+      background: var(--bg-gradient-light);
+      background-attachment: fixed;
+      color: var(--text-light);
+      transition: background 0.5s ease, color 0.5s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body.dark-mode {
+      background: var(--bg-gradient-dark);
+      background-attachment: fixed;
+      color: var(--text-dark);
+    }
+
+    /* الشريط العلوي */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      height: 65px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: background 0.4s ease;
+    }
+
+    body.dark-mode .top-navbar {
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar-left img {
+      height: 42px;
+      width: 42px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+    }
+
+    .site-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--navy-primary);
+    }
+
+    body.dark-mode .site-title {
+      color: var(--gold-primary);
+    }
+
+    /* زر Switch للوضع الداكن */
+    .theme-switch-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-switch {
+      display: inline-block;
+      height: 30px;
+      position: relative;
+      width: 60px;
+    }
+
+    .theme-switch input {
+      display: none;
+    }
+
+    .slider {
+      background-color: #cbd5e1;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: 0.4s;
+      border-radius: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .slider .icon {
+      font-size: 14px;
+      user-select: none;
+    }
+
+    .slider:before {
+      background-color: #fff;
+      bottom: 3px;
+      content: "";
+      height: 22px;
+      left: 3px;
+      position: absolute;
+      transition: 0.4s;
+      width: 22px;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: var(--navy-primary);
+      border-color: var(--gold-primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(30px);
+      background-color: var(--gold-primary);
+    }
+
+    /* حاوية اللعبة الرئيسية */
+    .main-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 90px 20px 30px;
+    }
+
+    .card {
+      background: var(--card-bg-light);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 30px;
+      border-radius: 24px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      transition: background 0.4s, border-color 0.4s;
+    }
+
+    body.dark-mode .card {
+      background: var(--card-bg-dark);
+      border-color: rgba(212, 175, 55, 0.15);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+    }
+
+    body.dark-mode h1 {
+      color: var(--gold-primary);
+    }
+
+    /* تنسيق النص والسؤال الاحترافي */
+    .question-box {
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 1.25rem;
+      font-weight: 700;
+      line-height: 1.6;
+      margin-bottom: 25px;
+      min-height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-light);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode .question-box {
+      background: rgba(255, 255, 255, 0.03);
+      color: var(--text-dark);
+      border-color: rgba(212, 175, 55, 0.2);
+    }
+
+    /* حركة ظهور السؤال النصي بشكل انسيابي */
+    .fade-in {
+      animation: fadeInScale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    /* الخيارات والأزرار */
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 12px 0;
+      padding: 14px;
+      font-size: 1.05rem;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      border: 1px solid var(--gold-primary);
+      border-radius: 14px;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
+      color: var(--gold-primary);
+      box-shadow: 0 4px 10px rgba(26, 42, 64, 0.15);
+      transition: all 0.25s ease;
+      user-select: none;
+    }
+
+    .options button:hover {
+      background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+      color: #ffffff;
+      border-color: transparent;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .options button:active {
+      transform: translateY(0);
+    }
+
+    /* التوقيت والنتيجة */
+    #timer {
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-top: 20px;
+      color: #e11d48;
+      background: rgba(225, 29, 72, 0.1);
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 20px;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      min-height: 35px;
+      line-height: 1.5;
+    }
+
+    .correct-text {
+      color: #16a34a !important;
+    }
+
+    .wrong-text {
+      color: #dc2626 !important;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 20px 15px;
+      }
+      .question-box {
+        font-size: 1.1rem;
+        padding: 15px;
+      }
+      .options button {
+        font-size: 0.95rem;
+        padding: 12px;
+      }
+      .site-title {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- الشريط العلوي -->
+  <div class="top-navbar">
+    <div class="navbar-left">
+      <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
+      <span class="site-title">كنيسة مارمينا والأنبا توماس</span>
+    </div>
+    
+    <!-- زر تبديل الوضع الداكن -->
+    <div class="theme-switch-wrapper">
+      <label class="theme-switch" for="darkModeToggle">
+        <input type="checkbox" id="darkModeToggle" />
+        <div class="slider">
+          <span class="icon">☀️</span>
+          <span class="icon">🌙</span>
+        </div>
+      </label>
+    </div>
+  </div>
+
+  <!-- المحتوى واللعبة -->
+  <div class="main-container">
+    <div class="card">
+      <h1>🧠 لعبة مين أنا؟</h1>
+      <div id="question" class="question-box">جارٍ تحميل السؤال...</div>
+      <div class="options" id="options"></div>
+      <div id="timer">⏱️ الوقت المتبقي: <span id="time">30</span> ثانية</div>
+      <div id="result"></div>
+    </div>
+  </div>
+
+  <script>
+    const allQuestions = [
+      { q: "أساعد الفقراء كثيرًا وأعطي الهدايا سرًا. من أنا؟", options: ["القديس نيقولاوس", "القديس أثناسيوس", "القديس أغسطينوس", "القديس بولس"], correct: "القديس نيقولاوس" },
+      { q: "أنا أول من أسس الرهبنة في العالم. من أنا؟", options: ["الأنبا أنطونيوس", "الأنبا باخوميوس", "القديس أثناسيوس الرسولي", "القديس مقاريوس"], correct: "الأنبا أنطونيوس" },
+      { q: "أنا كتبت قانون الإيمان في مجمع نيقية. من أنا؟", options: ["القديس أثناسيوس الرسولي", "القديس كيرلس", "القديس بولس الرسول", "القديس بطرس"], correct: "القديس أثناسيوس الرسولي" },
+      { q: "كنت رئيسًا للعشارين وتبت وصرت من أعمدة الكنيسة. من أنا؟", options: ["زكا", "بولس", "متى"], correct: "زكا" },
+      { q: "نجوت من آتون النار ولم تحترق. من أنا؟", options: ["دانيال", "الثلاثة فتية", "موسى"], correct: "الثلاثة فتية" },
+      { q: "أنا كاروز الديار المصرية. من أنا؟", options: ["القديس مرقس الرسول", "القديس بولس", "القديس يوحنا", "القديس يعقوب"], correct: "القديس مرقس الرسول" },
+      { q: "أنا النبي الذي ابتلعه الحوت. من أنا؟", options: ["يونان", "إيليا", "موسى", "إشعياء"], correct: "يونان" },
+      { q: "أنا الملك الذي بنى الهيكل في أورشليم. من أنا؟", options: ["سليمان", "داود", "شاول", "هرودس"], correct: "سليمان" },
+      { q: "أنا الرسول الذي أنكر يسوع ثلاث مرات. من أنا؟", options: ["بطرس", "يوحنا", "يعقوب", "توما"], correct: "بطرس" },
+      { q: "أنا المرأة التي كانت أم يسوع. من أنا؟", options: ["مريم العذراء", "مريم المجدلية", "مريم أخت لعازر", "حنة"], correct: "مريم العذراء" },
+      { q: "أنا الملك الذي قتل جالوت. من أنا؟", options: ["داود", "سليمان", "شاول", "هرودس"], correct: "داود" },
+      { q: "أنا الرسول الذي شكك في قيامة المسيح حتى لمس جراحه. من أنا؟", options: ["توما", "بطرس", "يوحنا", "بولس"], correct: "توما" },
+      { q: "أنا الرسول الذي كتب أغلب رسائل العهد الجديد. من أنا؟", options: ["بولس", "بطرس", "يوحنا", "يعقوب"], correct: "بولس" },
+      { q: "أنا النبي الذي كتب سفر المزامير. من أنا؟", options: ["داود", "صموئيل", "إشعياء", "حزقيال"], correct: "داود" },
+      { q: "أنا الرسول الذي كان صيادًا قبل أن يتبع المسيح. من أنا؟", options: ["بطرس", "يوحنا", "يعقوب", "توما"], correct: "بطرس" },
+      { q: "أنا المرأة التي كانت زوجة إبراهيم وأم إسحاق. من أنا؟", options: ["سارة", "هاجر", "مريم", "راحيل"], correct: "سارة" },
+      { q: "أنا المرأة التي كانت أم يوحنا المعمدان. من أنا؟", options: ["إليصابات", "مريم", "حنة", "راحيل"], correct: "إليصابات" }
+    ];
+
+    // دالة لخلط العناصر عشوائياً
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    shuffleArray(allQuestions);
+    const questions = allQuestions.slice(0, 8);
+
+    let currentIndex = 0;
+    let score = 0;
+    let timeLeft = 30;
+    let timer;
+
+    const questionEl = document.getElementById('question');
+    const optionsDiv = document.getElementById('options');
+    const resultEl = document.getElementById('result');
+
+    function loadQuestion() {
+      clearInterval(timer);
+      
+      if (currentIndex >= questions.length) {
+        showFinalResult();
+        return;
+      }
+      
+      const currentQ = questions[currentIndex];
+
+      // حركة إعادة التحميل الاحترافية للنص
+      questionEl.classList.remove('fade-in');
+      void questionEl.offsetWidth; // Trigger reflow
+      questionEl.innerText = currentQ.q;
+      questionEl.classList.add('fade-in');
+
+      let options = [...currentQ.options];
+      shuffleArray(options);
+
+      optionsDiv.innerHTML = '';
+      options.forEach(option => {
+        const btn = document.createElement('button');
+        btn.innerText = option;
+        btn.onclick = () => checkAnswer(option);
+        optionsDiv.appendChild(btn);
+      });
+
+      timeLeft = 30;
+      document.getElementById('time').innerText = timeLeft;
+      resultEl.innerText = '';
+      resultEl.className = '';
+      document.getElementById('timer').style.display = 'inline-block';
+
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('time').innerText = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          resultEl.className = 'wrong-text';
+          resultEl.innerText = `⏰ انتهى الوقت! الإجابة الصحيحة: ${currentQ.correct}`;
+          disableOptions();
+          currentIndex++;
+          setTimeout(loadQuestion, 2200);
+        }
+      }, 1000);
+    }
+
+    function checkAnswer(selected) {
+      clearInterval(timer);
+      disableOptions();
+      
+      const currentQ = questions[currentIndex];
+      if (selected === currentQ.correct) {
+        score++;
+        resultEl.className = 'correct-text';
+        resultEl.innerText = '✅ إجابة صحيحة!';
+      } else {
+        resultEl.className = 'wrong-text';
+        resultEl.innerText = `❌ إجابة خاطئة. الصحيحة: ${currentQ.correct}`;
+      }
+      
+      currentIndex++;
+      setTimeout(loadQuestion, 2200);
+    }
+
+    function disableOptions() {
+      const btns = optionsDiv.querySelectorAll('button');
+      btns.forEach(b => b.style.pointerEvents = 'none');
+    }
+
+    function showFinalResult() {
+      questionEl.classList.remove('fade-in');
+      void questionEl.offsetWidth;
+      questionEl.innerText = `🎉 انتهت اللعبة!\n نتيجتك: ${score} من ${questions.length}`;
+      questionEl.classList.add('fade-in');
+
+      optionsDiv.innerHTML = '';
+      document.getElementById('timer').style.display = 'none';
+      resultEl.innerText = '';
+    }
+
+    // إدارة الوضع الداكن
+    const root = document.body;
+    const darkModeToggle = document.getElementById("darkModeToggle");
+
+    darkModeToggle.addEventListener("change", () => {
+      const enabled = darkModeToggle.checked;
+      if (enabled) {
+        root.classList.add("dark-mode");
+        localStorage.setItem("darkMode", "on");
+      } else {
+        root.classList.remove("dark-mode");
+        localStorage.setItem("darkMode", "off");
+      }
+    });
+
+    window.onload = () => {
+      if (localStorage.getItem("darkMode") === "on") {
+        root.classList.add("dark-mode");
+        darkModeToggle.checked = true;
+      }
+      loadQuestion();
+    };
+  </script>
+</body>
+</html>

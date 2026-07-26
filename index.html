@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Church App Splash Screen</title>
+  <!-- استدعاء خطوط عربية أنيقة متطابقة مع التصميم -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: #f4f6f8;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* حاوية الشاشة الرئيسية */
+    .splash-container {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      /* تدرج خلفية فاتح ومريح من الأبيض للسمائي الهادئ والذهبي الخفيف */
+      background: radial-gradient(circle at 50% 30%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 50px 24px 20px;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    /* تأثير الموزاييك الدائري الخفيف في الخلفية */
+    .bg-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(rgba(180, 150, 90, 0.08) 1px, transparent 0);
+      background-size: 16px 16px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* طبقة النجوم المتساقطة */
+    .stars-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* محتوى الشاشة */
+    .content {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-top: auto;
+      margin-bottom: auto;
+      width: 100%;
+      max-width: 360px;
+    }
+
+    /* تصميم الصليب الأرثوذكسي المزخرف */
+    .cross-container {
+      width: 110px;
+      height: 110px;
+      margin-bottom: 25px;
+      filter: drop-shadow(0px 10px 18px rgba(23, 42, 84, 0.15));
+      animation: float 4s infinite ease-in-out;
+    }
+
+    /* العناوين */
+    .app-title {
+      font-size: 28px;
+      font-weight: 800;
+      /* لون ذهبي فاخر متدرج */
+      background: linear-gradient(135deg, #b8860b 0%, #d4af37 50%, #996515 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
+
+    .app-subtitle {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a2a40; /* أزرق داكن */
+      margin-bottom: 25px;
+    }
+
+    /* أيقونة اللفافة Decorative Scroll */
+    .scroll-icon {
+      width: 32px;
+      height: 32px;
+      margin-bottom: 12px;
+      opacity: 0.75;
+    }
+
+    /* الآية */
+    .verse-text {
+      font-family: 'Amiri', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #2c3e50;
+      line-height: 1.6;
+      margin-bottom: 6px;
+    }
+
+    .verse-ref {
+      font-size: 13px;
+      color: #8c9ba5;
+      font-weight: 500;
+    }
+
+    /* الجزء السفلي (التحميل + حقوق النشر) */
+    .footer {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    /* شريط التحميل الذهبي */
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(210, 215, 220, 0.5);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .progress-fill {
+      position: absolute;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 45%;
+      background: linear-gradient(90deg, #1a2a40, #d4af37, #b8860b);
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+      animation: loading 2s infinite ease-in-out;
+    }
+
+    .loader-text {
+      font-size: 13px;
+      color: #5a6b7c;
+      font-weight: 500;
+    }
+
+    /* نص حقوق النشر */
+    .copyright {
+      font-size: 11px;
+      color: #8c9ba5;
+      margin-top: 15px;
+      text-align: center;
+    }
+
+    /* Animations */
+    @keyframes loading {
+      0% { right: -45%; width: 30%; }
+      50% { width: 60%; }
+      100% { right: 100%; width: 30%; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="splash-container">
+    <div class="bg-pattern"></div>
+    <canvas id="starsCanvas" class="stars-canvas"></canvas>
+
+    <!-- محتوى الشاشة -->
+    <div class="content">
+      <!-- الصليب الأرثوذكسي الذهبي والأزرق المعشق -->
+      <div class="cross-container">
+        <svg viewBox="0 0 100 100" width="100%" height="100%">
+          <defs>
+            <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#fef1a7" />
+              <stop offset="50%" stop-color="#d4af37" />
+              <stop offset="100%" stop-color="#996515" />
+            </linearGradient>
+            <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2a4365" />
+              <stop offset="100%" stop-color="#111d2e" />
+            </linearGradient>
+          </defs>
+          
+          <!-- إطار الصليب الخارجي -->
+          <path d="M 44 8 L 56 8 L 56 36 L 84 36 L 84 48 L 56 48 L 56 84 L 44 84 L 44 48 L 16 48 L 16 36 L 44 36 Z" fill="url(#goldGrad)" stroke="#7a520c" stroke-width="1.5" />
+          
+          <!-- الحشوة الزرقاء الداخلية -->
+          <path d="M 46 11 L 54 11 L 54 38 L 81 38 L 81 46 L 54 46 L 54 81 L 46 81 L 46 46 L 19 46 L 19 38 L 46 38 Z" fill="url(#blueGrad)" />
+          
+          <!-- الحلقة الزخرفية الدائرية (Coptic Circle) -->
+          <circle cx="50" cy="42" r="22" fill="none" stroke="url(#goldGrad)" stroke-width="3.5" />
+          <circle cx="50" cy="42" r="18" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" stroke-dasharray="3,2" />
+          
+          <!-- الحمامة البيضاء في المنتصف -->
+          <g transform="translate(50, 42) scale(0.65)">
+            <path d="M-2,-8 C-8,-15 -18,-10 -15,-2 C-12,4 -4,6 0,12 C4,6 12,4 15,-2 C18,-10 8,-15 2,-8 C1,-4 -1,-4 -2,-8 Z" fill="#ffffff" />
+            <circle cx="0" cy="-3" r="2" fill="#d4af37" />
+          </g>
+        </svg>
+      </div>
+
+      <!-- النصوص -->
+      <h1 class="app-title">تطبيق كنيسه مارمينا و الانبا توماس</h1>
+      <h2 class="app-subtitle">دليلك الروحي</h2>
+
+      <!-- أيقونة اللفافة -->
+      <svg class="scroll-icon" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="1.8">
+        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 12 10s-6.7.6-8.5 1.1C2.7 11.3 2 12.1 2 13v3c0 .6.4 1 1 1h2" />
+        <path d="M19 17v1c0 1.7-1.3 3-3 3H8c-1.7 0-3-1.3-3-3v-1" />
+        <path d="M5 8V6c0-1.7 1.3-3 3-3h8c1.7 0 3 1.3 3 3v2" />
+        <line x1="8" y1="14" x2="16" y2="14" />
+      </svg>
+
+      <!-- الآية والشاهد -->
+      <p class="verse-text">سِرَاجٌ لِرِجْلِي كَلاَمُكَ، وَنُورٌ لِسَبِيلِي</p>
+      <span class="verse-ref">مزمور 119:105</span>
+    </div>
+
+    <!-- مؤشر التحميل وحقوق النشر -->
+    <div class="footer">
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <span class="loader-text">جاري التحميل...</span>
+      <p class="copyright">حقوق النشر © 2026. الكنيسة  مارمينا و الانبا توماس ببولاق الدكرور.</p>
+    </div>
+  </div>
+
+  <script>
+    // حركة النجوم المتساقطة (Golden Sparkles & Stars)
+    const canvas = document.getElementById('starsCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    const stars = [];
+    const starCount = 35;
+
+    class FallingStar {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * -canvas.height;
+        this.size = Math.random() * 3 + 1.5;
+        this.speed = Math.random() * 0.7 + 0.2;
+        this.opacity = Math.random() * 0.8 + 0.2;
+        this.isFourPoint = Math.random() > 0.5;
+      }
+
+      update() {
+        this.y += this.speed;
+        if (this.y > canvas.height) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+        
+        if (this.isFourPoint) {
+          // رسم نجمة أربعة أطراف مثل الصورة
+          ctx.beginPath();
+          ctx.moveTo(0, -this.size * 2);
+          ctx.quadraticCurveTo(0, 0, this.size * 2, 0);
+          ctx.quadraticCurveTo(0, 0, 0, this.size * 2);
+          ctx.quadraticCurveTo(0, 0, -this.size * 2, 0);
+          ctx.quadraticCurveTo(0, 0, 0, -this.size * 2);
+          ctx.fill();
+        } else {
+          // رسم دائرة دافئة صغيرة
+          ctx.beginPath();
+          ctx.arc(0, 0, this.size / 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    }
+
+    for (let i = 0; i < starCount; i++) {
+      stars.push(new FallingStar());
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => {
+        star.update();
+        star.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+    // تحديد وقت التحميل (مثلاً 3.5 ثانية) ثم الانتقال
+setTimeout(function() {
+  window.location.href = "homeBage.html"; // استبدل home.html باسم ملف الصفحة الرئيسية عندك
+}, 5500);
+  </script>
+</body>
+</html>
