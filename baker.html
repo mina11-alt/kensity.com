@@ -8,412 +8,753 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
 
-  
-  <style>
-    :root {
-      /* الهوية البصرية الكحلية والذهبية */
-      --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
-      --text-light: #1e293b;
-      --card-bg-light: rgba(255, 255, 255, 0.85);
-      
-      --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
-      --text-dark: #f8fafc;
-      --card-bg-dark: rgba(30, 41, 59, 0.85);
+ <style>
+  :root {
+    /* الوضع الفاتح */
+    --bg-light: #f8fafc;
+    --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
+    --text-light: #1e293b;
+    --card-bg-light: rgba(255, 255, 255, 0.85);
 
-      --gold-primary: #d4af37;
-      --gold-dark: #b8860b;
-      --navy-primary: #1a2a40;
-    }
+    /* الوضع الداكن */
+    --bg-dark: #0f172a;
+    --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
+    --text-dark: #f8fafc;
+    --card-bg-dark: rgba(30, 41, 59, 0.85);
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    /* الألوان الأساسية */
+    --gold-primary: #d4af37;
+    --gold-dark: #b8860b;
+    --navy-primary: #1a2a40;
 
-    body {
-      font-family: 'Tajawal', sans-serif;
-      direction: rtl;
-      background: var(--bg-gradient-light);
-      background-attachment: fixed;
-      color: var(--text-light);
-      transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease, transform 0.6s ease;
+    --font-scale: 1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* النمط الافتراضي (الوضع الفاتح) */
+  body {
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+    background: var(--bg-gradient-light);
+    background-attachment: fixed;
+    color: var(--text-light);
+    transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease;
+    opacity: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body.visible {
+    opacity: 1;
+  }
+
+  /* نمط الوضع الداكن */
+  body.dark-mode {
+    background: var(--bg-gradient-dark);
+    background-attachment: fixed;
+    color: var(--text-dark);
+  }
+
+  /* خلفية الصلبان المتحركة */
+  .crosses-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .floating-cross {
+    position: absolute;
+    bottom: -100px;
+    color: var(--gold-primary);
+    opacity: 0.25;
+    user-select: none;
+    animation: floatUp 15s linear infinite;
+  }
+
+  body.dark-mode .floating-cross {
+    opacity: 0.35;
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) rotate(0deg);
       opacity: 0;
-      transform: scale(0.98) translateY(10px);
-      min-height: 100vh;
-      display: flex;
+    }
+    10% {
+      opacity: var(--cross-opacity, 0.25);
+    }
+    90% {
+      opacity: var(--cross-opacity, 0.25);
+    }
+    100% {
+      transform: translateY(-110vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* الشريط العلوي */
+  .top-navbar {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    height: 65px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+
+  body.dark-mode .top-navbar {
+    background: rgba(15, 23, 42, 0.85);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  }
+
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .navbar-left img {
+    height: 42px;
+    width: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--gold-primary);
+  }
+
+  .site-title {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--navy-primary);
+    transition: color 0.4s;
+  }
+
+  body.dark-mode .site-title {
+    color: var(--gold-primary);
+  }
+
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .icon-btn, .back-btn {
+    background: none;
+    border: none;
+    color: var(--navy-primary);
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s, transform 0.2s;
+  }
+
+  body.dark-mode .icon-btn, 
+  body.dark-mode .back-btn {
+    color: var(--gold-primary);
+  }
+
+  .back-btn:hover, .icon-btn:hover {
+    transform: scale(1.1);
+  }
+
+  /* لوحة الإعدادات */
+  .settings-panel {
+    position: fixed;
+    top: 75px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 16px;
+    padding: 18px;
+    width: 260px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    z-index: 1001;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--text-light);
+    animation: fadeIn 0.3s ease;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  body.dark-mode .settings-panel {
+    background: rgba(30, 41, 59, 0.95);
+    color: var(--text-dark);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  }
+
+  .settings-panel.active {
+    display: flex;
+  }
+
+  .settings-title {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--navy-primary);
+    border-bottom: 1px dashed var(--gold-primary);
+    padding-bottom: 5px;
+  }
+
+  body.dark-mode .settings-title {
+    color: var(--gold-primary);
+  }
+
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .font-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 6px 12px;
+    border-radius: 10px;
+  }
+
+  body.dark-mode .font-controls {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .font-btn {
+    background: var(--navy-primary);
+    color: var(--gold-primary);
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  body.dark-mode .font-btn {
+    background: var(--gold-primary);
+    color: var(--navy-primary);
+  }
+
+  /* المحتوى الرئيسي */
+  .content {
+    padding: 100px 20px 40px;
+    max-width: 650px;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--navy-primary);
+  }
+
+  body.dark-mode h2 {
+    color: var(--gold-primary);
+  }
+
+  /* الأزرار الرئيسية */
+  .nav-buttons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .nav-btn {
+    background: var(--card-bg-light);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--navy-primary);
+    border: 1.5px solid rgba(212, 175, 55, 0.4);
+    border-radius: 16px;
+    padding: 16px 20px;
+    font-size: 1.1rem;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  }
+
+  body.dark-mode .nav-btn {
+    background: rgba(30, 41, 59, 0.85);
+    color: var(--gold-primary);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  }
+
+  .nav-btn .btn-text {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-btn .cross-icon {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    color: var(--gold-dark);
+  }
+
+  body.dark-mode .nav-btn .cross-icon {
+    color: var(--gold-primary);
+  }
+
+  .nav-btn .arrow {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+  }
+
+  .nav-btn:hover {
+    background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
+    color: var(--gold-primary);
+    border-color: var(--gold-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
+  }
+
+  .nav-btn:hover .cross-icon {
+    color: var(--gold-primary);
+  }
+
+  .nav-btn:hover .arrow {
+    transform: translateX(-5px);
+  }
+
+  /* حاويات نصوص الصلوات */
+  .prayer-content {
+    display: none;
+    background: var(--card-bg-light);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+    padding: 25px;
+    margin-top: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.4s ease;
+  }
+
+  body.dark-mode .prayer-content {
+    background: rgba(30, 41, 59, 0.88);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .prayer-title {
+    font-size: 1.3rem;
+    color: var(--navy-primary);
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 1px dashed var(--gold-primary);
+    padding-bottom: 10px;
+    font-weight: 800;
+  }
+
+  body.dark-mode .prayer-title {
+    color: var(--gold-primary);
+  }
+
+  /* تنسيقات الأسطر والنصوص */
+  .line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 0 auto 12px auto;
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  }
+
+  .red-text {
+    color: #c53030;
+    margin: 18px 0 8px 0;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  body.dark-mode .red-text {
+    color: var(--gold-primary);
+  }
+
+  .black-text {
+    font-size: calc(1.05rem * var(--font-scale)); 
+    line-height: 1.8; 
+    font-weight: 700;
+    color: #1e293b; 
+    flex: 1; 
+    text-align: right;
+  }
+
+  body.dark-mode .black-text {
+    color: #f1f5f9;
+  }
+
+  .deacon-text {
+    font-size: calc(1.05rem * var(--font-scale)); 
+    line-height: 1.8; 
+    font-weight: 600;
+    color: #0284c7; 
+    direction: ltr; 
+    text-align: left; 
+    flex: 1;
+  }
+
+  body.dark-mode .deacon-text {
+    color: #38bdf8;
+  }
+
+  /* إخفاء النص حسب خيارات المستخدم */
+  body.hide-arabic .black-text { display: none !important; }
+  body.hide-coptic .deacon-text { display: none !important; }
+
+  /* حاوية وأزرار التنقل السفلية بين الصلوات وإغلاقها */
+  .prayer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(212, 175, 55, 0.3);
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    background: var(--navy-primary); 
+    color: var(--gold-primary);
+    border: 1px solid var(--gold-primary); 
+    border-radius: 12px;
+    padding: 10px 18px; 
+    font-family: 'Tajawal', sans-serif; 
+    font-size: 0.95rem;
+    font-weight: 700; 
+    cursor: pointer; 
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .action-btn:hover {
+    background: var(--gold-primary);
+    color: var(--navy-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+  }
+
+  body.dark-mode .action-btn {
+    background: rgba(15, 23, 42, 0.9);
+    color: var(--gold-primary);
+  }
+
+  body.dark-mode .action-btn:hover {
+    background: var(--gold-primary);
+    color: var(--navy-primary);
+  }
+
+  .close-prayer-btn {
+    background: transparent;
+    color: var(--navy-primary);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+  }
+
+  body.dark-mode .close-prayer-btn {
+    background: transparent;
+    color: #f1f5f9;
+  }
+
+  .close-prayer-btn:hover {
+    background: #e2e8f0;
+    color: var(--navy-primary);
+  }
+
+  body.dark-mode .close-prayer-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--gold-primary);
+  }
+
+  @media (max-width: 600px) {
+    .top-navbar { padding: 0 15px; }
+    .site-title { font-size: 0.9rem; }
+    .content { padding-top: 85px; }
+    .line { flex-direction: column; gap: 8px; }
+    .deacon-text { direction: rtl; text-align: right; }
+    .nav-btn { padding: 14px 18px; font-size: 1rem; }
+    .prayer-actions {
       flex-direction: column;
-      position: relative;
-      overflow-x: hidden;
+      gap: 8px;
     }
-
-    body.visible {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-
-    body.dark-mode {
-      background: var(--bg-gradient-dark);
-      background-attachment: fixed;
-      color: var(--text-dark);
-    }
-
-    /* خلفية الصلبان المتحركة */
-    #stars-container {
-      position: fixed;
-      top: 0;
-      left: 0;
+    .action-btn {
       width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
+      justify-content: center;
     }
-
-    .cross {
-      position: absolute;
-      width: var(--size);
-      height: var(--size);
-      opacity: 0;
-      animation: twinkle var(--duration) infinite ease-in-out var(--delay);
-    }
-
-    .cross::before,
-    .cross::after {
-      content: '';
-      position: absolute;
-      background-color: var(--gold-primary);
-      border-radius: 2px;
-    }
-
-    .cross::before {
-      top: 0;
-      left: 50%;
-      width: 25%;
-      height: 100%;
-      transform: translateX(-50%);
-    }
-
-    .cross::after {
-      top: 30%;
-      left: 0;
-      width: 100%;
-      height: 25%;
-    }
-
-    body:not(.dark-mode) .cross::before,
-    body:not(.dark-mode) .cross::after {
-      background-color: var(--gold-dark);
-    }
-
-    @keyframes twinkle {
-      0%, 100% {
-        opacity: 0.15;
-        transform: scale(0.7) rotate(0deg);
-      }
-      50% {
-        opacity: 0.85;
-        transform: scale(1.2) rotate(5deg);
-        filter: drop-shadow(0 0 6px var(--gold-primary));
-      }
-    }
-
-    /* الشريط العلوي */
-    .top-navbar {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-      height: 65px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      transition: background 0.4s ease;
-    }
-
-    body.dark-mode .top-navbar {
-      background: rgba(15, 23, 42, 0.85);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
-    }
-
-    .navbar-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .navbar-left img {
-      height: 42px;
-      width: 42px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 2px solid var(--gold-primary);
-    }
-
-    .site-title {
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--navy-primary);
-    }
-
-    body.dark-mode .site-title {
-      color: var(--gold-primary);
-    }
-
-    /* زر Switch للوضع الداكن */
-    .theme-switch-wrapper {
-      display: flex;
-      align-items: center;
-    }
-
-    .theme-switch {
-      display: inline-block;
-      height: 30px;
-      position: relative;
-      width: 60px;
-    }
-
-    .theme-switch input {
-      display: none;
-    }
-
-    .slider {
-      background-color: #cbd5e1;
-      bottom: 0;
-      cursor: pointer;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: 0.4s;
-      border-radius: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 6px;
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .slider .icon {
-      font-size: 14px;
-      user-select: none;
-    }
-
-    .slider:before {
-      background-color: #fff;
-      bottom: 3px;
-      content: "";
-      height: 22px;
-      left: 3px;
-      position: absolute;
-      transition: 0.4s;
-      width: 22px;
-      border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    input:checked + .slider {
-      background-color: var(--navy-primary);
-      border-color: var(--gold-primary);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(30px);
-      background-color: var(--gold-primary);
-    }
-
-    /* المحتوى الرئيسي */
-    .content {
-      padding: 95px 15px 40px;
-      max-width: 800px;
-      margin: 0 auto;
-      flex: 1;
-      width: 100%;
-      position: relative;
-      z-index: 1;
-    }
-
-    button.toggle-btn {
-      background: linear-gradient(135deg, var(--navy-primary) 0%, #2a3e5c 100%);
-      color: var(--gold-primary);
-      border: 1px solid rgba(212, 175, 55, 0.4);
-      padding: 14px 28px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
-      user-select: none;
-      margin: 15px auto;
-      display: block;
-      width: 90%;
-      max-width: 400px;
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    button.toggle-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(212, 175, 55, 0.25);
-      border-color: var(--gold-primary);
-    }
-
-    body.dark-mode button.toggle-btn {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
-      color: var(--gold-primary);
-      border-color: rgba(212, 175, 55, 0.3);
-    }
-
-    .content > div[id$="-box"] {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transform: translateY(-15px);
-      transition: max-height 0.6s ease, opacity 0.5s ease, transform 0.5s ease, padding 0.4s ease;
-      background: var(--card-bg-light);
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 0 20px;
-      margin: 0 auto 20px auto;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      max-width: 700px;
-      text-align: right;
-      direction: rtl;
-    }
-
-    .content > div[id$="-box"].show {
-      max-height: 8000px;
-      opacity: 1;
-      transform: translateY(0);
-      padding: 24px 20px;
-    }
-
-    body.dark-mode .content > div[id$="-box"] {
-      background: var(--card-bg-dark);
-      border-color: rgba(212, 175, 55, 0.15);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .line {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 15px;
-      margin: 0 auto 12px auto;
-      padding: 12px 10px;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-    }
-
-    body.dark-mode .line {
-      border-bottom-color: rgba(212, 175, 55, 0.12);
-    }
-
-    .red-text {
-      color: var(--gold-dark);
-      margin: 18px 0 8px 0;
-      font-weight: 800;
-      font-size: 1.1rem;
-      text-align: center;
-    }
-
-    body.dark-mode .red-text {
-      color: var(--gold-primary);
-    }
-
-    .black-text {
-      font-size: 1.05rem;
-      line-height: 1.8;
-      font-weight: 700;
-      color: var(--navy-primary);
-      flex: 1;
-      text-align: right;
-    }
-
-    body.dark-mode .black-text {
-      color: #f1f5f9;
-    }
-
-    .deacon-text {
-      font-size: 1.05rem;
-      line-height: 1.8;
-      font-weight: 500;
-      color: #0284c7;
-      direction: ltr;
-      text-align: left;
-      flex: 1;
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    body.dark-mode .deacon-text {
-      color: #38bdf8;
-    }
-
-    @media (max-width: 600px) {
-      .top-navbar {
-        padding: 0 15px;
-      }
-      .site-title {
-        font-size: 0.9rem;
-      }
-      .content {
-        padding-top: 85px;
-      }
-      .line {
-        flex-direction: column;
-        gap: 8px;
-      }
-      .deacon-text {
-        direction: rtl;
-        text-align: right;
-      }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
+
+  <!-- الشريط العلوي -->
 
   <!-- الشريط العلوي -->
   <div class="top-navbar">
     <div class="navbar-left">
       <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
-      <span class="site-title">كنيسة مارمينا والأنبا توماس و البابا كيرلس السادس</span>
+      <span class="site-title">كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</span>
     </div>
-    
+
     <div class="navbar-right">
-      <div class="theme-switch-wrapper">
-        <label class="theme-switch" for="darkModeToggle">
-          <input type="checkbox" id="darkModeToggle" />
-          
-        </label>
-      </div>
+      <button class="icon-btn" onclick="toggleSettings()" title="إعدادات الخط والنصوص">⚙️</button>
+      <button class="back-btn" onclick="history.back()" title="رجوع">←</button>
+
+
     </div>
   </div>
 
+  <!-- لوحة إعدادات النصوص والخط -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-title">إعدادات العرض والنصوص</div>
+    
+    <div class="checkbox-group">
+      <label>
+        <input type="checkbox" id="showArabicToggle" checked onchange="updateTextVisibility()" />
+        إظهار العربي
+      </label>
+      <label>
+        <input type="checkbox" id="showCopticToggle" checked onchange="updateTextVisibility()" />
+        إظهار القبطي (المعرب)
+      </label>
+    </div>
 
+    <div class="settings-title">حجم الخط</div>
+    <div class="font-controls">
+      <button class="font-btn" onclick="changeFontSize(-0.1)">-</button>
+      <span id="fontSizeDisplay" style="font-weight: bold;">100%</span>
+      <button class="font-btn" onclick="changeFontSize(0.1)">+</button>
+    </div>
+  </div>
 
+  <!-- حاوية الصلبان المتحركة -->
+  <div class="crosses-container" id="crossesContainer"></div>
 
+ 
+    <div class="theme-switch-wrapper">
+      <label class="theme-switch" for="darkModeToggle">
+        <input type="checkbox" id="darkModeToggle" />
+        
+      </label>
+    </div>
+  </div>
+  <!-- المحتوى الرئيسي -->
+  <div class="content">
+    
+    <!-- قائمة الأزرار الرئيسية -->
+    <div id="mainOptions">
+      <div class="nav-buttons-list">
+<h2>باكر و عشيه</h2>
+        <button class="nav-btn" onclick="showPrayer('hamal')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span> اليسون ايماس+ صلاه الشكر 
+</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
 
-<body>
+        <button class="nav-btn" onclick="showPrayer('shokr')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>ارباع الناقوس الآدام
+</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
 
+        <button class="nav-btn" onclick="showPrayer('sotis')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>ارباع الناقوس الواطس
+</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
 
-<div class="content">
+        <button class="nav-btn" onclick="showPrayer('khedam')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>ارباع الناقوس 
+</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
 
-     <button class="toggle-btn" onclick="toggleSection('thanksgiving12-box')">
-اليسون ايماس+ صلاه الشكر 
-    </button>
+        <button class="nav-btn" onclick="showPrayer('1')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>ارحمنا يا الله
+</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('2')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span> أوشية
+الراقدين</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('3')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span> أوشية
+المرضي
+</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('4')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span> أوشية
+المسافرين</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('5')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span> أوشية
+القرابين</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('6')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>تفضل يارب أن تحفظنا</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('7')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>فلنسبح مع الملائكة</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('8')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>الثلاث تقديسات
+</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('9')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>  الذكصولوجيات
+</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('10')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>    قانون الايمان + مقدمة قانون الايمان
+</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('11')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>افنوتى ناي نان    </span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('12')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>    أوشية الإنجيل 
+</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+        <button class="nav-btn" onclick="showPrayer('14')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>التحليل + الختام
+</span> 
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        
+       
+      </div>
+    </div>
 
-    <div id="thanksgiving12-box" class="thanksgiving12-box" aria-hidden="true">
-          
+    <!-- 1. تقديم الحمل -->
+    <div id="prayer-hamal" class="prayer-content">
+      <div class="prayer-title"> 
+        اليسون ايماس+ صلاه الشكر 
 
-
+      </div>
+      
     <h3 class="red-text">يفتح الكاهن ستر الهيكل وهو يقول:​</h3>
                                                    <div class="line">
 
@@ -577,51 +918,43 @@
     <h3 class="red-text">يقول الكاهن</h3>
                                                    <div class="line">
 
-    <h3 class="black-text">من اجل هذا نسأل
-ونطلب من صلاحك يا
-محب البشر إمنحنا أن
-نكمل هذا اليوم المقدس
-وكل أيام حياتنا بكل سلام مع
-خوفك كل حسد وكل تجربة
-وكل  فعل الشيطان
-ومؤامرة الناس الأشرار وقيام
-الأعداء الخفيين
-والظاهرين
-إنزعها عنا وعن سائر شعبك
-
- وعن موضعك المقدس هذا  أما الصالحات
-والنافعات فإرزقنا إياها لأنك
-أنت الذي أعطيتنا
-السلطان أن ندوس
-الحيات والعقارب وعلي كل
-قوة العدو</h3>  
-    <h3 class="deacon-text">إثفى فاى تين تيهو أووه تين طفه إن
-تيك ميت آغاثوس بى ما رومى ميس
-نان إثرين جوك إيفول إم باى كى
-إيهوؤو إثؤواب فاى نيم نى إيهوؤو
-تيرو إنتى بين أونخ خين هيريني
-نيفين نيم تيك هوتى. إفثونوس نيفين بى راسموس نيفين إن
-إرجيا نيفين إنتى إبساطاناس
-إبسوتشنى إنتى هان رومى إف هوؤو
-نيم إبطونف إى إبشوى إنتى هان جاجي
-نى إتهيب نيم ني إثئوأونه إيفول آليتو إيفول هارن 	
-نيم إيفول ها بيك لاؤس تيرف نيم إيفول ها باى ما إثؤواب إنتاك فاي نيم كى تومونا ستريو إيمون طوطو نى ذى إثنانيف نيم نى إتئر
-نوفرى ساهنى إموؤو نان جي إثنوك
-بى إتاكثى إم بى إير شيشى نان
-إيهومى إيجين نى هوف نيم نى
-إتشيلى نيم إيجين تى جوم تيرس إنتى
-بى جاجى.</h3>
+    <h3 class="black-text">من أجل هذا نسأل ونطلب من صلاحك يا محب البشر إمنحنا أن نكمل هذا اليوم المقدس وكل أيام حياتنا بكل سلام مع خوفك كل حسد <br><br>
+    وكل تجربة وكل  فعل الشيطان و مؤامرة الناس الأشرار وقيام الأعداء الخفيين و الظاهرين إنزعها عنا وعن سائر شعبك  و عن هذه الكنيسة وعن موضعك المقدس<br><br>
+هذا. و أما الصالحات والنافعات فإرزقنا إياها لأنك أنت الذي أعطيتنا السلطان أن ندوس على الحيات والعقارب و كل  قوة العدو. ولا تدخلنا في تجربة...<br><br>
+نجنا من الشرير بالنعمة والرأفات ومحبة البشر اللواتي لإبنك الوحيد الجنس ربنا وإلهنا ومخلصنا يسوع المسيح هذا الذي من قبلة المجد والكرامة والعزة<br><br>
+والسجود تليق بك معه ومع الروح القدس المحيي المساوي لكل الآن وكل اوان وإلى دهر الدهور آمين 
+</h3>  
+    <h3 class="deacon-text">
+        إثڤى فاى تين تيهو اووه تين طوبه إن تيك ميت آغاثوس بي ماى رومي ميس نان إثرين جوك إيڤول إم باى كى إيهوؤو إثؤواب فاى نيم نى إيهوؤو  تيرو إنتيه بين اونخ خين هيريني نيڤين نيم تيك<br><br>
+        هوتى . فثونوس نيڤين بى راسموس نيڤين إن  إرجيا نيڤين إنتيه إبساطاناس إبسوتشنى إنتيه هان رومى إف هوؤو نيم إبطونف إى إبشوى إنتيه هان جاچي ني إتهيب نيم ني إثئو اونه إيڤول آليتو إيڤول هارن نيم إيڤول ها بيك لاؤس تيرف نيم إيڤول هاتاى إككليسيا ثاى نيم إيڤول<br><br>
+        ها باى ما إثؤواب إنتاك فاى ني ذى إثنانيڤ نيم نى إتئر نوفرى ساهنى إموؤو نان چيه إثنوك بى إيطاكتي إم بي إير شيشي نان إيهومى إيچين نى هوف نيم نى إتشيلى نيم إيچين تي جوم تيرس إنتيه بي جاچي . اووه إمبير إنتين...<br><br>
+        إيڤول هابي بيت هوؤو خين بي إهموت نيم ني ميت شنهيت نيم تى ميت ماى رومى إنتيه بيك مونو جينيس إنشيريه بين تشويس اووه بيننوتى اووه بنسوتير إيسوس بي إخرستوس فاى إيتى إيڤول هيطوطف إيرى بى أوؤو نيم بى طايو نيم بى آماهى نيم تى إبروس<br><br>
+        كينيسيس إير إبريبى ناك نيماف نيم بى إبنيڤما إثؤواب إثريف تانخو اووه إن أوموسيوس نيماك تينو نيم إن سيو نيڤين نيم شا إينيه  إنتيه نى إينيه تيرو آمين. 
+    </h3>
                                                    </div>
-                                                   </div>
-                                                
 
 
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving-box')">
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>
+                                                </div>
+
+    
+    <div id="prayer-shokr" class="prayer-content">
+      <div class="prayer-title"> 
 ارباع الناقوس الآدام
-    </button>
 
-    <div id="thanksgiving-box" class="thanksgiving-box" aria-hidden="true">
-          
+      </div>
+      
 
     <h3 class="red-text">يقول الشعب ارباع الناقوس الآدام – الأحد والاثنين والثلاثاء</h3>
                                                    <div class="line">
@@ -663,18 +996,27 @@
       <h3 class="black-text">لنا هدوء في العالم . من قبل صلاه القديسه مريم العذراء </h3>
 <h3 class="deacon-text">أوأون أو ميت سيمنوس : ان إهري خين بي كوزموس : إيفول هيتين بي إشليل : انتيه تي آجيا ماريا تي بارثينوس </h3>
                                                     </div>  
-</div>
 
 
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving1-box')">
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>
+    </div>
+    
+    <div id="prayer-sotis" class="prayer-content">
+      <div class="prayer-title"> 
 ارباع الناقوس الواطس
-    </button>
-
-    <div id="thanksgiving1-box" class="thanksgiving1-box" aria-hidden="true">
-          
-
-
-
+      </div>
+      
 
 
     <h3 class="red-text">يقول الشعب ايام الأربعاء - الخميس - الجمعة - السبت</h3>
@@ -703,15 +1045,27 @@
 </h3>
 
                                                    </div>
-    </div>
- 
 
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving2-box')">
-ارباع الناقوس 
-    </button>
 
-    <div id="thanksgiving2-box" class="thanksgiving2-box" aria-hidden="true">
-          
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
+
+    
+    <div id="prayer-khedam" class="prayer-content">
+      <div class="prayer-title"> 
+
+      </div>
+      
 
     <h3 class="red-text">ثم يكمل ارباع الناقوس</h3>
                                                     <div class="line">                                    
@@ -885,16 +1239,40 @@
     <h3 class="deacon-text"> أثرين هوس إيروك : نيم بيك يوت إن أغاثوس : نيم بي إبنفيما إثؤواب : جي (أك إي) آكسوتي إممون ناي نان</h3> 
     </div>
 
-    </div>
+
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
 
     
-
-     <button class="toggle-btn" onclick="toggleSection('thanksgiving15-box')">
+    <div id="prayer-1" class="prayer-content">
+      <div class="prayer-title"> 
 الاواشي
-    </button>
 
-    <div id="thanksgiving15-box" class="thanksgiving15-box" aria-hidden="true">
-          
+      </div>
+      
+ارحمنا يا الله ثم ارحمنا يا من في كل وقت وكل ساعة في السماء وعلى الأرض مسجود له وممجد
+
+المسيح إلهنا الصالح الطويل الروح الكثير الرحمة الجزيل التحنن الذي يحب الصديقين ويرحم الخطاة الذين أولهم أنا
+
+الذي لا يشاء موت الخاطئ مثل ما يرجع ويحيا الداعي الكل إلى الخلاص لأجل الموعد بالخيرات المنتظرة
+
+يا رب اقبل منا في هذه الساعة وكل ساعة طلباتنا سهل حياتنا وأرشدنا إلى العمل بوصاياك,<br><br>
+قدس أرواحنا طهر أجسامنا قوم أفكارنا نق نياتنا اشف أمراضنا واغفر خطايانا ونجنا من كل حزن رديء ووجع قلب
+
+أحطنا بملائكتك القديسين لكي نكون بمعسكرهم محفوظين ومرشدين
+
+لنصل إلى اتحاد الإيمان وإلى معرفة مجدك غير المحسوس وغير المحدود فإنك مبارك إلى الأبد أمين<br><br>
 
 
     <h3 class="red-text">يقول الكاهن</h3>
@@ -938,16 +1316,36 @@
 </h3>
 
                                                    </div>
-    </div>
 
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving3-box')">
-    أوشية
+
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
+
+    
+   
+      
+
+
+
+    
+    <div id="prayer-2" class="prayer-content">
+      <div class="prayer-title"> 
+ أوشية
 الراقدين
+      </div>
+      
 
-    </button>
-
-    <div id="thanksgiving3-box" class="thanksgiving3-box" aria-hidden="true">
-          
 <h2>في رفع بخور عشية دائماً تقال أوشية
 الراقدين حتى في عشيات الأعياد السيدية الكبرى والصغرى. و  رفع بخور باكر يوم السبت تقال أوشية
 الراقدين.</h2>
@@ -1097,19 +1495,30 @@
     <h3 class="deacon-text">كيريي ليسون</h3>
 
                                                    </div>
-    </div>
 
 
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
 
 
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving4-box')">
-    أوشية
+    
+    <div id="prayer-3" class="prayer-content">
+      <div class="prayer-title"> 
+ أوشية
 المرضي
 
-    </button>
-
-    <div id="thanksgiving4-box" class="thanksgiving4-box" aria-hidden="true">
-          
+      </div>
+      
       <h2> رفع بخور باكر من يوم الاثنين إلى يوم
 الجمعة تقال أوشية المرضى ,  رفع بخور باكر فى الآحاد والأعياد السيدية
  تقال أوشية المرضى</h2>
@@ -1216,19 +1625,28 @@
     <h3 class="black-text">يارب ارحم</h3>  
     <h3 class="deacon-text">كيريي ليسون</h3>
                                                        </div>
-    </div>
 
 
 
-
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving5-box')">
-    أوشية
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
+    
+    <div id="prayer-4" class="prayer-content">
+      <div class="prayer-title"> 
+ أوشية
 المسافرين
-
-    </button>
-
-    <div id="thanksgiving5-box" class="thanksgiving5-box" aria-hidden="true">
-          
+      </div>
+      
 
       <h2> رفع بخور باكر من يوم الاثنين إلى يوم
 الجمعة تقال أوشية , المسافرين.</h2>
@@ -1322,18 +1740,28 @@
     <h3 class="black-text">يارب ارحم</h3>  
     <h3 class="deacon-text">كيري اليسون</h3>
                                                        </div>
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>
     </div>
 
-
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving6-box')">
-    أوشية
+    
+    <div id="prayer-5" class="prayer-content">
+      <div class="prayer-title"> 
+ أوشية
 القرابين
-
-    </button>
-
-    <div id="thanksgiving6-box" class="thanksgiving6-box" aria-hidden="true">
-          
-      <h2> رفع بخور باكر فى الآخاد والأعياد السيدية
+      </div>
+       <h2> رفع بخور باكر فى الآخاد والأعياد السيدية
 أو إذا كان القربان موجوداً بالكنيسة تقال أوشية القرابين.</h2>
 
     <h3 class="red-text">يقول الكاهن</h3>
@@ -1434,16 +1862,57 @@
     <h3 class="black-text">يارب ارحم</h3>  
     <h3 class="deacon-text">كيريي ليسون</h3>
                                                         </div>
-    </div>
-
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving7-box')">
-                فلنسبح مع الملائكة + الثلاث تقديسات
 
 
-    </button>
-    <div id="thanksgiving7-box" class="thanksgiving7-box" aria-hidden="true">
 
-        <h2>عشية</h2>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
+
+    
+    <div id="prayer-7" class="prayer-content">
+      <div class="prayer-title"> 
+باكر
+      </div>
+      
+<h3 class="red-text">يقول الشعب</h3>
+                                                        <div class="line">
+    <h3 class="black-text">  فلنسبح مع الملائكة قائلين: المجد لله في الأعالي وعلى الأرض السلام وفى الناس المسرة. نسبحك. نباركك. نخدمك. نسجد لك. نعترف لك. ننطق بمجدك. نشكرك من أجل عظم مجدك، أيها الرب المالك على السموات، الله الآب ضابط الكل، والرب الابن الواحد الوحيد يسوع المسيح، والروح القدس. ​  أيها الرب الإله، حمل الله، ابن الآب، رافع خطية العالم، ارحمنا. يا حامل خطية العالم، اقبل طلباتنا ​
+إليك. أيها الجالس عن يمين أبيه، ارحمنا. أنت وحدك القدوس. أنت وحدك العالي يا ربى يسوع المسيح والروح القدس. مجدا لله الآب أمين.​   أباركك كل يوم، وأسبح اسمك القدُّوس إلى الأبد. وإلى أبد الأبد. أمين. منذ الليل روحي تبكر إليك يا إلهي، لأن أوامرك هي نور على الأرض. كنت أتلو في طرقك، لأنك صرت لي معينا. باكرا يا رب تسمع صوتي، بالغداة أقف أمامك وتراني. ​ </h3>
+                                                        </div>
+
+
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
+
+    
+    <div id="prayer-6" class="prayer-content">
+      <div class="prayer-title"> 
+عشية
+      </div>
+      
+
+
         <h3 class="red-text">يقول الشعب</h3>
 <h3 class="black-text">تفضل يارب أن تحفظنا فى هذه الليلة بغير خطية. مبارك أنت أيها الرب إله آبائنا ومتزايد بركة، واسمك القدُّوس مملوء مجداً إلى الأبد آمين . فلتكن رحمتك علينا يارب كمثل أتكالنا عليك، لأن أعين الكل تترجاك، لأنك أنت الذى تعطيهم طعامهم فى حينه. إسمعنا يا الله مخلصنا يا رجاء أقطار الأرض كلها. وأنت يا رب تحفظنا وتنجينا من هذا الجيل وإلى الأبد آمين. 
     مبارك أنت يارب علمنى عدلك، مبارك أنت يارب فهمنى حقوقك، مبارك أنت يارب أنر لى برك، يارب رحمتك دائمة إلى الأبد. أعمال يديك يارب لا ترفضها، لأنك صرت لى ملجأ من جيل وإلى جيل. 
@@ -1452,12 +1921,25 @@
   جيد هو الإعتراف للرب، والترتيل لإسمك أيها العلى. أن يخبر برحمتك فى الغدوات وحقك فى كل ليلة.
  </h3>
 
-<h2>باكر</h2>
-<h3 class="red-text">يقول الشعب</h3>
-                                                        <div class="line">
-    <h3 class="black-text">  فلنسبح مع الملائكة قائلين: المجد لله في الأعالي وعلى الأرض السلام وفى الناس المسرة. نسبحك. نباركك. نخدمك. نسجد لك. نعترف لك. ننطق بمجدك. نشكرك من أجل عظم مجدك، أيها الرب المالك على السموات، الله الآب ضابط الكل، والرب الابن الواحد الوحيد يسوع المسيح، والروح القدس. ​  أيها الرب الإله، حمل الله، ابن الآب، رافع خطية العالم، ارحمنا. يا حامل خطية العالم، اقبل طلباتنا ​
-إليك. أيها الجالس عن يمين أبيه، ارحمنا. أنت وحدك القدوس. أنت وحدك العالي يا ربى يسوع المسيح والروح القدس. مجدا لله الآب أمين.​   أباركك كل يوم، وأسبح اسمك القدُّوس إلى الأبد. وإلى أبد الأبد. أمين. منذ الليل روحي تبكر إليك يا إلهي، لأن أوامرك هي نور على الأرض. كنت أتلو في طرقك، لأنك صرت لي معينا. باكرا يا رب تسمع صوتي، بالغداة أقف أمامك وتراني. ​ </h3>
-                                                        </div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
+
+    
+    <div id="prayer-8" class="prayer-content">
+      <div class="prayer-title"> 
+
+      </div>
+      
 <h3 class="red-text">يقول الشعب </h3>
                                                         <div class="line">
  <h3 class="black-text">قدُّوس الله ، قدُّوس القوى ، قدُّوس (الحى) الذى لا يموت ، الذى ولد من العذراء. ارحمنا. ​
@@ -1469,14 +1951,30 @@
  المجد للآب والابن والروح القدس ، الآن وكل أوان وإلى دهر الدهور آمين. ​ أيها الثالوث القدُّوس إرحمنا ، أيها الثالوث القدُّوس إرحمنا ، أيها الثالوث القدُّوس إرحمنا. يارب إغفر لنا خطايانا. يارب إغفر لنا آثامنا. يارب إغفر لنا زلاتنا. يارب إفتقد مرضى شعبك إشفهم من أجل أسمك القدوس. آباؤنا وإخوتنا الذين رقدوا يارب نيح نفوسهم. يا من هو بلا خطية يارب إرحمنا، يا الذى بلا خطية يارب أعنا، واقبل طلباتنا إليك. لأن لك المجد والعزة والتقديس المثلث. يارب ارحم. يا رب ارحم. يارب بارك. آمين . إجعلنا مستحقين ان نقول بشكر: أبانا الذى.... ​</h3>                                                          
 
                                                         </div>
-    </div>
 
 
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving8-box')">   
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
+
+    
+    <div id="prayer-9" class="prayer-content">
+      <div class="prayer-title"> 
   الذكصولوجيات
-    </button>
-    <div id="thanksgiving8-box" class="thanksgiving8-box" aria-hidden="true">
-     
+
+      </div>
+      
+
       <div class="line">
 <h3 class="black-text">بالمسيح يسوع ربنا​
 
@@ -1520,29 +2018,29 @@
   </div>
 
 
-    </div>
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving9-box')">
+    
+    <div id="prayer-10" class="prayer-content">
+      <div class="prayer-title"> 
     قانون الايمان + مقدمة قانون الايمان
-    </button> 
-    <div id="thanksgiving9-box" class="thanksgiving9-box" aria-hidden="true">
-          
+
+      </div>
+      
+
 
     <h3 class="red-text">يقول الشعب</h3>
                                                         <div class="line">
@@ -1600,15 +2098,31 @@
 إي إبكو إيفول إنتى ني نوفي.
 تین جوشت إيفول خا إتهي إنتي آناسطاسيس إنتي نيريف موؤوت نيم بي اونخ إنتي بي أوؤون إثنيو
 آمین</h3>
-                                                        </div>        
-             
-    </div>
+                                                        </div>  
 
- <button class="toggle-btn" onclick="toggleSection('thanksgiving13-box')">
-افنوتى ناي نان    </button>
 
-    <div id="thanksgiving13-box" class="thanksgiving13-box" aria-hidden="true">
-          
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
+
+    
+   
+
+    
+    <div id="prayer-11" class="prayer-content">
+      <div class="prayer-title"> 
+افنوتى ناي نان 
+      </div>
+      
 
 
     <h3 class="red-text">ثم يرفع الكاهن الصليب وعليه ثلاث شمعات موقدة ووججه إلى الشرق ويقول:
@@ -1674,14 +2188,28 @@
     <h3 class="deacon-text">آمين كيريى إليسون كيريى إليسون كيريى إليسون</h3>
 
                                                </div>
-    </div>
 
 
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
 
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving10-box')">
+    
+    <div id="prayer-12" class="prayer-content">
+      <div class="prayer-title"> 
     أوشية الإنجيل 
-    </button>
-    <div id="thanksgiving10-box" class="thanksgiving10-box" aria-hidden="true">
+
+      </div>
+      
 
     <h3 class="red-text">يقول الكاهن</h3>
                                                    <div class="line">
@@ -1872,15 +2400,31 @@
     <h3 class="deacon-text">إف إسمارؤوت إنجيه في إثينو خين إفران ام إمبتشويس إنتيه نى جوم كيريه إفلوجيون إكطو كاطا  (...) أجيو  إف  أنجيليو طو آناغنوسما</h3>
                                                </div>
     
-    </div>
+
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
 
     
-     <button class="toggle-btn" onclick="toggleSection('thanksgiving16-box')">
+    <div id="prayer-14" class="prayer-content">
+      <div class="prayer-title"> 
 التحليل + الختام
-    </button>
 
-    <div id="thanksgiving16-box" class="thanksgiving16-box" aria-hidden="true">
-          
+      </div>
+      
+
+
+
  
 <h3 class="red-text">يقول الشعب</h3>
     <div class="line">
@@ -1955,19 +2499,21 @@
     </div>
     <h3 class="red-text">بارك
 (ايام النيل من 12 بؤونه الى 9 بابة)
-- مياه الأنهار
+- مياه الأنهار  إسمو إيه ني موؤ إم إفيارو 
 (ايام الزراعة 10 بابه الى 10 طوبه)
 - الزروع والعشب
+إسمو إيني سيتي نيم ني سيم 
 (ايام الأثمار 11 طوبه الى 11 بؤونه)
 - أهوية السماء
-فلتكن رحمتك وسلامك حصناً لشعبك</h3>
+إسمو إيه ني آإير إنتي إتفي
+</h3>
 
 
-   
     <div class="line">
 
-<h3 class="black-text">خلصنا وإرحمنا، يارب أرحم يارب ارحم يارب بارك آمين باركوا على باركوا على، ها المطانية، إغفروا لي، قل البركة </h3>
-<h3 class="deacon-text">سوتي إممون أووه ناي نان : كيري إليسون كيري إليسون : كيري إفلوجيسون أمين. إسمو إروي إسمو إروي إس تي ميطانيا كو ني إيفول جو إمبي إسمو </h3>
+<h3 class="black-text">فلتكن رحمتك وسلامك حصناً لشعبك خلصنا وإرحمنا، يارب أرحم يارب ارحم يارب بارك آمين باركوا على باركوا على، ها المطانية، إغفروا لي، قل البركة </h3>
+<h3 class="deacon-text">ماري بيك ناي نيم تيك هيريني أوى إن سوبت إم بيك لاؤس.
+ سوتي إممون أووه ناي نان : كيري إليسون كيري إليسون : كيري إفلوجيسون أمين. إسمو إروي إسمو إروي إس تي ميطانيا كو ني إيفول جو إمبي إسمو </h3>
     </div>
     <h3 class="red-text">يقول الكاهن البركة و التسريح</h3>
     <h3 class="black-texe">الله يترأف علينا ويباركنا ويظهر وجهه علينا ويرحمنا يا رب خلص شعبك بارك ميراثك إرعهم وإرفعهم إلى الأبد أرفع شأن المسيحيين بقوة الصليب المحيي بسؤالات وطلبات سيدتنا كلنا والدة الإله القديسة مريم والثلاثة المنيرين الأطهار ميخائيل وغبريال وروفائيل وجميع مصاف الملائكة وكل الطغمات السمائية وصلوات رؤساء الآباء والأنبياء الرسل والشهداء وكل مصاف لباس الصليب الأبرار والصديقين وملاك هذا اليوم
@@ -2005,111 +2551,194 @@
 </h3>
     </div>
 
- </div>
-  <div id="stars-container"></div>
 
-  <script>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          <span>الصلاة السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          ← <span>الصلاة التالية</span>
+        </button>
+      </div>    </div>
+
+
+
+
+
+  </div>
+ <script>
     const root = document.body;
-    const darkModeToggle = document.getElementById('darkModeToggle');
+    const settingsPanel = document.getElementById("settingsPanel");
+    const mainOptions = document.getElementById("mainOptions");
+    const navTitle = document.getElementById("navTitle");
+    const defaultTitle = "كنيسة مارمينا والأنبا توماس والبابا كيرلس";
+    
+    let fontScale = 1;
 
-    // عند تحميل الصفحة: جلب الحالة من localStorage وتطبيقها
-    document.addEventListener("DOMContentLoaded", () => {
+    // مصفوفة لتخزين معرفات الخانات (الصلوات) وترتيبها للحركة والتنقل
+    let prayerKeys = [];
+    let currentPrayerIndex = -1;
+
+    // دالة لتحديث مصفوفة الخانات تلقائياً من العناصر الموجودة في الصفحة
+    function initPrayerKeys() {
+      const prayers = document.querySelectorAll('.prayer-content');
+      prayerKeys = Array.from(prayers).map(el => el.id.replace('prayer-', ''));
+    }
+
+    // تطبيق حالة الوضع الداكن المجلوبة من LocalStorage (نفس منطق الصفحة الرئيسية)
+    function applySavedTheme() {
       const savedMode = localStorage.getItem("darkMode");
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
       if (savedMode === "on" || (!savedMode && prefersDark)) {
         root.classList.add("dark-mode");
-        darkModeToggle.checked = true;
       } else {
         root.classList.remove("dark-mode");
-        darkModeToggle.checked = false;
-      }
-
-      root.classList.add('visible');
-      createCrosses();
-    });
-
-    // تبديل ألوان الوضع الداكن والحفظ لجميع الصفحات
-    darkModeToggle.addEventListener('change', () => {
-      if (darkModeToggle.checked) {
-        root.classList.add('dark-mode');
-        localStorage.setItem("darkMode", "on");
-      } else {
-        root.classList.remove('dark-mode');
-        localStorage.setItem("darkMode", "off");
-      }
-    });
-
-    // فتح وإغلاق الصناديق التفاعلية
-    function toggleSection(boxId) {
-      const box = document.getElementById(boxId);
-      const isExpanded = box.classList.contains('show');
-      
-      document.querySelectorAll('.content > div[id$="-box"]').forEach(el => {
-        if (el.id !== boxId) {
-          el.classList.remove('show');
-          el.setAttribute('aria-hidden', 'true');
-        }
-      });
-
-      if (isExpanded) {
-        box.classList.remove('show');
-        box.setAttribute('aria-hidden', 'true');
-      } else {
-        box.classList.add('show');
-        box.setAttribute('aria-hidden', 'false');
       }
     }
 
-    // توليد خلفية الصلبان المضيئة المتحركة
-    function createCrosses() {
-      const container = document.getElementById('stars-container');
-      const count = 25;
+    // الاستماع للتغيرات التي تحدث في LocalStorage من الصفحات الأخرى لتطبيق الوضع فورياً
+    window.addEventListener("storage", (e) => {
+      if (e.key === "darkMode") {
+        applySavedTheme();
+      }
+    });
 
-      for (let i = 0; i < count; i++) {
-        const cross = document.createElement('div');
-        cross.classList.add('cross');
+    // فتح وإغلاق قائمة الإعدادات
+    function toggleSettings() {
+      if (settingsPanel) settingsPanel.classList.toggle("active");
+    }
 
-        const size = Math.random() * 12 + 8;
-        const posX = Math.random() * 100;
-        const posY = Math.random() * 100;
-        const duration = Math.random() * 3 + 2;
+    // إغلاق لوحة الإعدادات عند الضغط خارجها
+    document.addEventListener("click", (e) => {
+      if (settingsPanel && !settingsPanel.contains(e.target) && !e.target.closest(".icon-btn")) {
+        settingsPanel.classList.remove("active");
+      }
+    });
+
+    // التحكم في إظهار القبطي/العربي
+    function updateTextVisibility() {
+      const showArabicToggle = document.getElementById("showArabicToggle");
+      const showCopticToggle = document.getElementById("showCopticToggle");
+
+      if (showArabicToggle) {
+        if (!showArabicToggle.checked) {
+          root.classList.add("hide-arabic");
+        } else {
+          root.classList.remove("hide-arabic");
+        }
+      }
+
+      if (showCopticToggle) {
+        if (!showCopticToggle.checked) {
+          root.classList.add("hide-coptic");
+        } else {
+          root.classList.remove("hide-coptic");
+        }
+      }
+    }
+
+    // تكبير وتصغير الخط
+    function changeFontSize(delta) {
+      fontScale = Math.min(Math.max(0.8, fontScale + delta), 1.6);
+      document.documentElement.style.setProperty('--font-scale', fontScale);
+      const fontSizeDisplay = document.getElementById("fontSizeDisplay");
+      if (fontSizeDisplay) fontSizeDisplay.innerText = Math.round(fontScale * 100) + "%";
+    }
+
+    // عرض صلاة/خانة معينة
+    function showPrayer(type) {
+      if (prayerKeys.length === 0) initPrayerKeys();
+      currentPrayerIndex = prayerKeys.indexOf(type);
+
+      mainOptions.style.display = "none";
+      document.querySelectorAll('.prayer-content').forEach(el => el.style.display = "none");
+      
+      const targetPrayer = document.getElementById('prayer-' + type);
+      if (targetPrayer) {
+        targetPrayer.style.display = "block";
+        const titleEl = targetPrayer.querySelector('.prayer-title');
+        if (navTitle && titleEl) navTitle.innerText = titleEl.innerText;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // التنقل إلى الخانة التالية أو السابقة
+    function navigatePrayer(direction) {
+      if (prayerKeys.length === 0) initPrayerKeys();
+      if (currentPrayerIndex === -1) return;
+
+      let newIndex = currentPrayerIndex + direction;
+
+      // التمرير الدائري بين الخانات
+      if (newIndex < 0) {
+        newIndex = prayerKeys.length - 1;
+      } else if (newIndex >= prayerKeys.length) {
+        newIndex = 0;
+      }
+
+      showPrayer(prayerKeys[newIndex]);
+    }
+
+    // إخفاء الصلوات والرجوع للقائمة الرئيسية
+    function hidePrayers() {
+      currentPrayerIndex = -1;
+      document.querySelectorAll('.prayer-content').forEach(el => el.style.display = "none");
+      mainOptions.style.display = "block";
+      if (navTitle) navTitle.innerText = defaultTitle;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // التعامل مع زر الرجوع
+    function handleBack() {
+      if (mainOptions.style.display === "none") {
+        hidePrayers();
+      } else {
+        if (document.referrer && document.referrer !== "") {
+          history.back();
+        } else {
+          location.href = "index.html"; // أو التوجيه للصفحة الرئيسية
+        }
+      }
+    }
+
+    // إنشاء الصلبان المتحركة
+    function createFloatingCrosses() {
+      const container = document.getElementById("crossesContainer");
+      if (!container) return;
+      const crossCount = 15;
+
+      for (let i = 0; i < crossCount; i++) {
+        const cross = document.createElement("div");
+        cross.className = "floating-cross";
+        cross.innerText = "☦";
+        
+        const size = Math.random() * 24 + 16;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 10 + 10;
         const delay = Math.random() * 5;
+        const opacity = Math.random() * 0.2 + 0.1;
 
-        cross.style.setProperty('--size', `${size}px`);
-        cross.style.setProperty('--duration', `${duration}s`);
-        cross.style.setProperty('--delay', `${delay}s`);
-        cross.style.left = `${posX}%`;
-        cross.style.top = `${posY}%`;
+        cross.style.fontSize = `${size}px`;
+        cross.style.left = `${left}%`;
+        cross.style.animationDuration = `${duration}s`;
+        cross.style.animationDelay = `${delay}s`;
+        cross.style.setProperty('--cross-opacity', opacity);
 
         container.appendChild(cross);
       }
     }
-  </script>
 
-
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    document.addEventListener("DOMContentLoaded", () => {
+      initPrayerKeys();    // تجهيز قائمة الخانات المتوفرة في الصفحة
+      applySavedTheme();   // قراءة حالة الوضع الداكن فور التحميل
+      root.classList.add("visible");
+      createFloatingCrosses();
+    });
+</script>
 </body>
 </html>
