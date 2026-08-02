@@ -10,12 +10,13 @@
 
   <style>
     :root {
-      /* التدرج الذهبي مع الكحلي الدافئ */
+      /* التدرج المضيء (Light Mode) */
       --bg-light: #f8fafc;
       --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
       --text-light: #1e293b;
       --card-bg-light: rgba(255, 255, 255, 0.85);
-      
+
+      /* التدرج الداكن (Dark Mode) */
       --bg-dark: #0f172a;
       --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
       --text-dark: #f8fafc;
@@ -41,16 +42,58 @@
       transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease;
       opacity: 0;
       min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
     }
 
     body.visible {
       opacity: 1;
     }
 
+    /* أنماط الوضع الداكن */
     body.dark-mode {
       background: var(--bg-gradient-dark);
       background-attachment: fixed;
       color: var(--text-dark);
+    }
+
+    /* خلفية الصلبان المتحركة */
+    #stars-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .cross {
+      position: absolute;
+      color: var(--gold-primary);
+      opacity: 0.25;
+      font-size: var(--size, 16px);
+      user-select: none;
+      animation: fall var(--duration, 10s) linear infinite;
+      animation-delay: var(--delay, 0s);
+    }
+
+    body.dark-mode .cross {
+      opacity: 0.35;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-50px) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% {
+        transform: translateY(105vh) rotate(360deg);
+        opacity: 0;
+      }
     }
 
     /* الشريط العلوي */
@@ -94,82 +137,48 @@
 
     .site-title {
       font-weight: 800;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: var(--navy-primary);
-      transition: color 0.4s;
+      transition: color 0.4s ease;
     }
 
     body.dark-mode .site-title {
       color: var(--gold-primary);
     }
 
-    /* زر التبديل العصري للوضع الداكن (Toggle Switch) */
-    .theme-switch-wrapper {
+    .navbar-right {
       display: flex;
       align-items: center;
     }
 
-    .theme-switch {
-      display: inline-block;
-      height: 30px;
-      position: relative;
-      width: 60px;
-    }
-
-    .theme-switch input {
-      display: none;
-    }
-
-    .slider {
-      background-color: #cbd5e1;
-      bottom: 0;
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--navy-primary);
+      font-size: 1.4rem;
       cursor: pointer;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: 0.4s;
-      border-radius: 34px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 6px;
-      border: 1px solid rgba(0,0,0,0.1);
+      justify-content: center;
+      transition: color 0.3s, transform 0.2s;
     }
 
-    .slider .icon {
-      font-size: 14px;
-      user-select: none;
+    body.dark-mode .back-btn {
+      color: var(--gold-primary);
     }
 
-    .slider:before {
-      background-color: #fff;
-      bottom: 3px;
-      content: "";
-      height: 22px;
-      left: 3px;
-      position: absolute;
-      transition: 0.4s;
-      width: 22px;
-      border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    input:checked + .slider {
-      background-color: var(--navy-primary);
-      border-color: var(--gold-primary);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(30px);
-      background-color: var(--gold-primary);
+    .back-btn:hover {
+      transform: translateX(-3px);
+      color: var(--gold-dark);
     }
 
     /* المحتوى الرئيسي */
     .content {
-      padding: 95px 15px 30px;
+      padding: 95px 15px 100px;
       max-width: 1000px;
       margin: auto;
+      position: relative;
+      z-index: 1;
     }
 
     h2 {
@@ -178,6 +187,7 @@
       font-size: 1.4rem;
       font-weight: 800;
       color: var(--navy-primary);
+      transition: color 0.4s ease;
     }
 
     body.dark-mode h2 {
@@ -201,7 +211,7 @@
       text-align: center;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
       backdrop-filter: blur(8px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease, border-color 0.4s ease;
       display: flex;
       flex-direction: column;
     }
@@ -217,7 +227,6 @@
       box-shadow: 0 15px 30px rgba(212, 175, 55, 0.2);
     }
 
-    /* ضبط تحسين دقة ووضوح الصور */
     .button-card img {
       width: 100%;
       height: 160px;
@@ -251,50 +260,137 @@
       transform: scale(1.02);
     }
 
-    /* تحسينات خاصة بالموبايل لضمان ووضوح الصور والشاشات */
+    /* الزر العائم في أسفل اليمين */
+    .floating-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
+      color: var(--gold-primary);
+      border: 1.5px solid var(--gold-primary);
+      border-radius: 50px;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Tajawal', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      transition: all 0.3s ease;
+    }
+
+    .floating-btn:hover {
+      background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+      color: #ffffff;
+      border-color: transparent;
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.4);
+    }
+
+    .floating-btn .plus-icon {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    /* تحسينات خاصة بالموبايل */
     @media (max-width: 600px) {
       .top-navbar {
-        padding: 0 15px;
+        padding: 0 12px;
       }
+      .site-title { font-size: 0.95rem; }
 
-      .site-title {
-        font-size: 0.95rem;
-      }
 
       .content {
         padding-top: 85px;
+        padding-bottom: 110px;
       }
 
       .button-card {
         max-width: 100%;
       }
 
-      /* إظهار الصور بدون أي قص أو مط على الموبايل */
       .button-card img {
         height: 140px;
         object-fit: contain;
         background-color: rgba(0, 0, 0, 0.02);
       }
+
+      .floating-btn {
+        bottom: 20px;
+        right: 15px;
+        padding: 10px 16px;
+        font-size: 0.85rem;
+      }
     }
+    
+    /* خلفية الصلبان المتحركة */
+    .crosses-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-cross {
+      position: absolute;
+      bottom: -100px;
+      color: var(--gold-primary);
+      opacity: 0.15;
+      user-select: none;
+      animation: floatUp 15s linear infinite;
+    }
+
+    body.dark-mode .floating-cross {
+      opacity: 0.25;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      90% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
   </style>
 </head>
 <body>
 
+  <!-- حاوية أشكال الصلبان المتحركة -->
+  <div id="stars-container"></div>
+
+  <!-- الشريط العلوي -->
   <div class="top-navbar">
     <div class="navbar-left">
       <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
-      <span class="site-title">كنيسة مارمينا والأنبا توماس و البابا كيرلس السادس</span>
+      <span class="site-title">كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</span>
     </div>
 
-    <!-- زر تبديل الوضع الداكن المطور -->
-    <div class="theme-switch-wrapper">
-      <label class="theme-switch" for="darkModeToggle">
-        <input type="checkbox" id="darkModeToggle" />
-        
-      </label>
+    <div class="navbar-right">
+      <!-- زر الرجوع -->
+      <button class="back-btn" onclick="goBack()" title="رجوع">←</button>
     </div>
   </div>
 
+  <!-- المحتوى الرئيسي -->
   <div class="content">
     <h2>الخولاجي</h2>
     <div class="buttons-list">
@@ -317,29 +413,71 @@
     </div>
   </div>
 
-  <script>
-    const root = document.body;
-    const darkModeToggle = document.getElementById("darkModeToggle");
+  <!-- الزر العائم -->
+  <button class="floating-btn" onclick="location.href='tawzea.html'">
+    <span class="plus-icon">+</span>
+    <span>التوزيع + صلوات القسمة + صلوات التناول</span>
+  </button>
 
-    // زر التبديل للوضع الداكن
-    darkModeToggle.addEventListener("change", () => {
-      const enabled = darkModeToggle.checked;
-      if (enabled) {
-        root.classList.add("dark-mode");
-        localStorage.setItem("darkMode", "on");
+  <script>
+    // جلب وتطبيق حالة الوضع الداكن المخزنة
+    function applySavedTheme() {
+      const savedMode = localStorage.getItem("darkMode");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      if (savedMode === "on" || (!savedMode && prefersDark)) {
+        document.body.classList.add("dark-mode");
       } else {
-        root.classList.remove("dark-mode");
-        localStorage.setItem("darkMode", "off");
+        document.body.classList.remove("dark-mode");
+      }
+    }
+
+    // التنقل الآمن للرجوع
+    function goBack() {
+      if (document.referrer && document.referrer !== "") {
+        history.back();
+      } else {
+        location.href = "index.html";
+      }
+    }
+
+    // توليد خلفية الصلبان المضيئة المتحركة
+    function createCrosses() {
+      const container = document.getElementById('stars-container');
+      if (!container) return;
+
+      const count = 20;
+
+      for (let i = 0; i < count; i++) {
+        const cross = document.createElement('div');
+        cross.classList.add('cross');
+        cross.innerText = '✟';
+
+        const size = Math.random() * 14 + 12;
+        const posX = Math.random() * 100;
+        const duration = Math.random() * 10 + 8;
+        const delay = Math.random() * 5;
+
+        cross.style.setProperty('--size', `${size}px`);
+        cross.style.setProperty('--duration', `${duration}s`);
+        cross.style.setProperty('--delay', `${delay}s`);
+        cross.style.left = `${posX}%`;
+
+        container.appendChild(cross);
+      }
+    }
+
+    // الاستماع للتغيرات الحاصلة في local storage من صفحات أخرى
+    window.addEventListener("storage", (e) => {
+      if (e.key === "darkMode") {
+        applySavedTheme();
       }
     });
 
     document.addEventListener("DOMContentLoaded", () => {
-      // فحص الوضع الداكن المحفوظ
-      if (localStorage.getItem("darkMode") === "on") {
-        root.classList.add("dark-mode");
-        darkModeToggle.checked = true;
-      }
-      root.classList.add("visible");
+      applySavedTheme();
+      document.body.classList.add('visible');
+      createCrosses();
     });
   </script>
 </body>
