@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>التوزيع والصلوات</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-light: #f8fafc;
+      --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
+      --text-light: #1e293b;
+      
+      --bg-dark: #0f172a;
+      --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
+      --text-dark: #f8fafc;
+
+      --gold-primary: #d4af37;
+      --gold-dark: #b8860b;
+      --navy-primary: #1a2a40;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+      background: var(--bg-gradient-light);
+      background-attachment: fixed;
+      color: var(--text-light);
+      transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease;
+      opacity: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body.visible {
+      opacity: 1;
+    }
+
+    body.dark-mode {
+      background: var(--bg-gradient-dark);
+      background-attachment: fixed;
+      color: var(--text-dark);
+    }
+
+    /* خلفية الصلبان المتحركة */
+    .crosses-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-cross {
+      position: absolute;
+      bottom: -100px;
+      color: var(--gold-primary);
+      opacity: 0.15;
+      user-select: none;
+      animation: floatUp 15s linear infinite;
+    }
+
+    body.dark-mode .floating-cross {
+      opacity: 0.25;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      90% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* الشريط العلوي */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      height: 65px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+
+    body.dark-mode .top-navbar {
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--navy-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s, transform 0.2s;
+    }
+
+    .back-btn:hover {
+      transform: translateX(3px);
+    }
+
+    body.dark-mode .back-btn {
+      color: var(--gold-primary);
+    }
+
+    .site-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--navy-primary);
+      transition: color 0.4s;
+    }
+
+    body.dark-mode .site-title {
+      color: var(--gold-primary);
+    }
+
+    /* زر التبديل للوضع الداكن */
+    .theme-switch-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-switch {
+      display: inline-block;
+      height: 30px;
+      position: relative;
+      width: 60px;
+    }
+
+    .theme-switch input {
+      display: none;
+    }
+
+    .slider {
+      background-color: #cbd5e1;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: 0.4s;
+      border-radius: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .slider .icon {
+      font-size: 14px;
+      user-select: none;
+    }
+
+    .slider:before {
+      background-color: #fff;
+      bottom: 3px;
+      content: "";
+      height: 22px;
+      left: 3px;
+      position: absolute;
+      transition: 0.4s;
+      width: 22px;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: var(--navy-primary);
+      border-color: var(--gold-primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(30px);
+      background-color: var(--gold-primary);
+    }
+
+    /* المحتوى الرئيسي */
+    .content {
+      padding: 110px 20px 40px;
+      max-width: 600px;
+      margin: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+    }
+
+    body.dark-mode h2 {
+      color: var(--gold-primary);
+    }
+
+    /* قائمة الأزرار المباشرة (بدون كروت) */
+    .nav-buttons-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--navy-primary);
+      border: 1.5px solid var(--gold-primary);
+      border-radius: 16px;
+      padding: 18px 24px;
+      font-size: 1.15rem;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+    }
+
+    body.dark-mode .nav-btn {
+      background: rgba(30, 41, 59, 0.75);
+      color: var(--gold-primary);
+      border-color: rgba(212, 175, 55, 0.4);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-btn .btn-text {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn .cross-icon {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .nav-btn .arrow {
+      font-size: 1.1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
+      color: var(--gold-primary);
+      border-color: var(--gold-primary);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
+    }
+
+    .nav-btn:hover .arrow {
+      transform: translateX(-5px);
+    }
+
+    @media (max-width: 600px) {
+      .top-navbar {
+        padding: 0 15px;
+      }
+
+      .site-title {
+        font-size: 0.95rem;
+      }
+
+      .content {
+        padding-top: 95px;
+      }
+
+      .nav-btn {
+        padding: 15px 20px;
+        font-size: 1.05rem;
+      }
+    }
+
+    
+    /* الشريط العلوي */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      height: 65px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar-left img {
+      height: 42px;
+      width: 42px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+    }
+
+    .site-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--navy-primary);
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--navy-primary);
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s, transform 0.2s;
+    }
+
+    .back-btn:hover {
+      transform: translateX(-3px);
+      color: var(--gold-dark);
+    }
+  </style>
+</head>
+<body>
+
+    
+  <!-- الشريط العلوي -->
+  <div class="top-navbar">
+    <div class="navbar-left">
+      <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
+      <span class="site-title">كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</span>
+    </div>
+
+    <div class="navbar-right">
+      <!-- زر الرجوع -->
+      <button class="back-btn" onclick="history.back()" title="رجوع">←</button>
+    </div>
+  </div>
+
+  <!-- حاوية الصلبان المتحركة في الخلفية -->
+  <div class="crosses-container" id="crossesContainer"></div>
+
+  
+
+    <div class="theme-switch-wrapper">
+      <label class="theme-switch" for="darkModeToggle">
+        <input type="checkbox" id="darkModeToggle" />
+       
+      </label>
+    </div>
+  </div>
+
+  <!-- المحتوى الرئيسي (أزرار مباشرة بدون كروت) -->
+  <div class="content">
+    <h2>اختر قسم الصلوات</h2>
+    <div class="nav-buttons-list">
+      
+      <button class="nav-btn" onclick="location.href='tawzea_details.html'">
+        <span class="btn-text">
+          <span class="cross-icon">☦</span>
+          <span>التوزيع</span>
+        </span>
+        <span class="arrow">◀</span>
+      </button>
+
+      <button class="nav-btn" onclick="location.href='kesma.html'">
+        <span class="btn-text">
+          <span class="cross-icon">☦</span>
+          <span>صلوات القسمة</span>
+        </span>
+        <span class="arrow">◀</span>
+      </button>
+
+      <button class="nav-btn" onclick="location.href='tanawul.html'">
+        <span class="btn-text">
+          <span class="cross-icon">☦</span>
+          <span>التناول</span>
+        </span>
+        <span class="arrow">◀</span>
+      </button>
+
+    </div>
+  </div>
+
+  <script>
+    const root = document.body;
+    const darkModeToggle = document.getElementById("darkModeToggle");
+
+    // إدارة الوضع الداكن
+    darkModeToggle.addEventListener("change", () => {
+      const enabled = darkModeToggle.checked;
+      if (enabled) {
+        root.classList.add("dark-mode");
+        localStorage.setItem("darkMode", "on");
+      } else {
+        root.classList.remove("dark-mode");
+        localStorage.setItem("darkMode", "off");
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("darkMode") === "on") {
+        root.classList.add("dark-mode");
+        darkModeToggle.checked = true;
+      }
+      root.classList.add("visible");
+      
+      // توليد الصلبان المتحركة في الخلفية
+      createFloatingCrosses();
+    });
+
+    // دالة إنشاء الصلبان المتحركة
+    function createFloatingCrosses() {
+      const container = document.getElementById("crossesContainer");
+      const crossCount = 14; // عدد الصلبان المتحركة
+
+      for (let i = 0; i < crossCount; i++) {
+        const cross = document.createElement("div");
+        cross.className = "floating-cross";
+        cross.innerText = "☦";
+        
+        // خصائص عشوائية للحركة والأحجام
+        const size = Math.random() * 26 + 18; // حجم بين 18px و 44px
+        const left = Math.random() * 100; // موقع أفقياً %
+        const duration = Math.random() * 12 + 10; // سرعة الصعود (10s - 22s)
+        const delay = Math.random() * 10; // تأخير البدء
+        const opacity = Math.random() * 0.2 + 0.1; // درجة الشفافية
+
+        cross.style.fontSize = `${size}px`;
+        cross.style.left = `${left}%`;
+        cross.style.animationDuration = `${duration}s`;
+        cross.style.animationDelay = `${delay}s`;
+        cross.style.setProperty('--cross-opacity', opacity);
+
+        container.appendChild(cross);
+      }
+    }
+  </script>
+</body>
+</html>
