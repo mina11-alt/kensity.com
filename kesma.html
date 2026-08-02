@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>صلوات القسمة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-light: #f8fafc;
+      --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
+      --text-light: #1e293b;
+      
+      --bg-dark: #0f172a;
+      --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
+      --text-dark: #f8fafc;
+
+      --gold-primary: #d4af37;
+      --gold-dark: #b8860b;
+      --navy-primary: #1a2a40;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+      background: var(--bg-gradient-light);
+      background-attachment: fixed;
+      color: var(--text-light);
+      transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease;
+      opacity: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body.visible {
+      opacity: 1;
+    }
+
+    body.dark-mode {
+      background: var(--bg-gradient-dark);
+      background-attachment: fixed;
+      color: var(--text-dark);
+    }
+
+    /* خلفية الصلبان المتحركة */
+    .crosses-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-cross {
+      position: absolute;
+      bottom: -100px;
+      color: var(--gold-primary);
+      opacity: 0.15;
+      user-select: none;
+      animation: floatUp 15s linear infinite;
+    }
+
+    body.dark-mode .floating-cross {
+      opacity: 0.25;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      90% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      100% {
+        transform: translateY(-110vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* الشريط العلوي */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      height: 65px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: background 0.4s ease, border-color 0.4s ease;
+    }
+
+    body.dark-mode .top-navbar {
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--navy-primary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s, transform 0.2s;
+    }
+
+    .back-btn:hover {
+      transform: translateX(3px);
+    }
+
+    body.dark-mode .back-btn {
+      color: var(--gold-primary);
+    }
+
+    .site-title {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--navy-primary);
+      transition: color 0.4s;
+    }
+
+    body.dark-mode .site-title {
+      color: var(--gold-primary);
+    }
+
+    .theme-switch-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-switch {
+      display: inline-block;
+      height: 30px;
+      position: relative;
+      width: 60px;
+    }
+
+    .theme-switch input {
+      display: none;
+    }
+
+    .slider {
+      background-color: #cbd5e1;
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: 0.4s;
+      border-radius: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+      border: 1px solid rgba(0,0,0,0.1);
+    }
+
+    .slider:before {
+      background-color: #fff;
+      bottom: 3px;
+      content: "";
+      height: 22px;
+      left: 3px;
+      position: absolute;
+      transition: 0.4s;
+      width: 22px;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+    input:checked + .slider {
+      background-color: var(--navy-primary);
+      border-color: var(--gold-primary);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(30px);
+      background-color: var(--gold-primary);
+    }
+
+    /* المحتوى الرئيسي */
+    .content {
+      padding: 110px 20px 40px;
+      max-width: 650px;
+      margin: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+    }
+
+    body.dark-mode h2 {
+      color: var(--gold-primary);
+    }
+
+    /* الأزرار الرئيسية */
+    .nav-buttons-list {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--navy-primary);
+      border: 1.5px solid var(--gold-primary);
+      border-radius: 16px;
+      padding: 18px 24px;
+      font-size: 1.15rem;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+      text-align: right;
+    }
+
+    body.dark-mode .nav-btn {
+      background: rgba(30, 41, 59, 0.75);
+      color: var(--gold-primary);
+      border-color: rgba(212, 175, 55, 0.4);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-btn .btn-text {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-btn .cross-icon {
+      font-size: 1.2rem;
+      opacity: 0.8;
+    }
+
+    .nav-btn .arrow {
+      font-size: 1.1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-btn:hover {
+      background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
+      color: var(--gold-primary);
+      border-color: var(--gold-primary);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
+    }
+
+    .nav-btn:hover .arrow {
+      transform: translateX(-5px);
+    }
+
+    /* حاويات نصوص الصلوات */
+    .prayer-content {
+      display: none;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--gold-primary);
+      border-radius: 20px;
+      padding: 25px;
+      margin-top: 10px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      animation: fadeIn 0.4s ease;
+    }
+
+    body.dark-mode .prayer-content {
+      background: rgba(30, 41, 59, 0.85);
+      border-color: rgba(212, 175, 55, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .prayer-title {
+      font-size: 1.3rem;
+      color: var(--gold-dark);
+      margin-bottom: 20px;
+      text-align: center;
+      border-bottom: 1px dashed var(--gold-primary);
+      padding-bottom: 10px;
+    }
+
+    body.dark-mode .prayer-title {
+      color: var(--gold-primary);
+    }
+
+    .prayer-text {
+      font-size: 1.05rem;
+      line-height: 1.9;
+      font-weight: 700;
+      color: var(--navy-primary);
+      text-align: justify;
+    }
+
+    body.dark-mode .prayer-text {
+      color: #f1f5f9;
+    }
+
+    .close-prayer-btn {
+      background: var(--navy-primary);
+      color: var(--gold-primary);
+      border: 1px solid var(--gold-primary);
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-family: 'Tajawal', sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      display: block;
+      margin: 25px auto 0;
+      transition: all 0.3s;
+    }
+
+    .close-prayer-btn:hover {
+      background: var(--gold-primary);
+      color: #fff;
+    }
+
+    @media (max-width: 600px) {
+      .top-navbar { padding: 0 15px; }
+      .site-title { font-size: 0.95rem; }
+      .content { padding-top: 95px; }
+      .nav-btn { padding: 15px 20px; font-size: 1.05rem; }
+      .prayer-text { font-size: 1rem; }
+    }
+     /* الشريط العلوي */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+      height: 65px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .navbar-left img {
+      height: 42px;
+      width: 42px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+    }
+
+    .site-title {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--navy-primary);
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: var(--navy-primary);
+      font-size: 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s, transform 0.2s;
+    }
+
+    .back-btn:hover {
+      transform: translateX(-3px);
+      color: var(--gold-dark);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- حاوية الصلبان المتحركة -->
+  <div class="crosses-container" id="crossesContainer"></div>
+
+  <!-- الشريط العلوي -->
+<div class="top-navbar">
+    <div class="navbar-left">
+      <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
+      <span class="site-title">كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</span>
+    </div>
+
+    <div class="navbar-right">
+      <!-- زر الرجوع -->
+      <button class="back-btn" onclick="history.back()" title="رجوع">←</button>
+    </div>
+  </div>
+<div class="theme-switch-wrapper">
+      <label class="theme-switch" for="darkModeToggle">
+        <input type="checkbox" id="darkModeToggle" />
+       
+      </label>
+    </div>
+  </div>
+
+  <!-- المحتوى الرئيسي -->
+  <div class="content">
+    
+    <!-- قائمة الخيارات الرئيسية -->
+    <div id="mainOptions">
+      <h2>اختر صلاة القسمة</h2>
+      <div class="nav-buttons-list">
+        
+        <button class="nav-btn" onclick="showPrayer('قسمة أيها السيد الرب')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>قسمة أيها السيد الرب</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+
+        <button class="nav-btn" onclick="showPrayer('القسمة الوجيزة')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>القسمة الوجيزة</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+
+        <button class="nav-btn" onclick="showPrayer('قسمة ما أبعد أحكامك')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>قسمة ما أبعد أحكامك</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+
+        <button class="nav-btn" onclick="showPrayer('قسمة أعياد الملائكة والعذراء وسنوي')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>قسمة أعياد الملائكة والسيدة العذراء وسنوي</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+
+        <button class="nav-btn" onclick="showPrayer('قسمة للآب في صوم الميلاد وسنوي')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>قسمة للآب في صوم الميلاد وعيد الميلاد وسنوي</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+
+        <button class="nav-btn" onclick="showPrayer('قسمة للابن الأعياد السيدية وسنوي')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>قسمة للابن تقال في الأعياد السيدية وسنوي</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+
+        <button class="nav-btn" onclick="showPrayer('قسمة صوم وأعياد العذراء')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>صوم وأعياد القديسة العذراء مريم</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+
+        <button class="nav-btn" onclick="showPrayer('تذكار البشارة والميلاد والقيامة')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>تذكار البشارة والميلاد والقيامة (29 من الشهر)</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- 1. قسمة أيها السيد الرب -->
+    <div id="prayer-قسمة أيها السيد الرب" class="prayer-content">
+      <h3 class="prayer-title">قسمة أيها السيد الرب</h3>
+      <div class="prayer-text">
+        أيها السيد الرب إلهنا العظيم الأبدي والمتعجب منه بالمجد، حافظ عهده ورحمته للذين يحبونه بكل قلبهم، الذي أعطانا الخلاص من خطايانا بابنه الوحيد الجنس يسوع المسيح ربنا، حياة كل أحد، يا معين الملتجئين إليه ورجاء الذين يصرخون نحوه.<br><br>
+        الذي يقف أمامه ألوف ألوف وربوات ربوات الملائكة ورؤساء الملائكة المقدسون، الشاروبيم والسيرافيم وكل الجمع غير المحصي الذي للقوات السماوية.<br><br>
+        يا الله الذي قدس هذه القرابين الموضوعة بحلول روحك القدوس عليها وطهرتها، طهرنا نحن أيضاً يا سيدنا من خطايانا الخفية والظاهرة، وكل فكر لا يرضي صلاحك يا الله محب البشر فليبعد عنا.<br><br>
+        طهر نفوسنا وأجسادنا وأرواحنا وقلوبنا وعيوننا وأفهامنا وأفكارنا ونياتنا، لكي بقلب طاهر ونفس مستنيرة ووجه غير مخزي وإيمان بلا رياء ومحبة كاملة ورجاء ثابت، نجسر بدالة بغير خوف أن نطلب إليك يا الله الآب القدوس الذي في السماوات ونقول: أبانا الذي في السماوات...
+      </div>
+      <button class="close-prayer-btn" onclick="hidePrayers()">الرجوع للقائمة</button>
+    </div>
+
+    <!-- 2. القسمة الوجيزة -->
+    <div id="prayer-القسمة الوجيزة" class="prayer-content">
+      <h3 class="prayer-title">القسمة الوجيزة</h3>
+      <div class="prayer-text">
+        يا الله الذي أنعم علينا نحن الخطاة بميقات الخلاص وذبيحة ناطقة سماوية، التي هي الجسد الإلهي والدم الكريم اللذان لمسيحك. هذا الذي صار لنا طهراً وخلاصاً ونعمة وغفراناً للخطايا. لكي بشكر نصرخ نحوك أيها الآب القدوس الذي في السماوات ونقول: أبانا الذي في السماوات...
+      </div>
+      <button class="close-prayer-btn" onclick="hidePrayers()">الرجوع للقائمة</button>
+    </div>
+
+    <!-- 3. قسمة ما أبعد أحكامك -->
+    <div id="prayer-قسمة ما أبعد أحكامك" class="prayer-content">
+      <h3 class="prayer-title">قسمة ما أبعد أحكامك</h3>
+      <div class="prayer-text">
+        ما أبعد أحكامك عن الفحص وطرقك عن الاستقصاء! كما بعدت السماوات عن الأرض كذلك أيضاً بعدت أفكارك عن بني البشر. إذ أخفيت هذه عن الحكماء والفهماء وأعلنتها للأطفال الصغار. نعم أيها الآب هكذا صارت المسرة أمامك، اخترت جهلاء العالم لتخزي بهم الحكماء، واخترت ضعفاء العالم لتخزي بهم الأقوياء.<br><br>
+        اخترت بطرس هذا وكان صياداً للسمك فصيرته صياداً للناس: «أنت بطرس وعلى هذه الصخرة أبني كنيستي وأبواب الجحيم لن تقوى عليها». هذا الذي عندما سألت تلاميذك الأطهار قائلاً: «من يقول الناس إني أنا؟» صرخ قائلاً: «أنت هو المسيح ابن الله الحي مخلص العالم». طوباك يا بطرس فإن دماً ولحماً لم يعلن لك ذلك لكن روح الله الحال فيك. والذي أنكرك أمام الجارية اعترف بك أمام الملوك والولاة.<br><br>
+        أما بولس هذا الذي ظل طارداً زمناً طويلاً صيرته إناءً مختاراً يحمل اسمك القدوس. فيما هو ذاهب إلى دمشق ليقبض على المسيحيين ويعذبهم، أشرق نور من السماء حوله وسمع صوتاً يقول له: «شاول شاول لماذا تضطهدني؟ صعب عليك أن ترفس مناخس». لسان العطر هذا الذي كرز وبشر وعلم وأسس كنيستك المقدسة.<br><br>
+        وفي آخر الكل أنعمت على رسوليك بطرس وبولس بما لم تره عين وما لم تسمع به أذن وما لم يخطر على قلب بشر. فاستشهد بطرس مصلوباً منكساً الرأس، وبولس بحد السيف، فنالا إكليل الرسولية وإكليل الشهادة.<br><br>
+        يا الله الذي أنعم على رسوليه بتلك النعمة الجزيلة، انعم علينا نحن الخطاة بغفران خطايانا وذنوبنا وآثامنا لكي ندعوك بشكر: أبانا الذي في السماوات...
+      </div>
+      <button class="close-prayer-btn" onclick="hidePrayers()">الرجوع للقائمة</button>
+    </div>
+
+    <!-- 4. قسمة أعياد الملائكة والعذراء وسنوي -->
+    <div id="prayer-قسمة أعياد الملائكة والعذراء وسنوي" class="prayer-content">
+      <h3 class="prayer-title">قسمة أعياد الملائكة والسيدة العذراء وسنوي</h3>
+      <div class="prayer-text">
+        هوذا كائن معنا على هذه المائدة اليوم عمانوئيل إلهنا، حمل الله الذي يحمل خطية العالم كله، الجالس على كرسي مجده، الذي يقف أمامه جميع الطغمات السماوية، الذي تسبحه الملائكة بأصوات البركة، ويخر ويسجد له رؤساء الملائكة. الأربعة كائنات غير المتجسدين يقولون تسبحة الثلاثة تقديسات. والأربعة والعشرون قسيساً جلوس على كراسيهم، وأربعة وعشرون إكليل ذهب على رؤوسهم، وأربعة وعشرون جاماً من ذهب في أيديهم مملوءة بخوراً الذي هو صلوات القديسين، ويسجدون أمام الحي إلى أبد الآبدين. والمائة وأربعة وأربعون ألفاً البتوليون غير الدنسين يسبحون الرب قائلين: قدوس قدوس قدوس آمين الليلويا.<br><br>
+        باسم الآب والابن والروح القدس الإله الواحد آمين الليلويا. ونحن أيضاً نسجد للثالوث القدوس ونسبحه قائلين: قدوس الله الآب ضابط الكل آمين الليلويا. قدوس ابنه الوحيد يسوع المسيح ربنا آمين الليلويا. قدوس الروح القدس الباراقليط آمين الليلويا.<br><br>
+        مقدسة ومملوءة مجداً والدة الإله الطاهرة القديسة مريم العذراء آمين الليلويا. مقدسة ومملوءة مجداً هذه الذبيحة التي ذبحت عن حياة العالم كله آمين الليلويا.<br><br>
+        من أجل هذا صرخ مخلصنا الصالح قائلاً: «إن جسدي هو مأكل حق ودمي هو مشرب حق، من يأكل جسدي ويشرب دمي يكون فيّ وأنا أيضاً أكون فيه».<br><br>
+        نسألك يا سيدنا طهر نفوسنا وأجسادنا وأرواحنا، لكي بقلب طاهر وشفتين نقيتين ونفس مستنيرة ووجه غير مخزي، وإيمان بلا رياء ونية نقية وصبر كامل ورجاء ثابت، نجسر بدالة بغير خوف أن نطلب إليك أيها الآب القدوس الذي في السماوات ونقول: أبانا الذي في السماوات...
+      </div>
+      <button class="close-prayer-btn" onclick="hidePrayers()">الرجوع للقائمة</button>
+    </div>
+
+    <!-- 5. قسمة للآب في صوم الميلاد وعيد الميلاد وسنوي -->
+    <div id="prayer-قسمة للآب في صوم الميلاد وسنوي" class="prayer-content">
+      <h3 class="prayer-title">قسمة للآب في صوم الميلاد وعيد الميلاد وسنوي</h3>
+      <div class="prayer-text">
+أيها السيد الرب إلهنا، الخالق غير المرئى غير المحوى، غير المستحيل، غير المفحوص. الذى أرسل نوره الحقيقى إبنه الوحيــد يسوع المسيح الكلمة الذاتى. الكائن فى حضنه الأبوى كل حين، أتى وحلَّ فى الحشاء البتولى غير الدنس، ولدته وهى عــذراء وبتوليتها مختومة. إذ الملائكة تسبحه وأجنـــاد السموات ترتل له صارخين قائلين: قدوس قدوس قدوس رب الجنودالسماء <br><br>
+ والأرض مملوءتان من مجدك المقدس. هكذا أيضاً نحن الضعفاء إجعلنا مستحقين معهم يا سيدنا الصالح محب البشر، لكى بقلب طاهر نسبحك معه مع الروح القدس الثالوث القدوس المساوى، ونرفـــع أعيننا إلى فوق إليك أيها الآب القدوس الذى فى السموات ونقول: آبانا الذى فى السموات.... <br><br>
+
+      </div>
+
+      <button class="close-prayer-btn" onclick="hidePrayers()">الرجوع للقائمة</button>
+    </div>
+
+    <!-- 6. قسمة للابن تقال في الأعياد السيدية وسنوي -->
+    <div id="prayer-قسمة للابن الأعياد السيدية وسنوي" class="prayer-content">
+      <h3 class="prayer-title">قسمة للابن تقال في الأعياد السيدية وسنوي</h3>
+      <div class="prayer-text">
+        نسبح ونمجد إله الآلهة ورب الأرباب، الذى تجسد من القديسة مريم، ولدته فى بيت لحم . وإذا ملاك الرب قد ظهر للرعـــاة وبشـــرهم بميلاده العجيب فأتوا ونظروه. الذى رأى المجوس نجمه فأتوا وسجدوا له وقدموا هدايا. الذى أتى إلى أرض مصر ثم عاد وســكن فى ناصـرة الجليل. الذى نما قليلاً قليلاً بشبه البشر بغير خطية وحده. الذى أتى إلى الأردن وإعتمد من يوحنا السابق . الذى صام عنا أربعين يوماً وأربعين ليلة بسـر لا يُنطق به . الذى<br><br>
+         صيَّر الماء خمراً بقوة لاهوته فى عُرس قانا الجليل. الذى أعطى النظر للعميان وجعل العُرج يمشون  والشُّـل يصِحُــون والبرص يطهرون، والصم يسمعون، والخرس يتكلمون، والشياطين يخرجون. الذى أقام ابن الأرملة بنايين وابنة يايروس  الذى تجلى على جبـل  طابور قـدام تلاميذه القديسين وأضاء وجهه كالشمس. الذى أقام لعازر من القبر بعد أربعة أيام. الذى دخل أورشليم راكباً على أتان وجحش ابن أتان مثل ملك. الذى عاهد تلاميذه القديسين وأعطاهم جسده<br><br>
+         المقدس ودمه الكريم لغفران خطايانا. الذى صُلِبَ على الصليب وسحق الشيطان ووضِعَ فى القبر وبعد ثلاثة أيام قام من الأموات. الذى رآه تلاميذه المختارون على بحر طبرية بعد قيــامته المقدسة، وبعد أربعين يوماً صعد إلى السموات وجلس عن يمــين أبيـه الصالح وأرسل لنا الروح المعزى مثل ألسنة نار. الذى علَّم تلاميذه المختارين والرسل القديسين قائلاً لهم: متى صليتم فأطلبوا هكذا وقولوا أبانا الذى ....<br><br>
+
+      </div>
+      <button class="close-prayer-btn" onclick="hidePrayers()">الرجوع للقائمة</button>
+    </div>
+
+    <!-- 7. صوم وأعياد القديسة العذراء مريم -->
+    <div id="prayer-قسمة صوم وأعياد العذراء" class="prayer-content">
+      <h3 class="prayer-title">صوم وأعياد القديسة العذراء مريم</h3>
+      <div class="prayer-text">
+        يا الله الساكن في الأعالي والناظر من علو سماه إلى قلوب المتواضعين من عبيده، الذي شاء أن يفتقدنا برحمته وأن يجيئ إلينا متجسداً من الروح القدس ومن القديسة العذراء مريم. يا من وعد أبانا آدم بالخلاص وثبت وعده المقدس لجميع الآباء بميلاده البتولي في ملئ الزمان من بكر بتول نقية وعفيفة قدسها وطهرها وملأها نعمة وفضها على نساء العالم. هي العذراء الدائمة البتولية العذراء كل حين مريم – حواء الجديدة فخر جنسنا والسماء<br><br>
+         الثانية الجسدانية. يا من أحبنا وأراد من فيض حبه ورحمته ومن دلائل عدله وبره وثبوت حكمه وقضائه أن يفدينا من موت الخطية الأصلية ويرغ عنا عقوبتها الأبدية بأن يموت بدلاً عنا في جنس البشرية الذي أخذه من العذراء مريم أم الخلاص وكما كانت حواء الأولي أصل البلاء، هكذا صارت حواء الجديدة باب السماء. يا من تجسد من البكر البتول، وأكرم بميلاده من العذراء دائماً وكل حين البتولية الدائمة والعفة الكاملة وهي صورة البهاء الأولية التي خلق الله بها الأبوين الأولين أدم وحواء<br><br>
+  عندما كانا معاً في فردوس النعيم. يا من شرف حواء الثانية بان سكن في أحشائها تسعة أسهر كاملة وكون منها بالروح القدس الذي حل عليها جسداً بنفس بشرية إتحد به في أقنوم واحد وطبيعة واحدة وولد منها الكلمة الذي كان ولم يزل إلهاً مباركاً إلى الأبد. يا من خرج من بطن العذراء وختوم البتولية مختومة يا من رضع من لبن العذراء وهو الساقي الخليقة من نعمته وتربي في حضنها ونام بين يديها وجلس على ركبتيها وهو الجالس على مركبة شاروبيمية وسجدت له<br><br>
+  الملائكة ورؤساء الملائكة الأطهار. يا من شرف مصر بحضوره راكباً على السحابة السريعة والخفيفة فإرتجت اوثان مصر من وجهه وذاب قلب مصر في داخلها ولم تكن السحابة السريعة الخفيفة إلا العذراء مريم في نقاءها ورقتها وطهارتها كل حين. يا من شاء ان يكرم الأمومة في مريم العذراء وكان خاضعاً لها ودائماً يلبي ندائها ويقبل شفاعتها ويستجيب صلواتها. يا من أودع أمه العذراء عند تلميذه يوحنا وجعل لها يوحنا إبنا. وفي يوحنا وهبنا العذراء اما لنا وجعلنا لها بالإيمان أولاداً<br><br>
+  وبنيناً. يا من لم يشأ للعذراء أم الخلاص وقد صارت تابوتاً مقدساً سكن فيه الرب جسدياً أن يبقي هذا الجسد على الأرض فرفعه بعد موتها إلى السماء على أيدي الملائكة ورؤساء الملائكة القديسين. يا من شرفنا وشرف جنسنا بأن إتخذ من العذراء مريم جسداً وصعد به إلى السماء فوجد فداءاً أبدياً وجلس به على العرش فصرنا فيه جالسين عن يمين الآب. يا الله الرحوم إرحمنا وإغفر خطايانا وإقبل شفاعة أمك العهذراء فينا وأجعلنا مستحقين للمس جسدك المقدس ودمك<br><br>
+  الكريم لكي بقلب طاهر ونفس مستنيرة ووجه غير مخزي وإيمان بلا رياء ومحبة كاملة ورجاء ثابت نصرخ نحو أبيك القدوس الذي في السموات ونصلي بشكر: أبانا الذي في…. <br><br>
+  
+        </div>
+      <button class="close-prayer-btn" onclick="hidePrayers()">الرجوع للقائمة</button>
+    </div>
+
+    <!-- 8. تذكار البشارة والميلاد والقيامة -->
+    <div id="prayer-تذكار البشارة والميلاد والقيامة" class="prayer-content">
+      <h3 class="prayer-title">تذكار البشارة والميلاد والقيامة (29 من كل شهر قبطي)</h3>
+      <div class="prayer-text">
+        نسبح ونمجد إله الآلهة ورب الأرباب، الذي تجسد من القديسة مريم، ولدته في بيت لحم.نسر بالتماجيد الروحية والتراتيل السماوية لأن الرب أرسل جبرائيل الملاك مبشراً سيدتنا كلنا مريم العذراء بتجسد كلمة الآب الأزلي الذي هو مخلصنا يسوع المسيح. جبرئيل الملاك بشر العذراء مريم وبعد أن منحها السلام ثبتها بهذا الكلام قائلاً: لا تخافي يا مريم لأنك قد وجدت نعمة أمام الله<br><br>
+         وستلدين إبناً وتسميه يسوع والقدوس المولود منك يدعي إبن الله. هذا هو مخلصنا المسيح ابن الله المولود منه قبل كل الدهور الكائن معه والمساوي له في الأزلية والألوهية الذي ولد من مريم وهي عذراء بأمر عجيب. الرب الإله الذي على الكل، المبارك إلى الأبد، الغير متجسد قي تجسد وولد من العذراء ولفته بالخرق ووضعته في المزود وعساكر السماوات ترتل له صارخين المجد لله في الأعالي وعلى الأرض السلام وبالناس المسرة. الذي نما قليلاً قليلاً بشبه البشر بغير خطية وحده،<br><br>
+         وهو الكائن بسلطانه وليس له بداية ولا نهاية الذي عوض الخطية المحيطة بالعالم مات بالصليب وفي اليوم الثالث قام من القبر. يا كلمة الإله بمحبتك للبشر رفعت الخطايا والآثام أنت الغير خاطئ وحدك صيرت ذاتك خطية لأجلنا ولكنك دست الخطية والموت بقيامتك من بين الأموات. لك السموات والأرض وكل ملئها، الأرضيون والمساويون صاروا اليوم واحداً في التسبيح بقيامتك لأنه قد صار فرح في المسكونة من أجل أن الإله صار مع البشر ومن بعد تأنسه أظهر مجد لاهوته بقيامته<br><br>
+         من بين الأموات نحن أيضاً يا سيدنا نؤمن بربوبيتك ونعترف بتجسدك وتأنسك وقيامتك من بين الأموات فأنعم علينا بغفران خطايانا وآثامنا وطهر قلوبنا وأجسادنا وأرواحنا لكي بقلب طاهر ونفس مستنيرة نصرخ نحو أبيك الذي في السموات ونقول: أبانا الذي في السموات… الخ. <br><br>
+      </div>
+      <button class="close-prayer-btn" onclick="hidePrayers()">الرجوع للقائمة</button>
+    </div>
+
+  </div>
+
+  <script>
+    const root = document.body;
+    const darkModeToggle = document.getElementById("darkModeToggle");
+    const mainOptions = document.getElementById("mainOptions");
+    const navTitle = document.getElementById("navTitle");
+
+    function showPrayer(type) {
+      mainOptions.style.display = "none";
+      document.querySelectorAll('.prayer-content').forEach(el => el.style.display = "none");
+      
+      const targetPrayer = document.getElementById('prayer-' + type);
+      if (targetPrayer) {
+        targetPrayer.style.display = "block";
+        navTitle.innerText = type;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function hidePrayers() {
+      document.querySelectorAll('.prayer-content').forEach(el => el.style.display = "none");
+      mainOptions.style.display = "block";
+      navTitle.innerText = "صلوات القسمة";
+    }
+
+    function handleBack() {
+      if (mainOptions.style.display === "none") {
+        hidePrayers();
+      } else {
+        history.back();
+      }
+    }
+
+    darkModeToggle.addEventListener("change", () => {
+      const enabled = darkModeToggle.checked;
+      if (enabled) {
+        root.classList.add("dark-mode");
+        localStorage.setItem("darkMode", "on");
+      } else {
+        root.classList.remove("dark-mode");
+        localStorage.setItem("darkMode", "off");
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (localStorage.getItem("darkMode") === "on") {
+        root.classList.add("dark-mode");
+        darkModeToggle.checked = true;
+      }
+      root.classList.add("visible");
+      createFloatingCrosses();
+    });
+
+    function createFloatingCrosses() {
+      const container = document.getElementById("crossesContainer");
+      const crossCount = 14;
+
+      for (let i = 0; i < crossCount; i++) {
+        const cross = document.createElement("div");
+        cross.className = "floating-cross";
+        cross.innerText = "☦";
+        
+        const size = Math.random() * 26 + 18;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 12 + 10;
+        const delay = Math.random() * 10;
+        const opacity = Math.random() * 0.2 + 0.1;
+
+        cross.style.fontSize = `${size}px`;
+        cross.style.left = `${left}%`;
+        cross.style.animationDuration = `${duration}s`;
+        cross.style.animationDelay = `${delay}s`;
+        cross.style.setProperty('--cross-opacity', opacity);
+
+        container.appendChild(cross);
+      }
+    }
+  </script>
+</body>
+</html>
