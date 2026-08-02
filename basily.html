@@ -9,385 +9,624 @@
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
 
   
-  <style>
-    :root {
-      /* الهوية البصرية الكحلية والذهبية */
-      --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
-      --text-light: #1e293b;
-      --card-bg-light: rgba(255, 255, 255, 0.85);
-      
-      --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
-      --text-dark: #f8fafc;
-      --card-bg-dark: rgba(30, 41, 59, 0.85);
+   <style>
+  :root {
+    /* الوضع الفاتح */
+    --bg-light: #f8fafc;
+    --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
+    --text-light: #1e293b;
+    --card-bg-light: rgba(255, 255, 255, 0.85);
 
-      --gold-primary: #d4af37;
-      --gold-dark: #b8860b;
-      --navy-primary: #1a2a40;
-    }
+    /* الوضع الداكن */
+    --bg-dark: #0f172a;
+    --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
+    --text-dark: #f8fafc;
+    --card-bg-dark: rgba(30, 41, 59, 0.85);
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    /* الألوان الأساسية */
+    --gold-primary: #d4af37;
+    --gold-dark: #b8860b;
+    --navy-primary: #1a2a40;
 
-    body {
-      font-family: 'Tajawal', sans-serif;
-      direction: rtl;
-      background: var(--bg-gradient-light);
-      background-attachment: fixed;
-      color: var(--text-light);
-      transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease, transform 0.6s ease;
+    --font-scale: 1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* النمط الافتراضي (الوضع الفاتح) */
+  body {
+    font-family: 'Tajawal', sans-serif;
+    direction: rtl;
+    background: var(--bg-gradient-light);
+    background-attachment: fixed;
+    color: var(--text-light);
+    transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease;
+    opacity: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  body.visible {
+    opacity: 1;
+  }
+
+  /* نمط الوضع الداكن */
+  body.dark-mode {
+    background: var(--bg-gradient-dark);
+    background-attachment: fixed;
+    color: var(--text-dark);
+  }
+
+  /* خلفية الصلبان المتحركة */
+  .crosses-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .floating-cross {
+    position: absolute;
+    bottom: -100px;
+    color: var(--gold-primary);
+    opacity: 0.25;
+    user-select: none;
+    animation: floatUp 15s linear infinite;
+  }
+
+  body.dark-mode .floating-cross {
+    opacity: 0.35;
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) rotate(0deg);
       opacity: 0;
-      transform: scale(0.98) translateY(10px);
-      min-height: 100vh;
-      display: flex;
+    }
+    10% {
+      opacity: var(--cross-opacity, 0.25);
+    }
+    90% {
+      opacity: var(--cross-opacity, 0.25);
+    }
+    100% {
+      transform: translateY(-110vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* الشريط العلوي */
+  .top-navbar {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    height: 65px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+
+  body.dark-mode .top-navbar {
+    background: rgba(15, 23, 42, 0.85);
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  }
+
+  .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .navbar-left img {
+    height: 42px;
+    width: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid var(--gold-primary);
+  }
+
+  .site-title {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--navy-primary);
+    transition: color 0.4s;
+  }
+
+  body.dark-mode .site-title {
+    color: var(--gold-primary);
+  }
+
+  .navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .icon-btn, .back-btn {
+    background: none;
+    border: none;
+    color: var(--navy-primary);
+    font-size: 1.3rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s, transform 0.2s;
+  }
+
+  body.dark-mode .icon-btn, 
+  body.dark-mode .back-btn {
+    color: var(--gold-primary);
+  }
+
+  .back-btn:hover, .icon-btn:hover {
+    transform: scale(1.1);
+  }
+
+  /* لوحة الإعدادات */
+  .settings-panel {
+    position: fixed;
+    top: 75px;
+    left: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 16px;
+    padding: 18px;
+    width: 260px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    z-index: 1001;
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    color: var(--text-light);
+    animation: fadeIn 0.3s ease;
+    transition: background 0.4s, color 0.4s;
+  }
+
+  body.dark-mode .settings-panel {
+    background: rgba(30, 41, 59, 0.95);
+    color: var(--text-dark);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  }
+
+  .settings-panel.active {
+    display: flex;
+  }
+
+  .settings-title {
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--navy-primary);
+    border-bottom: 1px dashed var(--gold-primary);
+    padding-bottom: 5px;
+  }
+
+  body.dark-mode .settings-title {
+    color: var(--gold-primary);
+  }
+
+  .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .font-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 6px 12px;
+    border-radius: 10px;
+  }
+
+  body.dark-mode .font-controls {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .font-btn {
+    background: var(--navy-primary);
+    color: var(--gold-primary);
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  body.dark-mode .font-btn {
+    background: var(--gold-primary);
+    color: var(--navy-primary);
+  }
+
+  /* المحتوى الرئيسي */
+  .content {
+    padding: 100px 20px 40px;
+    max-width: 650px;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--navy-primary);
+  }
+
+  body.dark-mode h2 {
+    color: var(--gold-primary);
+  }
+
+  /* الأزرار الرئيسية */
+  .nav-buttons-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .nav-btn {
+    background: var(--card-bg-light);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--navy-primary);
+    border: 1.5px solid rgba(212, 175, 55, 0.4);
+    border-radius: 16px;
+    padding: 16px 20px;
+    font-size: 1.1rem;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+  }
+
+  body.dark-mode .nav-btn {
+    background: rgba(30, 41, 59, 0.85);
+    color: var(--gold-primary);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  }
+
+  .nav-btn .btn-text {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-btn .cross-icon {
+    font-size: 1.2rem;
+    opacity: 0.8;
+    color: var(--gold-dark);
+  }
+
+  body.dark-mode .nav-btn .cross-icon {
+    color: var(--gold-primary);
+  }
+
+  .nav-btn .arrow {
+    font-size: 1.1rem;
+    transition: transform 0.3s ease;
+  }
+
+  .nav-btn:hover {
+    background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
+    color: var(--gold-primary);
+    border-color: var(--gold-primary);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(212, 175, 55, 0.25);
+  }
+
+  .nav-btn:hover .cross-icon {
+    color: var(--gold-primary);
+  }
+
+  .nav-btn:hover .arrow {
+    transform: translateX(-5px);
+  }
+
+  /* حاويات نصوص الصلوات */
+  .prayer-content {
+    display: none;
+    background: var(--card-bg-light);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 20px;
+    padding: 25px;
+    margin-top: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.4s ease;
+  }
+
+  body.dark-mode .prayer-content {
+    background: rgba(30, 41, 59, 0.88);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .prayer-title {
+    font-size: 1.3rem;
+    color: var(--navy-primary);
+    margin-bottom: 20px;
+    text-align: center;
+    border-bottom: 1px dashed var(--gold-primary);
+    padding-bottom: 10px;
+    font-weight: 800;
+  }
+
+  body.dark-mode .prayer-title {
+    color: var(--gold-primary);
+  }
+
+  /* تنسيقات الأسطر والنصوص */
+  .line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+    margin: 0 auto 12px auto;
+    padding: 12px 10px;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  }
+
+  .red-text {
+    color: #c53030;
+    margin: 18px 0 8px 0;
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+
+  body.dark-mode .red-text {
+    color: var(--gold-primary);
+  }
+
+  .black-text {
+    font-size: calc(1.05rem * var(--font-scale)); 
+    line-height: 1.8; 
+    font-weight: 700;
+    color: #1e293b; 
+    flex: 1; 
+    text-align: right;
+  }
+
+  body.dark-mode .black-text {
+    color: #f1f5f9;
+  }
+
+  .deacon-text {
+    font-size: calc(1.05rem * var(--font-scale)); 
+    line-height: 1.8; 
+    font-weight: 600;
+    color: #0284c7; 
+    direction: ltr; 
+    text-align: left; 
+    flex: 1;
+  }
+
+  body.dark-mode .deacon-text {
+    color: #38bdf8;
+  }
+
+  /* إخفاء النص حسب خيارات المستخدم */
+  body.hide-arabic .black-text { display: none !important; }
+  body.hide-coptic .deacon-text { display: none !important; }
+
+  /* حاوية وأزرار التنقل السفلية بين الصلوات وإغلاقها */
+  .prayer-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 25px;
+    padding-top: 15px;
+    border-top: 1px dashed rgba(212, 175, 55, 0.3);
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    background: var(--navy-primary); 
+    color: var(--gold-primary);
+    border: 1px solid var(--gold-primary); 
+    border-radius: 12px;
+    padding: 10px 18px; 
+    font-family: 'Tajawal', sans-serif; 
+    font-size: 0.95rem;
+    font-weight: 700; 
+    cursor: pointer; 
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+
+  .action-btn:hover {
+    background: var(--gold-primary);
+    color: var(--navy-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
+  }
+
+  body.dark-mode .action-btn {
+    background: rgba(15, 23, 42, 0.9);
+    color: var(--gold-primary);
+  }
+
+  body.dark-mode .action-btn:hover {
+    background: var(--gold-primary);
+    color: var(--navy-primary);
+  }
+
+  .close-prayer-btn {
+    background: transparent;
+    color: var(--navy-primary);
+    border: 1px solid rgba(212, 175, 55, 0.5);
+  }
+
+  body.dark-mode .close-prayer-btn {
+    background: transparent;
+    color: #f1f5f9;
+  }
+
+  .close-prayer-btn:hover {
+    background: #e2e8f0;
+    color: var(--navy-primary);
+  }
+
+  body.dark-mode .close-prayer-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--gold-primary);
+  }
+
+  @media (max-width: 600px) {
+    .top-navbar { padding: 0 15px; }
+    .site-title { font-size: 0.9rem; }
+    .content { padding-top: 85px; }
+    .line { flex-direction: column; gap: 8px; }
+    .deacon-text { direction: rtl; text-align: right; }
+    .nav-btn { padding: 14px 18px; font-size: 1rem; }
+    .prayer-actions {
       flex-direction: column;
-      position: relative;
-      overflow-x: hidden;
+      gap: 8px;
     }
-
-    body.visible {
-      opacity: 1;
-      transform: scale(1) translateY(0);
+    .action-btn {
+      width: 100%;
+      justify-content: center;
     }
+  }
 
-    body.dark-mode {
-      background: var(--bg-gradient-dark);
-      background-attachment: fixed;
-      color: var(--text-dark);
-    }
-
-    /* خلفية الصلبان المتحركة */
-    #stars-container {
+  
+    /* الزر العائم في أسفل اليمين */
+    .floating-btn {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 0;
-      overflow: hidden;
-    }
-
-    .cross {
-      position: absolute;
-      width: var(--size);
-      height: var(--size);
-      opacity: 0;
-      animation: twinkle var(--duration) infinite ease-in-out var(--delay);
-    }
-
-    .cross::before,
-    .cross::after {
-      content: '';
-      position: absolute;
-      background-color: var(--gold-primary);
-      border-radius: 2px;
-    }
-
-    .cross::before {
-      top: 0;
-      left: 50%;
-      width: 25%;
-      height: 100%;
-      transform: translateX(-50%);
-    }
-
-    .cross::after {
-      top: 30%;
-      left: 0;
-      width: 100%;
-      height: 25%;
-    }
-
-    body:not(.dark-mode) .cross::before,
-    body:not(.dark-mode) .cross::after {
-      background-color: var(--gold-dark);
-    }
-
-    @keyframes twinkle {
-      0%, 100% {
-        opacity: 0.15;
-        transform: scale(0.7) rotate(0deg);
-      }
-      50% {
-        opacity: 0.85;
-        transform: scale(1.2) rotate(5deg);
-        filter: drop-shadow(0 0 6px var(--gold-primary));
-      }
-    }
-
-    /* الشريط العلوي */
-    .top-navbar {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-      height: 65px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      transition: background 0.4s ease;
-    }
-
-    body.dark-mode .top-navbar {
-      background: rgba(15, 23, 42, 0.85);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
-    }
-
-    .navbar-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .navbar-left img {
-      height: 42px;
-      width: 42px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 2px solid var(--gold-primary);
-    }
-
-    .site-title {
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--navy-primary);
-    }
-
-    body.dark-mode .site-title {
+      bottom: 25px;
+      right: 25px;
+      background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
       color: var(--gold-primary);
-    }
-
-    /* زر Switch للوضع الداكن */
-    .theme-switch-wrapper {
+      border: 1.5px solid var(--gold-primary);
+      border-radius: 50px;
+      padding: 12px 20px;
       display: flex;
       align-items: center;
-    }
-
-    .theme-switch {
-      display: inline-block;
-      height: 30px;
-      position: relative;
-      width: 60px;
-    }
-
-    .theme-switch input {
-      display: none;
-    }
-
-    .slider {
-      background-color: #cbd5e1;
-      bottom: 0;
-      cursor: pointer;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: 0.4s;
-      border-radius: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 6px;
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .slider .icon {
-      font-size: 14px;
-      user-select: none;
-    }
-
-    .slider:before {
-      background-color: #fff;
-      bottom: 3px;
-      content: "";
-      height: 22px;
-      left: 3px;
-      position: absolute;
-      transition: 0.4s;
-      width: 22px;
-      border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    input:checked + .slider {
-      background-color: var(--navy-primary);
-      border-color: var(--gold-primary);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(30px);
-      background-color: var(--gold-primary);
-    }
-
-    /* المحتوى الرئيسي */
-    .content {
-      padding: 95px 15px 40px;
-      max-width: 800px;
-      margin: 0 auto;
-      flex: 1;
-      width: 100%;
-      position: relative;
-      z-index: 1;
-    }
-
-    button.toggle-btn {
-      background: linear-gradient(135deg, var(--navy-primary) 0%, #2a3e5c 100%);
-      color: var(--gold-primary);
-      border: 1px solid rgba(212, 175, 55, 0.4);
-      padding: 14px 28px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      border-radius: 500px;
-      cursor: pointer;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-      transition: all 0.3s ease;
-      user-select: none;
-      margin: 15px auto;
-      display: block;
-      width: 90%;
-      max-width: 500px;
+      gap: 10px;
       font-family: 'Tajawal', sans-serif;
-    }
-
-    button.toggle-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(212, 175, 55, 0.25);
-      border-color: var(--gold-primary);
-    }
-
-    body.dark-mode button.toggle-btn {
-      background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%);
-      color: var(--gold-primary);
-      border-color: rgba(212, 175, 55, 0.3);
-    }
-
-    .content > div[id$="-box"] {
-      max-height: 0;
-      opacity: 0;
-      overflow: hidden;
-      transform: translateY(-15px);
-      transition: max-height 0.6s ease, opacity 0.5s ease, transform 0.5s ease, padding 0.4s ease;
-      background: var(--card-bg-light);
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 0 20px;
-      margin: 0 auto 20px auto;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-      max-width: 700px;
-      text-align: right;
-      direction: rtl;
-    }
-
-    .content > div[id$="-box"].show {
-      max-height: 8000px;
-      opacity: 1;
-      transform: translateY(0);
-      padding: 24px 20px;
-    }
-
-    body.dark-mode .content > div[id$="-box"] {
-      background: var(--card-bg-dark);
-      border-color: rgba(212, 175, 55, 0.15);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .line {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 15px;
-      margin: 0 auto 12px auto;
-      padding: 12px 10px;
-      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
-    }
-
-    body.dark-mode .line {
-      border-bottom-color: rgba(212, 175, 55, 0.12);
-    }
-
-    .red-text {
-      color: var(--gold-dark);
-      margin: 18px 0 8px 0;
-      font-weight: 800;
-      font-size: 1.1rem;
-      text-align: center;
-    }
-
-    body.dark-mode .red-text {
-      color: var(--gold-primary);
-    }
-
-    .black-text {
-      font-size: 1.05rem;
-      line-height: 1.8;
+      font-size: 0.95rem;
       font-weight: 700;
-      color: var(--navy-primary);
-      flex: 1;
-      text-align: right;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+      backdrop-filter: blur(8px);
+      z-index: 999;
+      transition: all 0.3s ease;
     }
 
-    body.dark-mode .black-text {
-      color: #f1f5f9;
+    .floating-btn:hover {
+      background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+      color: #ffffff;
+      border-color: transparent;
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.4);
     }
 
-    .deacon-text {
-      font-size: 1.05rem;
-      line-height: 1.8;
-      font-weight: 500;
-      color: #0284c7;
-      direction: ltr;
-      text-align: left;
-      flex: 1;
-      font-family: 'Tajawal', sans-serif;
+    .floating-btn .plus-icon {
+      font-size: 1.4rem;
+      font-weight: 800;
+      line-height: 1;
     }
 
-    body.dark-mode .deacon-text {
-      color: #38bdf8;
-    }
-
+    /* تحسينات خاصة بالموبايل */
     @media (max-width: 600px) {
       .top-navbar {
-        padding: 0 15px;
+        padding: 0 12px;
       }
-      .site-title {
-        font-size: 0.9rem;
-      }
-      .content {
-        padding-top: 85px;
-      }
-      .line {
-        flex-direction: column;
-        gap: 8px;
-      }
-      .deacon-text {
-        direction: rtl;
-        text-align: right;
-      }
+      .site-title { font-size: 0.95rem; }
     }
-  </style>
+</style>             
 </head>
 <body>
+
+  <!-- الشريط العلوي -->
 
   <!-- الشريط العلوي -->
   <div class="top-navbar">
     <div class="navbar-left">
       <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
-      <span class="site-title">كنيسة مارمينا والأنبا توماس و البابا كيرلس السادس</span>
+      <span class="site-title">كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</span>
     </div>
+
+    <div class="navbar-right">
+      <button class="icon-btn" onclick="toggleSettings()" title="إعدادات الخط والنصوص">⚙️</button>
+      <button class="back-btn" onclick="history.back()" title="رجوع">←</button>
+
+
+    </div>
+  </div>
+
+  <!-- لوحة إعدادات النصوص والخط -->
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-title">إعدادات العرض والنصوص</div>
+    
+    <div class="checkbox-group">
+      <label>
+        <input type="checkbox" id="showArabicToggle" checked onchange="updateTextVisibility()" />
+        إظهار العربي
+      </label>
+      <label>
+        <input type="checkbox" id="showCopticToggle" checked onchange="updateTextVisibility()" />
+        إظهار القبطي (المعرب)
+      </label>
+    </div>
+
+    <div class="settings-title">حجم الخط</div>
+    <div class="font-controls">
+      <button class="font-btn" onclick="changeFontSize(-0.1)">-</button>
+      <span id="fontSizeDisplay" style="font-weight: bold;">100%</span>
+      <button class="font-btn" onclick="changeFontSize(0.1)">+</button>
+    </div>
+  </div>
     
     <div class="navbar-right">
+
+      <!-- زر الرجوع -->
+      <button class="back-btn" onclick="history.back()" title="رجوع">←</button>
+
       <div class="theme-switch-wrapper">
         <label class="theme-switch" for="darkModeToggle">
           <input type="checkbox" id="darkModeToggle" />
@@ -397,675 +636,870 @@
     </div>
   </div>
   <!-- المحتوى الرئيسي -->
+   <!-- الزر العائم في أسفل اليمين -->
+  <!-- الزر العائم -->
+  <button class="floating-btn" onclick="location.href='tawzea.html'">
+    <span class="plus-icon">✚</span>
+    <span class="btn-text">التوزيع +  القسمة +  التناول</span>
+  </button>
   <div class="content">
     <h2>القداس الباسيلي للقديس باسيليوس الكبير</h2>
 
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving-box')">صلاة الصلح</button>
 
-    <div id="thanksgiving-box" aria-hidden="true">
-    
-    <h3 class="red-text">يقول الكاهن</h3>
-    <div class="line">
-    <p class="black-text">صل</p>  
-    <p class="deacon-text">اشليل </p>
-    </div>
-    <h3 class="red-text">يقول الشماس</p>
-      <div class="line">
-    <p class="black-text">للصلاه قفو</p>
-    <p class="deacon-text">ايبي بروس إفكي إسطاثيتي</p>
-    </div>
-    <h3 class="red-text">يقول الكاهن</h3>
-    <div class="line">
-    <p class="black-text">السلام للكل</p>
-    <p class="deacon-text">إيريني باسي</p>
-    </div>
-    <h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-    <p class="black-text">ولروحك ايضا</p>
-    <p class="deacon-text">كيطو ابنيفما تي سو</p>
-    </div>
-    <h3 class="red-text">يقول الكاهن</h3>
-    <div class="line">
-    <p class="black-text">
-      يا الله العظيم الأبدي، الذي جبل الإنسان علي غير فساد. والموت الذي دخل إلي العالم بحسد إبليس هدمته، بالظهور المحيى الذي لابنك الوحيد الجنس ربنا وإلهنا ومخلصنا يسوع المسيح. وملأت الأرض من السلام الذي من السموات. هذا الذي أجناد الملائكة يمجدونك به قائلين: المجد لله في الأعالي، وعلي الأرض السلام، وفي الناس المسره
-    </p>
-    <p class="deacon-text">
-      إفنوتي بي نشتي بي شا إينيه في إبطاف كوت إمبي رومي إى إهري إيجين تي ميت أتطاكو. أووه إفمو إيطاف إي إيخون إي بي كوزموس هيتين بي إفثونوس إنتي بي ذيافولوس آك شير شورف. هيتين بي أو أونه إيفول إنريف تنخو إنتي بيك مونوجينيس إنشيري بين شويس أووه بين نوتي أووه بين سوتير إيسوس بي إخرستوس أووه آك موه إم بي كاهي إيفول خين تي هيريني تي إيفول خين نيفيئووي ثاي إت إيري تي ستراتيا إنتي ني آنجيلوس تي أو اوناك إنخيتس إفجو إمموس جي أوأو أو إم إفنوتي خين ني إتتشوسي نيم أو هيريني هيجين بي كاهي نيم أوتيماتي خين ني رومي.
-    </p>
-    </div>
-    <h3 class="red-text">يقول الشماس</h3>
-        <div class="line">
+    <!-- قائمة الأزرار الرئيسية -->
+    <div id="mainOptions">
+      <div class="nav-buttons-list">
 
-    <p class="black-text">صلوا من أجل السلام الكامل، والمحبة، والقبلة الطاهرة الرسولية.</p>
-    <p class="deacon-text">
-      إبروس إفكساستي إيبرتيس تيلياس إيرينيس كي أغابيس آجيون إسباسمون طون آبوسطولون.
-    </p>
-        </div>
-    <h3 class="red-text">يقول الشعب</h3>
-        <div class="line">
-
-    <p class="black-text">يارب ارحم كيريي اليسون</p>
-    <p class="deacon-text">كيريي اليسون</p>
-        </div>
-
-    <h3 class="red-text">يرفع الكاهن اللفافة الموضوعة فوق الأبروسفارين بيديه ويقول الكاهن</h3>
-        <div class="line">
-
-    <p class="black-text">
-      بمسرتك يا الله إملأ قلوبنا من سلامك وطهرنا من كل دنس ومن كل غش ومن كل رياء ومن كل فعل خبيث ومن تذكار الشر الملبس الموت وإجعلنا مستحقين كلنا يا سيدنا أن نقبل بعضنا بعضًا بقبلة مقدسة لكي ننال بغير وقوع في دينونة من موهبتك غير المائتة السمائية بالمسيح يسوع ربنا.
-    </p>
-    <p class="deacon-text">
-خين بيك تيماتي إفنوتي موه إننهيت خين تيك هيريني. أووه ماطوفون إيقول هاثوليب نيفين نيم إكروف نيفين نيم ميتشوفي نيقين نيم بان أورجيا نيقين نيم تي ميت ريف إيبر إفميفئي إنتي تي كاكيا إتئيرفورين إم إفمو. أووه آريتين إن إم إبشاتيرين بين نيب إيثرين إير أسبازيستي إنين إيريؤخين أوفي إثؤواب. إى إيجين تين تشي خين أو ميت أت هي تتين إي إبهاب إيفول خين تيك ذوريا إن أثمو أووه إن إيبورانيون خين بي إخرستوس إيسوس بين شويس. 
-    </p>
-  </div>
-</div>
-
-
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving1-box')">
-      صلاه الصلح 2 (للقديس يوحنا) 
-    </button>
-
-    <div id="thanksgiving1-box" class="thanksgiving1-box" aria-hidden="true">
-          
-         <h2>  صلاه الصلح 2(للقديس يوحنا)</h2>
-      <h3 class="red-text">يقول الكاهن</h3>
-              <div class="line">
-
-         <p class="black-text"> عالٍ فوق كل قوة النطق، وكل فكر العقل، غني مواهبك يا سيدنا. لأن ما أخفيته عن الحكماء والفُهماء، هذا اعلنته لنا، نحن الأطفال الصغار. وما اشتهي الانبياء والملوك ان يروه ولم يروا. هذا أنعمت به لنا نحن الخطاه، لكي نخدمه ونتطهر من قِبله. عندما أقمت لنا تدبير إبنك الوحيد الجنس، والسر الخفي الذي لهذه الذبيحة. هذه التي ليس دم الناموس حولها، ولا بر الجسد. لكن الخروف فروَحي، والسكين فنطقية غير جسمية، هذه الذبيحة التي نقدمها لك.</p>
-          <p class="deacon-text">ستشوسي
-سا إبشوي إن جوم نيفين إنتيه اوصاچي : نيم
-چين موك ميك نيڤين إنتيه اونوس : إنجيه إثميت راماؤ
-إنتيه نيك ذوريئا اوو بين نيب.
-ني غار إيتاك هوبو إي قولها هان ساقيف نيم هان كات
-هيت : ناي اكتشوربو نان إيڤول آنون خا نيكوچي إن
-آلوؤي.
-اووه ني إيطا هان إبروفيتيس نيم هان اورؤ إر إبيثيمين
-إناق إرؤ اووه إمبو ناڤ.
-ناي آك إرخاريزتيه إممؤ نان آنون خا نيريف إر نوڤي : هينا
-إنتيف شيمشي إموؤ اووه إنتين توقو إي قول هيتوتو.
-خين إبچين إثريك طاهو نان إيراتس إنتي اوكونوميا
-إنتيه بيك مونوجينيس إن شيري : نيم تيميس تاغوجيا
-إنتيه طاي ثيسيا.
-ثاي إيتيه إممون إسنوف إمبي نوموس إمبيك سوتي :
-اوذيه اووميثمي إنتيه تي صاركس
-اللا
-بي إسوؤ مين اوو إبني ثما تيكون بيه : تي سيفي
-ذيه اولوجيكي تيه اووه إن اتسوما : طاي تيسيا اون ثاي
-إيتينيني إمموس ناك إيخون</p>
-              </div>
-         <h3 class="red-text">يقول الشماس </h3>
-                 <div class="line">
-
-           <p class="black-text">صلوا من أجل السلام الكامل، والمحبة، والقبلة الطاهرة الرسولية</p>
-          <p class="deacon-text">أبروس إفكساستي
-إيبرتيس تيلياس إيرينيس
-كي أغابيس كي طون
-آجيون إسباسمون طون
-آبو سطولون.
-          </p> 
-                 </div>
-           <h3 class="red-text">يقول الشعب </h3>
-                   <div class="line">
-
-             <p class="black-text"> يا ربُ إرحم.</p>
-          <p class="deacon-text"> كيري إيليصون</p>
-                   </div>
-            <h3 class="red-text">يقول الكاهن</h3>
-                    <div class="line">
-
-         <p class="black-text"> نسأل ونطلب من صلاحك يا محب البشر. طهر شفاهنا واعتق عقولنا من كل اخلاط الهيولي. وارسل لنا نعمة روحك القدوس. واجعلنا أهلاً، أن يقبل بعضُنا بعضاً بقبلة مقدسة لكي ننال بغير وقوعنا في دينونة، من موهبتك غير المائتة السمائية، المسيح يسوع ربنا </p>
-          <p class="deacon-text">
-تين تيهو اووه تين طوبه
-إنتيك ميت اغاثوس بي
-ماي رومي.
-ما طوقو إننين إسفوتو :
-اووه إي آك إربين نوس
-إنريمهيه اي قول ها چين
-موجت نيفين إنتيه تي
-هيلي.
-أووه أوو أورب نان إي
-إخري إمبي إهموت إنتي
-بيك إبنفما إثؤواب: أووه
-آريتين إن إمبشا إثرين إير
-اسبازيستي إن نين إيريوو
-خين أووفي إثؤواب. إي
-إب چين تينتشي خين
-اووميت آت هيتين إي
-إيهاب : إي قول خين تيك
-ذوريئا إن آثاموو اووه
-إن إي بورانيون : خين
-بيخريستوس إيسوس بين
-تشويس.</p>
-                    </div>
-    </div>
-
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving23-box')">
-       إفرحي يا مريم
-    </button>
-
-    <div id="thanksgiving23-box" class="thanksgiving23-box" aria-hidden="true">
-          
-
-             <h2>الإسبسمس الآدام / إفرحي يا مريم / أونوف إممو ماريا</h2>
-         <h3 class="red-text">يقول الشعب </h3>
-                 <div class="line">
-
-             <p class="black-text">افرحي يا مريم العبدة والأم لأن الذي في حجرك الملائكة تسبحه والشاروبيم يسجدون له باستحقاق والسيرافيم بغير فتور ليس لنا دالة عند ربنا يسوع المسيح سوى طلباتك وشفاعتك يا سيدتنا كلنا السيدة والدة الإله لكي نسبحك مع الشاروبيم قائلين: قدوس قدوس قدوس أيها الرب ضابط الكل السماء والأرض مملوءتان من مجدك وكرامتك نسألك يا ابن الله ان تحفظ حياة بطريركنا أنبا (……) رئيس الكهنة ثبته على كرسيه و شريكه في الخدمه الرسولية أبينا المكرم البا الأنبا (....)مطراننا ثبته علي كرسيه</p> 
-               <p class="deacon-text">أونوف إممو ماريا تى فوكى أووه تيماف جى فيئت خين بى آميرنى آنجيلوس سيهوس إيروف أووه نى شيروفيم سى أوأوشت إمموف إكسيوس نيم نى سيرافيم خين أوميت آت مونك إممون إنتان إنؤو باريسيا خاتين بين شويس إيسوس بى اخرستوس خوريس نى طوفه نيم نى إبريسفيا أوتين شويس إن نيب تيرين تى ثيئوطوكوس هينا إنتين هوس إيروك نيم نى شيروفيم نيم نى سيرافيم إنؤوش إيفول إنجو إمموس جى: إكؤواب إكؤواب إكؤواب ابشويس بى بانطوكراطور إتفى نيم إبكاهى ميه إيفول خين بيك أو أو نيم بيك طايو تين تيهو إيروك أو إيوس ثيئوس إثريك آريه إى إب أونخ أم بين بطريارشيس آفا (…….) بى أرشى إرفس  نيم بيف كي إشفيري إنليتورغوس بين يوت إثؤواب إن ذيكيؤس افا (....)بي ميت روبوليتيس ماطاجروف هيجين بيف إثرونوس ماطاجروف هيجين بيف إثرونوس</p>           
-      </div>
-    </div>
-
-
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving2-box')">
-قبلوا
-    </button>
-
-    <div id="thanksgiving2-box" class="thanksgiving2-box" aria-hidden="true">
-          
-       <h2>قبلوا</h2>
-       <h3 class="red-text">يقول الشماس </h3>
-               <div class="line">
-
-          <p class="black-text">قَبِّلوا بَعضَكُم بَعضًا بقبلةٍ مقدسة يا ربُ ارحم يا ربُ ارحم يا ربُ ارحم.
-نعم يا ربُ الذي هو يسوعُ المسيحُ ابنُ الله الحي إسْمَعنا وإرحمنا.
-
-قَدَّموا قَدَّموا قَدَّموا على الرسمِ قِفوا بخوفٍ ورعدَةٍ، وإلى الشرقِ انظروا، نُنصِتْ
-          </p>
-         <p class="deacon-text">اسبازيستي الليسوس ان فليماتي اجيو. كيريى ليسون كيريى ليسون كيريى ليسون.
- كيريى ليسون سي ايتي فاي بي ايسوس باخرستوس ابشري أم أفنوتي سوتيم ايرون أووه ناي نان.
-
-ابروس فرين كاطا اطروبو. استاثيتي كاطا اطرومو. ايس اناطولاس  ابليبساتي ابروس خومين
-         </p>
-       </div>
-    </div>
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving3-box')">
-بشفاعات والدة الاله
-    </button>
-
-    <div id="thanksgiving3-box" class="thanksgiving3-box" aria-hidden="true">
-          
-       
-         <h2>بشفاعات والدة الاله</h2>
-       <h3 class="red-text">يقول الشعب </h3>
-                      <div class="line">
-
-      <p class="black-text">بشفاعات والدة الإله القديسة مريم يا رب انعم لنا بمغفرة خطايانا نسجد لك أيها المسيح مع أبيك الصالح والروح القدس لنك أتيت وخلصتنا رحمة السلام ذبيحة 
-    التسبيح
-      </p>
-         <p class="deacon-text">هيتين ني إبريسفيا إنتي تي ثيئو طوكوس إثؤواب ماريا إبشويس آري إهموت نان إمبي كو إيفول إنتي نين نوفي تين أوأوشت إمموك أوبي إخرستوس نيم بيك يوت إن آغاثوس نيم بي إبنيقما اثؤواب جي آك إى آك سوتي إممون إى ليئوس إيرينيس ثيسيا إيني سيئوس.</p>
-            
-         </div>
-       </div>
-
-
-       
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving4-box')">
-        الرب مع جميعكم + مستحق وعادل 
-
-    </button>
-    <div id="thanksgiving4-box" class="thanksgiving4-box" aria-hidden="true">
-       
-         <h2>الرب مع جميعكم</h2>
-       <h3 class="red-text">     وبعد إنتهاء صلاة الصلح يرفع الكاهن الإبروسفارين ويسلمه للشمامسة ثم يضع الكاهن اللفافة التي معه على يده اليسري ويأخذ اللفافة التي علي القربانة بيمينه ويرشم بها الشعب أولاً بمثال الصليب ويقول
-       </h3>
-                             <div class="line">
-
-<p class="black-text">الرب مع جميعكم
-</p>      
-      <p class="deacon-text">أوكيريوس ميطابانطون إيمون
-      </p>
-                             </div>
-      <h3 class="red-text">يقول الشعب </h3>
-                            <div class="line">
-
-      <p class="black-text">ومع روحك أيضاً
-      </p>
-         <p class="deacon-text">كي مي طاطو إبنيقماتو سو
-         </p>
-                            </div>
-       <h3 class="red-text">ثم يرشم الخدام إلى جانبي المذبح ويقول
-        </h3>
-                                    <div class="line">
-
-         <p class="black-text"> إرفعوا قلوبكم
-         
-         </p>
-    <p class="deacon-text">آنو إيمون طاس كارذياس
-    </p>
-                                    </div>
-         <h3 class="red-text">يقول الشعب </h3>
-                                     <div class="line">
-
-         <p class="black-text"> هي عند الرب
-         </p>
-      <p class="deacon-text">إيخومين إبروس طون كيريون
-      </p>
-                                     </div>
-         <h3 class="red-text">يقول الكاهن</h3>
-                                     <div class="line">
-
-     <p class="black-text">  فلنشكر الرب
-     </p>
-      <p class="deacon-text">إيفخاريس تيسومين طوكيريو
-      </p>
-                                     </div>
-
-      <h3 class="red-text">يقول الشعب </h3>
-                                  <div class="line">
-
-
-      <p class="black-text">مستحق وعادل
-      </p>
-     <p class="deacon-text">  أكسيون كي ذي كيئون
-     </p>
-                                  </div>
-      <h3 class="red-text">يقول الكاهن</h3>
-                                  <div class="line">
-
-      <p class="black-text">مستحق وعادل مستحق وعادل لأنه حقاً بالحقيقة مستحق وعادل أيها الكائن السيد الرب إله الحق الكائن قبل الدهور والمالك إلى الأبد الساكن في العالي والناظر إلى المتواضعين الذي خلق السماء والأرض والبحر وكل ما فيها أبو ربنا وإلهنا ومخلصنا يسوع المسيح هذا الذي خلقت به كل شيئ ما ري وما لا يري الجالس على كرسي مجده المسجود له من جميع القوات المقدسة
-      </p>
-      <p class="deacon-text">أكسيون كي ذي كيئون أكسيون كي ذي كيئون آليثوس غارخين اوميثمي أكسيون كي ذي كيئون فيئتشوب إننيب إبشويس إفنوتي إنتي تي ميثمي فيئتشوب خاجوؤو إن ني إبنيه أووه إت أوى إن أورو شا إينيه. فيئتشوب خين ني إتتشوسي أووه إت جوشت إيجين نيئتثيقيوت فيئيتاف ثاميو إن إتفي نيم إبكاهي نيم إفيوم نيم نيئتي إنخيتو تيرو. إفيوت إمبين شويس أووه بيننوتي أووه بين سوتير إيسوس بي إخرستوس فاى إيتاك ثاميو إم إبتيرف إيقول هي ططف ني إيتو ناق إيروؤونيم نيئتي إنسيناق إيروؤو آن. فيئت هيمسي هيجين بيإثرونوس إنتي بيف أوأو فيئيتو أوأوشت إمموف هيتين جوم نيفين إثؤواب.
-      </p>
-                                  </div>
-        <h3 class="red-text">يقول الشماس </h3>
-                                                              <div class="line">
-
-        <p class="black-text">أيها الجلوس قفوا
-      </p>
-       <p class="deacon-text">إيكاثي ميني آناسثيتي.
-
-       </p>
-                                  </div>
-      <h3 class="red-text">يقول الكاهن</h3>
-                                 <div class="line">
-
-      <p class="black-text"> الذي يقف أمامه الملائكة ورؤساء الملائكة الرئاسات والسلطات والكراسي والأرباب والقوات
-     </p>
-       <p class="deacon-text">فيئتو أو هي إى راتو ناهراف إنجي ني آنجيلوس نيم ني أرشي آنجيلوس نيم أرشي ني إكسوسيا ني إثرونوس ني ميت شويس ني جوم.
-       </p>
-                                  </div>
- <h3 class="red-text">يقول الشماس </h3>
-                             <div class="line">
-
- <p class="black-text">وإلى الشرق أنظروا
-      </p>
-      <p class="deacon-text">إيس أناطولاس إقليبساتي
-      </p>
-                                  </div>
-       <h3 class="red-text">يقول الكاهن</h3>
-                                  <div class="line">
-
-       <p class="black-text">انت هو الذي يقف حولك الشاروبيم الممتلئون أعيناً والسيرافيم ذوو الستة الجنحة يسبحون دائماً بغير سكوت قائلين
-      </p>
-          <p class="deacon-text">إنثوك غاربي إتؤ أو هي إيراتو إم بيك كوتي إنجي ني شيروفيم إثميه إمقال نيم ني سيرافيم نابي سو إن تنه. إيقئير هيمنوس خين أومون إيقول إن أت كارورو إيقجو إمموس.
-          </p>
-                                  </div>
-      <h3 class="red-text">يقول الشماس </h3>
-                                  <div class="line">
-                            
-      <p class="black-text">   ننصت
-        </p>
-         <p class="deacon-text">إبروس خومين
-         </p>
-                                  </div>
-        </div>
-
+        <button class="nav-btn" onclick="showPrayer('1')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>صلاة الصلح
+</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
 
         
-       
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving5-box')">
-الشاروبيم يسجدون لك / قدوس قدوس 
+        <button class="nav-btn" onclick="showPrayer('2')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>صلاه الصلح 2 (للقديس يوحنا)</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('3')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>الإسبسمس الآدام / إفرحي يا مريم / أونوف إممو ماريا</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('4')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>قبلوا
+</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('5')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>بشفاعات والدة الاله
+</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('6')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>الرب مع جميعكم + مستحق وعادل</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('7')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>الشاروبيم يسجدون لك + قدوس قدوس</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('8')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>تجسد وتأنس + وقام من بين الأموات</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('9')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            <span>الرشومات</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('10')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                        <span>سر حلول الروح القدس: ففيما نحن أيضا + وهذا الخبز</span>
 
-    </button>
-    <div id="thanksgiving5-box" class="thanksgiving5-box" aria-hidden="true">
-      
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('11')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                        <span>جميع الأواشي</span>
 
-       <h2> لحن الشاروبيم يسجدون لك / ني شيروفيم</h2>
-         <h3 class="red-text">يقول الشعب </h3>
-                                           <div class="line">
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('12')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                        <span>القربين + المجمع+ بي نيشتي</span>
 
-         <p class="black-text"> الشاروبيم يسجدون لك، والسيرافيم يمجدونك صارخين قائلين: قدوس قدوس،قدوس رب الجنود، السماء والأرض مملوءتان من مجدك الأقدس </p>
-      <p class="deacon-text"> ني شيروفيم سي أو أوشت إمموك نيم ني سيرافيم سي تيؤواو ناك إيف أوش إيقول إقجوإمموس جي آجيوس آجيوس آجيوس كيريوس ساقاؤوت إبلي ريس أو أورانوس كي إيجي تيس آجياس سوذوكسيس</p>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('13')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                        <span>لحن بركتهم المقدسة / إريبو إزمو</span>
+
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('14')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+             <span>
+أولئك يا رب + كما كان</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('15')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                       <span>اهدنا إلى ملكوتك / تشي مويت خاجون</span>
+
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('16')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                        <span>وأيضاً فلنشكر / بالين أون مارين</span>
+
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('17')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                        <span>الجسد المقدس + الدم الكريم</span>
+
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('18')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                        <span>تحليل الآب / احنوا رؤوسكم</span>
+
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('19')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                        <span>اذكر يارب اجتماعاتنا</span>
+
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('20')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            
+            <span>القدسات للقديسين / طا اجياتيس
+</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('21')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+            
+            <span>جسد مقدس / سوما اجيون
+</span>
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+        <button class="nav-btn" onclick="showPrayer('22')">
+          <span class="btn-text">
+            <span class="cross-icon">☦</span>
+                        <span>اعتراف الكاهن و الشماس</span>
+
+          </span>
+          <span class="arrow">◀</span>
+        </button>
+
       </div>
-         
-         
-         <h2>قدوس قدوس / اكؤواب إكؤواب</h2>
-         <h3 class="red-text">يقول الكاهن</h3>
-                                           <div class="line">
-
-          <p class="black-text">آجيوس .آجيوس .آجيوس قدوس قدوس قدوس بالحقيقة أيها الرب إلهنا الذي جبلنا وخلقنا ووضعنا في فردوس النعيم وعندما خالفنا وصيتك بغواية الحية سقطنا من الحياة الأبدية و نفينا من فردوس النعيم فلم تتركنا عنك أيضاً إلى افنقضاء بل تعهدتنا دائماً بأنبيائك القديسين وفي أخر الأيام ظهرت لن نحن الجلوس في الظلمة وظلال الموت بإبنك الوحيد الجنس ربنا وإلهنا ومخلصنا يسوع المسيح هذاالذي من الروح القدس ومن العذراء القديسة مريم</p>
-         <p class="deacon-text">آجيوس .آجيوس .آجيوس إكؤواب إكؤواب إكؤواب خين أو ميثمي إبشويس بيننوتي. فيئيطاف إير إبلازين إممون أووه أفثاميون أووه أفكان خين بي بارذيسوس إنتي إبؤونوف خين إبجين إيثرين إيربرافينين ذى إنتيك إنتولي هيتين ني آباتي إنتي بيهوف أنهي إيقول خين بي كونخ إن إينيه أووه أقئرإكسوريزين إممون إيقول خين بي بارذيسوس إنتي إبؤونوف. إمبيك كان إنثوك أون شا إيقول آللا أك جيم بين شيني خين أو مون إيقول هيتين نيك إبروفيتيس إثؤواب. أووه خين إيتخائي إنتي نيئيهوؤو أكؤونه نان إيقول أنون خانيئتهيمسي خين إبكاكي نيم إتخيفي إم إفمو هيتين بيك مونوجينيس إنشيري بين شويس أووه بيننوتي أووه بينسوتير إيسوس بي إخرستوس فاي إيتي إيقول خين بي إبنيقما إثؤواب نيم إيقول خين تي بارثينوس إثؤواب ماريا</p>
-                                           </div> 
-         <h3 class="red-text">يقول الشعب </h3>
-                                           <div class="line">
-
-         <p class="black-text">حقاً</p>
-          <p class="deacon-text">آمين</p>
-         </div>
-    </div>
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving6-box')">
-تجسد وتأنس + وقام من بين الأموات
-    </button>
-    <div id="thanksgiving6-box" class="thanksgiving6-box" aria-hidden="true">
-      
-
-       
-     
-       <h2>   تجسد وتأنس / أفتشي ساركس أووه</h2>
-          <h3 class="red-text">يقدم الشماس المجمرة للكاهن فيضع فيها يد يخور ويقول</h3>
-                                                     <div class="line">
-
-         <p class="black-text">تجسد و تأنس وعلمنا طرق الخلاص وأنعم علينا بالميلاد الذي من فوق بواسطة الماء والروح وجلعنا له شعباً مجتمعاً وصيرنا أطهاراً بروحك القدوس هذا الذي أحب خاصته الذين في العالم وأسلم ذاته فداءاً عنا إلى الموت الذي تملك علينا هذا الذي كنا ممسكين به مبيعين من قبل خطايانا نزل إلى الجحيم عن طريق الصليب</p>
-         <p class="deacon-text">آفتشي ساركس أووه آفئير رومي أووه آف إتسافون إيهان مويت إنتي بي أوجاي. إى آفئير خارزستي نان إمبي يسي بي إيقول إم إبشوي هيتين أوموؤو نيم او إبنيقما. آف أيتين ناف إن أو لاؤس إفثويت ىفئيرين شوبي إثؤواب هيتين بيك إبنيقما إثؤواب فاي إيطاف منري ني إيتي نوف إيتخين بي كوزموس آفتيف إممين إمموف إن سوتي خارون إيئفمو إت أوي إنئورو إيئهري إيجون فاي إبطاف أموني إممون إيقول هيططف إنطوي إيقول هيتين نين نوفي أفشيناف إيبيسيت إى آمنتي إيقول هيتين بي إستافروس.</p>
-         </div>
-          <h3 class="red-text">يقول الشعب </h3>
-                                                   <div class="line">
-
-       <p class="black-text">   حقا اؤمن</p>
-         <p class="deacon-text">آمين تي ناهتي</p>
-                                                   </div>
-          <h2>   وقام من بين الأموات / أفطونف إيفول</h2>
-         <h3 class="red-text">يقول الكاهن</h3>
-                                                    <div class="line">
-
-         <p class="black-text">وقام من بين الأموات في اليوم الثالث وصعد إلى السموات وجلس عن يمينك أيها الأب ورسم يوما للمجازاة هذا الذي يظهر فيه ليدين المسكونة بالعدل ويعطي كل واحد كنحو أعماله (أو بحسب أعماله)</p>
-          <p class="deacon-text">آفطونف ايفول خين نيئثموؤت خين لي إيهوؤو إم ماه شمت أفشيناف إي إبشوى إبنيفيئوي أفهيمسي ساتيك أوى نام إفيوت إي أفئوش إن أو إيهوؤوإنتي شيقيو فاى إيتي إفناؤونه إيقوةل إنخيتف إيتهاب إتيئيكوميني خين أوذيكيئو سيتي أووه إفناتي إمبي أواي بي أواي كاتا نيف إهفيئوي.</p>
-                                                    </div>
-            <h3 class="red-text">يقول الشعب </h3>
-                                                    <div class="line">
-
-            <p class="black-text"> كرحمتك يا رب وليس كخطايانا</p>
-          <p class="deacon-text">كاطا طو إيليؤوس سو كيريي كي مي كاطاطس أمرتياس إيمون.</p>
-       
-       </div>
-    </div>
-
-
-    
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving7-box')">الرشومات</button>
-    
-
-    <div id="thanksgiving7-box" class="thanksgiving7-box" aria-hidden="true">
-          
-         <h2>الرشومات</h2>
-         <h3 class="red-text">يشير الكاهن بيديه إلى الخبز ثم إلى الخمر وهو يقول</h3>
-                                                             <div class="line">
-
-         <p class="black-text">ووضع لنا هذا السر العظيم الذي للتقوي</p>
-         <p class="deacon-text">أفكودي نان إى إخري إمباي نشتي إمميستيريون إنتي تيميت إيقسبيس.</p>
-                                                             </div>
-         <h3 class="red-text">ثم يبخر يديه فوق المجمرة استعداداً لمسك السر وهو يقول
-         </h3>
-                                                             <div class="line">
-
-        <p class="black-text"> لأنه فيما هو راسم يسلم نفسه للموت عن حياة العالم
-        </p>
-          <p class="deacon-text">إيفثيش غارإيتيف إى إفمو خا إبؤنخ إم بي كوزموس. </p>
-                                                             </div>
-         <h3 class="red-text">يقول الشعب </h3>
-                                                             <div class="line">
-
-         <p class="black-text">نؤمن </p>
-        <p class="deacon-text"> آليثوس بيستيق آومين</p>
-                                                             </div>
-            <h3 class="red-text"> يأخذ الكاهن الخبز على يديه ويرفع اللفافة التي بالصينية ويقبلها بفمه ويضعها على المذبح ويقول    </h3>      
-                                                           <div class="line">
-
-            <p class="black-text"> اخذ خبزاً على يديه الطاهرتين اللتين بلا عيب ولا دنس الطوباويتين المحييتين</p>
-         <p class="deacon-text">أفتشي إن أويك إيجين نيف جيج أثؤواب إنآتتشني أووه إن آتثوليب أووه إم مكاريون أووه إنريف تانخو.
-
-         </p>
-                                                           </div>
-         <h3 class="red-text">يقول الشعب </h3>
-                                                             <div class="line">
-
-          <p class="black-text"> نؤمن ان هذا هو بالحقيقة آمين</p>
-         <p class="deacon-text">تي ناهتي جي فاي بي خين اوميثمي أمين</p>
-                                                             </div>
-          <h3 class="red-text">يقول الكاهن</h3>
-                                                              <div class="line">
-
-       <p class="black-text">ونظر إلى فوق نحو السماء إليك يا الله أباه وسيد كل أحد 
-       </p>
-          <p class="deacon-text">آفجوشت إي إبشوي إي إتفي هاروك فيئتيفوف إنيوت إفنوتي أووه غفنيب إنتي أؤون نيقين</p>
-                                                              </div>
-         <h3 class="red-text">يقول الشعب </h3>
-                                                             <div class="line">
-
-         <p class="black-text"> أمين</p>
-         <p class="deacon-text"> أمين</p>
-                                                             </div>
-          <h3 class="red-text">يقول الكاهن</h3>
-                                                              <div class="line">
-
-         <p class="black-text">وشكر</p>
-         <p class="deacon-text">إيطاف شيبئهموت</p>
-     </div>
-          <h3 class="red-text">يقول الشعب </h3>
-                                                              <div class="line">
-
-         <p class="black-text"> أمين</p>
-         <p class="deacon-text"> أمين</p>
-                                                              </div>
-           <h3 class="red-text">يقول الكاهن</h3>
-                                                               <div class="line">
-
-         <p class="black-text">وباركه</p>
-         <p class="deacon-text">آف إزمو إيروف</p>
-                                                               </div>
-          <h3 class="red-text">يقول الشعب </h3>
-                                                              <div class="line">
-
-         <p class="black-text"> أمين</p>
-         <p class="deacon-text"> أمين</p>
-                                                              </div>
-          <h3 class="red-text">يقول الكاهن</h3>
-                                                              <div class="line">
-
-         <p class="black-text">وقدسه</p>
-         <p class="deacon-text">آف إير آجيازين إمموف</p>
-                                                              </div>
-          <h3 class="red-text">يقول الشعب </h3>
-                                                              <div class="line">
-
-         <p class="black-text"> أمين</p>
-         <p class="deacon-text"> أمين</p>
-                                                              </div>
-          <h3 class="red-text">يقول الشعب </p>
-                                                                <div class="line">
-
-         <p class="black-text">نؤمن ونعترف ونمجد</p>
-         <p class="deacon-text">بيشتيف أومين كي أومولوغومين كي ذوكساذومين</p>
-                                                                </div>
-         <h3 class="red-text">يقسم الكاهن القربانة بتأن إلى ثلثين وثلث بدون فصل بإبهام يده اليمني من اعلي إلى أسفل الثلث عن اليمين والثلثان عن اليسار وينفخ فيها نفخة الروح القدس وهو يقول
-</h3>
-                                                    <div class="line">
-
-         <p class="black-text">وقسمه واعطاه لخواصه التلاميذ القديسين والرسل الأطهار قائلاً: خذوا كلوا منه كلكم لأن هذا هو جسدى</p>
-          <p class="deacon-text">آف فشف أفتيف إنني إيتينيوف إن آجيوس إم متثيتيس أووه إن آبوسطولوس إثؤواب إفجو: إمموس جي تشي أؤوم إيقول إنخيتف تيروفاي غاربي باسوما.
-          </p>
-     </div>
-        <h3 class="red-text">وهنا يفرق رأس القربانة وأسفلها بإصبعه بدون فصل ويضعها بالصينية ثم ينفض يديه داخل الصينية لئلا يكون قد إلتصق بهما شيء من القربانة وهو يقول
-</h3>
-                                                    <div class="line">
-
-          <p class="black-text">الذي يقسم عنكم وعن كثيرين يعطي لمغفرة الخطايا هذا اصنعوه لذكري
-          </p>
-         <p class="deacon-text">إنو نافشف إيجين ثينو نيم هان كي ميش إنسي تيف إي إيكو إيقول إنتي ني نوفي فاي ىريتف إيبا إير إفميقتي.</p>
-     </div>
-          <h3 class="red-text">يقول الشعب </h3>
-                                                              <div class="line">
-
-          <p class="black-text">هذا هو  بالحقيقة آمين</p>
-                  <p class="deacon-text">فاي بي خين أو ميثمي آمين</p>
-                                                              </div>
-                  <h3 class="red-text">يضع الكاهن يده على حافة الكأس ويمر بإصبعه على حافتها ويقول </h3>
-                                                            <div class="line">
-
-                  <p class="black-text"> وهكذا أيضاً الكأس بعد العشاء مزجها من خمر وماء</p>
-         <p class="deacon-text">باى ريتي أون بي كي أفوت مينينسا بيذيبتون أفئوطف إيقول خين أو إرب نيم أو موؤو.
-         </p>
-                                                            </div>
-          <h3 class="red-text">يقول الكاهن</h3>
-                                                              <div class="line">
-
-          <p class="black-text">وشكر</p>
-                  <p class="deacon-text">إيطاف شيبئهموت</p>
-                                                              </div>
-       <h3 class="red-text">يقول الشعب </h3>
-                                                           <div class="line">
-
-         <p class="black-text">حقا</p>
-                  <p class="deacon-text">امين</p>
-                                                           </div>
-         <h3 class="red-text">يقول الكاهن</h3>
-                                                             <div class="line">
-
-          <p class="black-text"> وباركها</p>
-                  <p class="deacon-text">آف إزمو إيروف</p>
-                                                             </div>
-         <h3 class="red-text">يقول الشعب </h3>
-                                                             <div class="line">
-
-         <p class="black-text">حقا</p>
-                  <p class="deacon-text">امين</p>
-                                                             </div>
-         <h3 class="red-text">يقول الكاهن</h3>
-                                                             <div class="line">
-
-          <p class="black-text">وقدسها </p>
-         <p class="deacon-text">آف إير أجيازين إمموف</p>
-                                                             </div>
-         <h3 class="red-text">يقول الشعب </h3>
-                                                             <div class="line">
-
-         <p class="black-text">وأيضاً نؤمن ونعترف ونمجد</p>
-                  
-        <p class="deacon-text">كي بالين بيستيق أومين كي أو مولوغومين كي ذو كساذومين</p>
-                                                             </div>
-        <h3 class="red-text">يمسك الكاهن حافة الكأس بيده وينفخ نفخة الروح القدس ويقول </h3>
-                                                            <div class="line">
-
-         <p class="black-text"> وذاق واعطاها أيضاً لتلاميذه القديسين ورسله الطهار قائلاً
-خذوا اشربوا منها كلكم لأن هذا هو دمي الذي للعهد الجديد الذي يسفك عنكم وعن كثيرين يعطي لمغفرة الخطايا هذا إصنعوه لذكري</p>
-          <p class="deacon-text">آف جيمتيبي أف تيف أون إنني إيتينوف إن آجيوس إم ماثيتيس أووه إن آبوسطولوس إثؤواب إفجوس إمموس.
-جي تشي سو إيقول إنخيتف تيرو فاي غاربي با إسنوف إنتي تي ذيائيكي إمقيري إبطو نافونف إيقول إيجين ثينو نيم هان كي ميش إنسيتيف إي إبكو إيقول إنتي ني نوفي فاي آريتف إيبا إير إفميقئي.
-          </p>    
-                                                             </div>
-      <h3 class="red-text">يقول الشعب </h3>
-                                                          <div class="line">
-
-          <p class="black-text">هذا هو ايضا بالحقيقة امين</p>
-          <p class="deacon-text">فاي أون بي خين أو ميثمي آمين
-          </p>
-                                                             </div>  
-<h3 class="red-text">   يشير الكاهن بيديه إلى الجسد ويقول</h3>
-                                                    <div class="line">
-       
-<p class="black-text">  لأن كل مرة تآكلون من هذا الخبز</p>
-        <p class="deacon-text"> سوب غارنيقين إيتيتين نا او أوم إيقول خين باي أوبك فاي</p>
-                                                             </div>  
-        <h3 class="red-text">      ويشير إلى الكاس ويقول</h3>    
-                                                            <div class="line">
-
-          <p class="black-text">  وتشربون من هذه الكأس</p>
-        <p class="deacon-text"> اووه إيتي تين سو إيقول خين باي ىفوت فاي</p>
-                                                             </div>
-        <h3 class="red-text">   ثم يكمل قائلاً</h3>
-                                                             <div class="line">
-
-         <p class="black-text">  تبشرون بموتي وتعترفون بقيامتي وتذكروني إلى أن أجي</p>
-        <p class="deacon-text"> إيريتين هي اويش إمبابو إيريتين إير أومولوجين إن تا آناسطاسيس إيري تين إيري إمباميقئي شاتي إي</p>
-                                                             </div>
-        <h3 class="red-text">يقول الشعب </h3>
-                                                    <div class="line">
-
-                                             <p class="black-text">              آمين آمين آمين بموتك يارب نبشر و بقيامتك المقدسة وصعودك إلي السموات نعترف نسبحك نباركك نشكرك يارب و نتضرع إليك يا الله</p>
-                                                   <p class="deacon-text">          آمين آمين آمين طون ثاناطون سو كيريي كاطا آنجيلومين كي تين آجيان سو آناسطاسين كي تين أناليم إبسين سوا إنتيس اورانيس. سي أومولوغومين. سي إنومين. سي إقلوغومين سي إفخاريستومين كيريي كي ذي او ميطاسو أوثيئوس إيمون</p>    
-      </div>    
-                                                                </div>
-
-
-
-
-       
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving8-box')">
-سر حلول الروح القدس: ففيما نحن أيضا + وهذا الخبز
-    </button>
-    <div id="thanksgiving8-box" class="thanksgiving8-box" aria-hidden="true">
-      
    
-       <h2> حلول الروح القدس: ففيما نحن أيضا</h2>
-       
-       <h3 class="red-text">يقول الكاهن</h3>
-       <div class="line">
-       <p class="black-text">   ففيما نحن أيضاً نصنع ذكر آلامه المقدسة وقيامته من الأموات وصعوده إلى السموات وجلوسه عن يمكينك أيها الآب وظهوره الثاني الآتي من السموات المخوف المملوء مجداً تقرب لك قرابينك من الذي لكل على كل حال ومن اجل كل حال في كل حال
-       </p>
-      <p class="deacon-text"> إنئيري اون هون إم إفميقئي إن نيف خيسي إثؤواب نيم نيف جين طنف إيقول خين ني إثموؤوت نيم بيف جين شي إي إبشوى إي نيفيئوي نيم بيف جين هيمسي ساتيك أؤي نام إفيو نيم نيف ماه إسنوتي إمباروسيا إثنيو إيقول خين نيفيئوي إتئوي إنهوتي اووه إثميه إن أوأو. تين إير إبروس فيرين ناك إن نيئيتينوك إنذورون إيقول خين نييئينوك كاطا هوب نيقين نيم إتقي هوب نيقين نيم خين هوب نيقين. </p>
-       </div>
-        <h3 class="red-text">يقول الشماس</h3>
-        <div class="line">
-       <p class="black-text">   أسجدوا لله بخوف ورعدة </p>
-      <p class="deacon-text"> أوأوشت إم إفنوتي خين أوهوتي نيم أو إستيرتير.
-      </p>
-        </div>
-       <h3 class="red-text">يقول الشعب </h3>
-       <div class="line">
-          <p class="black-text">نسبحك نباركك نخدمك ونسجد لك</p>
-                  <p class="deacon-text">تينهوس إيروك تين إزمو إيروك تين شمشي إمموك أوأوشت إمموك</p>
-       </div>
-    <h3 class="red-text">يقول الشماس</h3>
+  </div>
+
+   
+
+
+      
+    <div id="prayer-22" class="prayer-content">
+      <div class="prayer-title">  اعتراف الكاهن و الشماس</div>
+      
+    
+<h2>اعتراف الكاهن </h2>
+  
+<h3 class="red-text">يقول الكاهن</h3>
     <div class="line">
-       <p class="black-text">  ننصت آمين
-       </p>
-      <p class="deacon-text"> إبروس خومين آمين </p>
+
+<p class="black-text">
+آمين آمين آمين أؤمن أؤمن أؤمن وأعترف إلى النفس الأخير أن هذا هو الجسد المحيي الذي أخذه إبنك الوحيد ربنا وإلهنا ومخلصنا يسوع المسيح من سيدتنا وملكتنا كلنا والدة الإله القديسة الطاهرة مريم وجعله واحدًا مع لاهوته ([1]) بغير اختلاط ولا امتزاج ولا تغيير وأعترف الأعتراف الحسن أمام بيلاطس البنطي وأسلمه عنا على خشبة الصليب المقدسة بإرادته وحده عنا كلنا بالحقيقة أؤمن أن لاهوته لم يفارق ناسوته لحظة واحدة ولا طرفة عين. يعطى عنا خلاصًا و غفرانًا للخطايا وحياة أبدية لمن يتناول منه أؤمن أؤمن أؤمن أن هذا هو بالحقيقة آمين.
+</p>
+<p class="deacon-text">آمين آمين آمين تيناهتي تيناهتي تيناهتي أووه تيئير اومولجين شابي نيفي إنخائية جي ثاي تي تيساريكس إنريف تانخو إبطا بيك مونوجينيس إنشيري بين شويس اووه بيننوتي اووه بينسوتير إيسوس بي إخرستوس تشيتس إيقول خين تين شويإننيب تيرين تيثيئوطوكوس إثؤواب تي آجيا ماريا آف أيس إنؤواي نيم تيفميثنوتي خين أوميت أتموجت نيم اوميت آتثوخ نيم اوميت آتشيقتي إي آفئير أومولوجين إنتي أومولوجيا إيثنانيس ناهرين بونتيوس بيلانوس آفتيس إي إهري إيجون هيجين بي شي إثؤواب إنتي بي إستافروس خين بيف أؤوش إممين إمموف إي إهري إيجون تيرين آليثوس تيناهتي جي إمبي تيفيثنوتي فورج إيتيفميترومي إن أوسوسو إنئو اوت اوذي أوريكي إمقالب إقتي إمموس إيجون إن أو سوتس نيم أوكو إيقول إنتي ني نوفي نيم أو أونخ ان إبنيه إن نيئثناتشي إيقول إنخخيتس تيناهتي تيناهتي تيناهتي جي ثاي تي خين أوميثمي آمين
+</p>
+
      </div>
-       <h3 class="red-text">يقول الكاهن</h3>
-       <div class="line">
-       <p class="black-text">   وهذا الخبز يجعله جسداً مقدساً له
-       </p>
-      <p class="deacon-text"> اووه بأى أويك مين إنتيف آيف إنسوما إفؤواب إنتاف. </p>
-       </div>
-    <h3 class="red-text">يقول الشعب </h3>
+     <h2>اعتراف  الشماس</h2>
+
+<h3 class="red-text">يقول الشماس </h3>
     <div class="line">
-          <p class="black-text">آؤمن</p>
-                  <p class="deacon-text">تي ناهتي آمين
-                  </p>
-    </div>
-         <h3 class="red-text">يقول الكاهن</h3>
-         <div class="line">
-       <h3 class="black-text">   وهذه الكأس أيضاً دماً كريماً للعهد الجديد الذي له </h3>
-      <h3 class="deacon-text"> أووه باى أفوت ذى أون إن إسنوف إتطايوت إنتي تي ذياثيكي إمقيري إنتاف.
- </h3>
-         </div>
-    <h3 class="red-text">يقول الشعب </h3>
+
+<p class="black-text">آمين آمين آمين أؤمن أؤمن أؤمن أن هذا هو بالحقيقة آمين. أطلبوا عنا وعن كل المسيحيين الذين قالوا لنا من أجلهم أن نذكرهم في بيت الرب. سلام ومحبةربنا يسوع المسيح تكون معنا. رتلوا بنشيد الليلويا. صلوا من أجل التناول بإستحقاق من الأسرار المقدسة الطاهرة السمنائية يا رب إرحم.
+
+</p>
+<p class="deacon-text">آمين آمين آمين تيناهتي تيناهتي تيناهتي جي ثاي تي خين أوميثمي آمين طقه إي إهري إيجون نيم إيجين إخرستيانوس نيقين إيطاف جوس نان إثقيطوجي آريبنميقئي خين إبئي إم إبشويس إي إيريني كي آغابي إيسو إخرستو ميث إيمون إبسالاتي جو الليلويا إبروس إفكساستي إيبرتيس أكسياس ميتالبسيوس أكرانتون كي إيبورانيون تون آجيون ميستيريون كيريي إليسون.
+</p>
+     </div>
+
+
+
+<h3 class="red-text">يقول الشعب </h3>
     <div class="line">
-          <h3 class="black-text">وأيضاً نؤمن</h3>
-                  <h3 class="deacon-text">كي بالين تي ناهتي آمين</h3>
-    </div>
-       
-       <h3 class="red-text">يقول الكاهن</h3>
-       <div class="line">
-       <h3 class="black-text">  ربنا وإلهنا ومخلصنا يسوع المسيح يعطي لغفران الخطايا وحياة أبدية لمن يتناول منه </h3>
-      <h3 class="deacon-text"> بين شويس أووه بين نوتي اووه بين سوتير إيسوس بي إخرستوس إقتي إمموف إإبكو إيقول إنتي ني نوقي نيم أونخ إن إنيه إن نيئثناتشي إيقول إنخيتف. </h3>
-       </div>
-    <h3 class="red-text">يقول الشعب </h3>
+
+<p class="black-text">المجد لك يا رب. المجد لك.</p>
+<p class="deacon-text">ذوكساسي كيريي ذو كساسي</p>
+
+
+
+     </div>
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+
+      
+    <div id="prayer-21" class="prayer-content">
+      <div class="prayer-title"> جسد مقدس / سوما اجيون
+ </div>
+      
+
+ <h3 class="red-text">
+يقول الكاهن:</h3>
     <div class="line">
-          <h3 class="black-text">  يارب ارحم يارب ارحم يارب ارحم</h3>
-                  <h3 class="deacon-text"> كيري إليسون كيري إليسون كيري إليسون</h3>   
-  </div> 
+
+
+<p class="black-text">السلام للكل</p>
+<p class="deacon-text">إيريني باسي</p>
 </div>
+
+ <h3 class="red-text">يقول الشعب</h3>
+     <div class="line">
+
+ <p class="black-text">ولروحك أيضًا</p>
+<p class="deacon-text">كيطو إبنيقماتي سو</p>
+</div>
+
+<h3 class="red-text">ينزل الكاهن يده بالإسبوديقون ويرشم به الجسد ويقول:
+</h3>
+    <div class="line">
+
+<p class="black-text">جسد مقدس ودم كريم حقيقي ليسوع المسيح إبن إلهنا آمين</p>
+<p class="deacon-text">سوما آجيون كي إيما تيميون آليثينون إيسو خرستوطوإيوطو ثيئو إيمون آمين
+</p>
+</div>
+
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<p class="black-text">حقًا</p>
+<p class="deacon-text">آمين
+</p>
+</div>
+
+<h3 class="red-text">
+يرشم الكاهن الجسد ثانية وهو يقول:</h3>
+    <div class="line">
+
+<p class="black-text">مقدس وكريم جسد ودم حقيقي ليسوع المسيح إبن إلهنا آمين
+</p>
+<p class="deacon-text">آجيون تيمون سوما كي إيما آليثينون إيسوخرستوطوثيئو إيمون آمين</p>
+</div>
+
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<p class="black-text">حقًا</p>
+<p class="deacon-text">آمين
+</p>
+</div>
+
+<h3 class="red-text">يرشم الكاهن الجسد ثالثة بالإسبادقيون ثم يرفع يده ويرشم به الدم ثم يضعه في الكأس وهو يقول:</h3>
+    <div class="line">
+
+<p class="black-text">جسد ودم عمانوئيل إلهنا هذا هو بالحقيقة آمين</p>
+<p class="deacon-text">بي سوما نيم بي إسنوف إنتي إممانوئيل بيننوتي فاي بي خين أوميتي آمين.</p>
+</div>
+
+
+
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<p class="black-text">حقًا أؤمن</p>
+<p class="deacon-text">أمين تي ناهيتي</p>
+</div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+
+      
+    <div id="prayer-20" class="prayer-content">
+      <div class="prayer-title"> القدسات للقديسين / طا اجياتيس
+ </div>
+      
+      
+ <h3 class="red-text">يرفع الكاهن الإسباديقون باحتراس ويرشم به الدم ويغمسه في الدم ثم يرشم به الدم مرة ثانية وهو يقول:</h3>
+     <div class="line">
+
+ <p class="black-text">القدسات للقديسين مبارك الرب يسوع المسيح إبن الله وقدوس الروح القدس آمين
+ </p>
+<p class="deacon-text">طا آجياتيس آجيس إقلوجيطوس كيريروس إيسوس إخرستوس إيوس ثيئو آجياسموس إبنيقماآجيون آمين.
+</p>
+</div>
+
+<h3 class="red-text">ينهض الشعب وهو يقول:
+</h3>
+    <div class="line">
+
+ <p class="black-text">واحد هو الآب القدوس واحد هو الابن القدوس واحد هو الروح القدس آمين</p>
+<p class="deacon-text">إيس أوبان آجيوس باتير إيس أوبان آجيوس غيوس إنطوبانجيون إبنيقما آمين.
+
+</p>
+</div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+
+      
+    <div id="prayer-19" class="prayer-content">
+      <div class="prayer-title"> اذكر يارب اجتماعاتنا
+ </div>
+      
+
+
+        <h3 class="red-text">يقول الكاهن</h3>
+            <div class="line">
+
+<h3 class="black-text">أذكر يا رب اجتماعاتنا باركها</h3>
+<h3 class="deacon-text">آري إفميقئي إبشويس إن نين جينثؤوتي إزمو إيرؤو</h3>
+            </div>
+
+<h3 class="red-text">يقول الشماس </h3>
+    <div class="line">
+
+<h3 class="black-text">خلصت حقًا ومع روحك أيضا ننصت بخوف الله</h3>
+<h3 class="deacon-text">سوتيس آمين كيطوإبنيقماتي سو ميتا فوقو ثيؤبروس خومين
+</h3>
+    </div>
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<h3 class="black-text">آمين يا رب ارحم يا رب إرحم يا رب إرحم</h3>
+<h3 class="deacon-text">آمين كيريي إليسون كيريي إليسون كيريي إليسون</h3>
+
+     </div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+      
+    <div id="prayer-18" class="prayer-content">
+      <div class="prayer-title"> تحليل الآب / احنوا رؤوسكم 
+ </div>
+      
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<h3 class="black-text">بالمسيح يسوع ربنا</h3>
+<h3 class="deacon-text">خين بي خريستوس إيسوس بين تشويس</h3>
+
+    </div>
+
+
+
+<h3 class="red-text">يقول الشماس</h3>
+    <div class="line">
+
+<h3 class="black-text">أحنوا رؤوسكم للرب</h3>
+<h3 class="deacon-text">طاس كيفالاس إيمون طوكيريو إكليناتي</h3>
+
+    </div>
+
+<h3 class="red-text">يسجد الشعب قائلاً: </h3>
+    <div class="line">
+
+<h3 class="black-text"> أمامك يا رب</h3>
+<h3 class="deacon-text">إينوبيون سو كيريي</h3>
+
+     </div>
+<h3 class="red-text">يقول الشماس</h3>
+    <div class="line">
+
+<h3 class="black-text"> ننصت بخوف الله آمين</h3>
+<h3 class="deacon-text">إبروس خومين ثيئوميطافوقو آمين
+</h3>
+
+     </div>
+
+
+<h3 class="red-text">يقول الكاهن</h3>
+    <div class="line">
+
+<h3 class="black-text"> السلام للكل</h3>
+<h3 class="deacon-text">إيريني باسي</h3>
+
+    </div>
+
+<h3 class="red-text">ينهض الشعب قائلاً:</h3>
+    <div class="line">
+
+<h3 class="black-text"> ومع روحك أيضاً</h3>
+<h3 class="deacon-text"> كيطو إبنيقماتي سو
+</h3>
+    </div>
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+      
+    <div id="prayer-17" class="prayer-content">
+      <div class="prayer-title">  الجسد المقدس + الدم الكريم
+ </div>
+      
+
+<h2>الجسد المقدس</h2>
+<h3 class="red-text">يرفع الكاهن الجسد بيده اليمني ويضعه على يده اليسري ويضع إصبعه السابعة اليمني بجانب الإسباديقون من المكان المقسوم ويقول
+</h3>
+    <div class="line">
+
+<h3 class="black-text">الجسد المقدس
+</h3>
+<h3 class="deacon-text">بي سوما إثؤواب
+</h3>
+     </div>
+<h3 class="red-text">يسجد الشعب قائلاً</h3>
+    <div class="line">
+
+<h3 class="black-text">نسجد للجسد المقدس
+</h3>
+<h3 class="deacon-text">تين أوأوشت إمبيك سوما إثؤواب
+</h3>
+     </div>
+ <h2>الدم الكريم</h2>
+<h3 class="red-text">ثم يرفع الكاهن إصبعه من على الجسد ويمده إلى الكأس ويغمس إصبعه بالدم الكريم ويرفعه قليلاً ويرشم داخل الكأس رشماً واحداً وهو يقول
+</h3>
+    <div class="line">
+
+<h3 class="black-text">والدم الكريم</h3>
+<h3 class="deacon-text">نيم بي إسنوف إتطايوت</h3>
+     </div>
+<h3 class="red-text">يقول الشعب
+
+</h3>
+    <div class="line">
+
+<h3 class="black-text">ولدم الكريم</h3>
+<h3 class="deacon-text">نيم بيك إسنوف إتطايوت</h3>
+     </div>
+<h3 class="red-text">ثم يرشم الجسد بالدم رشمين فوق وأسفل ويقول</h3>
+    <div class="line">
+
+<h3 class="black-text">اللذان لمسيحه الضابط الكل الرب إلهنا
+</h3>
+<h3 class="deacon-text">إنتي بيف إخرستوس إنجي بي بانطوكراطور إبشويس بيننوتي</h3>
+     </div>
+<h3 class="red-text">يقول الشماس</h3>
+    <div class="line">
+
+<h3 class="black-text"> آمين آمين صلوا</h3>
+<h3 class="deacon-text">آمين آمين إبروس إفكساستي</h3>
+     </div>
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<h3 class="black-text">يارب ارحم</h3>
+<h3 class="deacon-text">كيري اليسون</h3>
+    </div>
+
+<h3 class="red-text">يقول الكاهن:</h3>
+    <div class="line">
+
+<h3 class="black-text"> السلام للكل</h3>
+<h3 class="deacon-text">إيريني باسي</h3>
+    </div>
+
+<h3 class="red-text">ينهض الشعب قائلاً</h3>
+    <div class="line">
+
+<h3 class="black-text">ولروحك أيضاً</h3>
+<h3 class="deacon-text">كيطوإبنيقماتي سو</h3>
+    </div>
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+      
+    <div id="prayer-16" class="prayer-content">
+      <div class="prayer-title">  وأيضاً فلنشكر / بالين أون مارين
+ </div>
+      
+
+<h3 class="red-text">يخضع الكاهن برأسه نحو الكهنة والشمامسة بلا رشم ويقول:</h3>
+    <div class="line">
+
+<h3 class="black-text">السلام للكل</h3>
+<h3 class="deacon-text">إيريني باسي</h3>
+     </div>
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<h3 class="black-text"> ولروحك أيضاً</h3>
+<h3 class="deacon-text">كيطو إبنيقماتي سو
+</h3>
+     </div>
+<h3 class="red-text">يقول الكاهن</h3>
+    <div class="line">
+
+<h3 class="black-text"> وأيضاً فلنشكر الله ضابط الكل ابا ربنا وإلهنا ومخلصنا يسوع المسيح لأنها جعلنا أهلاً الان أن نقف في هذا الموضع المقدس ونرفع أيدينا إلي فوق ونخدم إسمه القدوس هو أيضاً فلنسأله أن يجعلنا مستحقين لشركه وتناول أسراره الإلهية غير المائتة
+</h3>
+<h3 class="deacon-text">بالين أون مارين شيبئهموت إنططق إم إفنوتي بي بانطوكراطور إفيوت إم بين شويس أووه بيننوتي أووه بين سوتير إيسوس بي إخرستوس جي آفثرين إيرإبئمبشا أو تينو إي أوهي إيراتين خين باي ما إثؤواب فاي أووه إيفاي إن نين جيج إي إبشوي أووه إي شمشي إمبيف ران إثؤواب إنثوف أون مارين تيهو إيروف هوبوس إنتيف آيتين إنئيمئبشا إنتي ميت إشقير نيم تي ميت آليميبسيس إنتي نيف ميستيريون إن نوتي أووه إن آثمو.</h3>
+     </div>
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<h3 class="black-text"> حقاً</h3>
+<h3 class="deacon-text">آمين</h3>
+
+     </div>
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+      
+    <div id="prayer-15" class="prayer-content">
+      <div class="prayer-title">         اهدنا إلى ملكوتك / تشي مويت خاجون
+ </div>
+      
+
+<h3 class="red-text"> يقول الكاهن</h3>
+    <div class="line">
+
+<h3 class="black-text">وإهدنا إلى ملكوتك لكي بهذا كما أيضا في كل شئ يتمجد ويتبارك ويرتفع إسمك العظيم القدوس في كل شيء كريم ومبارك مع يسوع المسيح إبنك الحبيب والروح القدس
+</h3>
+<h3 class="deacon-text">تشي مويت خاجون إيخون إيتيك ميت أوروهينا نيم خين فاي كاطا إفريتي أون خين هوب نيقين إنتيف تشي أوأو أووه إنتيف تشي إزمو أووه إنتيف تشيسي إنجي بيك نشتي إنران إثؤواب خين هوب نيقين إتطايوت أووه إيت إزماروؤت نيم إيسوس بي إخرستوس بيك مينريت إنشيري نيم بي إبنيقما إثؤواب.
+
+</h3>
+
+
+     </div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+      
+    <div id="prayer-14" class="prayer-content">
+      <div class="prayer-title"> أولئك يا رب + كما كان
+ </div>
+      
+
+     
+<h3 class="red-text">يبسط الكاهن يديه ويرفعهما إلى فوق ويقول:</h3>
+    <div class="line">
+
+<h3 class="black-text">أولئك يا رب الذين أخذت نفسوهم نيحهم فيفردوس النعيم في كورة الأحياء إلى الأبد في أورشليم السمائية في ذلك الموضع ونحن أيضا الغرباء في هذا العالم إحفظنا في إيمانك وإنعم علينا بسلامك إلى التمام</h3>
+<h3 class="deacon-text">نيمين إبشويس إي آكتشي إن نو إبسيشي ما إمطون نوؤو خين بي باراذيسوس إنتي إبؤونوف خين إتخورا إنتي نيئيت أونخ شا إبنيه خين يروساليم إنتي إتفي خين بي ما إيتي إمماق أنون ذي هون خانيئتؤوي إنريم إنجويلي إم باي ما آريه إيرون خين بيك ناهتي آريئهموت نان إنتيك هيريني شا أيقول.
+</h3>
+     </div>
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<h3 class="black-text">كما كان وهكذا يكون من جيل إلى جيل وإلى دهر الدهور آمين
+</h3>
+<h3 class="deacon-text">اوس بيرين كي إستي إستين آبو جينيآس يسجي ني آن كي بانطاس طوس إيئوناس طون إيئونون آمين</h3>
+
+     </div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+      
+    <div id="prayer-13" class="prayer-content">
+      <div class="prayer-title">        لحن بركتهم المقدسة / إريبو إزمو
+  </div>
+      
+
+<h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+
+<h3 class="black-text">بركتهم المقدسة فلتكن معنا آمين المجد لك يا رب يا رب ارحم يا رب ارحم يا رب باركنا يا رب نيحهم آمين
+</h3>
+<h3 class="deacon-text">إريبو إزمو إثؤواب شوبي نيمان آمين ذوكساسي كيريي كيريي إليسون كيريي إليسون كيريي غقلوجيسون كيريي آناباقصون آمين
+
+</h3>
+
+
+     </div>
+
+
+    <h3 class="red-text">يقول الكاهن</h3>
+        <div class="line">
+
+    <h3 class="black-text">وهؤلاء وكل أحد، يارب، الذين ذكرنا أسماءهم، والذين لم نذكرهم الذين في فكر كل واحد منا، والذين ليسوا فينا. الذين رقدوا وتنيحوا في الايمان بالمسيح. تفضل يارب اذكر نفوس عبيدك ...
+</h3>  
+    <h3 class="deacon-text">أووه ناي نيم أوؤن نيقين إبشويس: ني إيطان طا أو إي نوران نيم ني إيتي إمبين طاؤو أوأوني إتخين إفميقئي إمبي أوواي بي أوواي إممون نيم ني إيتي إتخيتين آن إيطاق إنكوت آق إمطون إم موؤخين إفناهتي إم بي إخرستوس.
+</h3>
+        </div>
+    <h3 class="red-text">يقول الشماس</h3>
+
+    <h3 class="black-text">اطلبوا عن آبائنا وإخوتنا الذين رقدوا، وتنيحوا في الإيمان بالمسيح منذ البدء. آبائنا القديسين رؤساء الأساقفة، وآبائنا الأساقفة، وآبائنا القمامصة، وآبائنا القسوس وإخوتنا الشمامسة، وآبائنا الرهبان، وآبائنا العلمانيين، وعن نياح كل المسيحيين. لكي المسيح إلهنا ينيح نفوسهم أجمعين في فردوس النعيم، ونحن أيضاً يصنع معنا رحمةً، ويغفر لنا خطايانا.</h3>  
+    
+
+
+
+
+<h3 class="red-text">يقول الشعب</h3>
+<div class="line">
+
+<h3 class="black-text">يا رب إرحم
+</h3>
+<h3 class="deacon-text">كيريي إليسون</h3>
+</div>
+
+
+
+    
+    <h3 class="red-text">يقول الكاهن</h3>
+
+    <h3 class="black-text">تفضل يارب نيح نفوسهم جميعا في حضن آبائنا القديسين، ابراهيم وإسحق ويعقوب. عُلهُم في موضعِ خضرة، علي ماءِ الراحةِ في فردوسِ النعيمِ الموضع الذي هرب منه الحزنُ و الكآبةُ والتنهدُ في نوِر قديسيك.
+</h3>  
+   
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+      
+    <div id="prayer-12" class="prayer-content">
+      <div class="prayer-title">القربين + بي نيشتي
+  </div>
+      
+
+
        
-       
 
-    <button class="toggle-btn" onclick="toggleSection('thanksgiving9-box')">
-   جميع الأواشي
-    </button>
+<h2>أوشية القرابين</h2>
 
-    <div id="thanksgiving9-box" class="thanksgiving9-box" aria-hidden="true">
-          
+         
 
+
+<h3 class="red-text">يقول الكاهن</h3>
+<div class="line">
+
+<h3 class="black-text">أذكر يا رب الذين قدموا لك هذه القرابين والذين قدمت عنهم والذين قدمت بواسطتهم اعطيم كلهم الأجر السمائي
+</h3>
+<h3 class="deacon-text">آري إفميقئي إبشويس إن نيئيطاق إيني ناك إيخون إن ناي ذورون نيم نيئيطاق إينو إيجوؤو نيم نيئيطاق إينو إيقول هيطوطوموي نوؤو تيروإمبي فيكي بي إيقول خين نيفيئوي.
+</h3>
+     </div>
+
+<h3 class="red-text">يقول الشماس</h3>
+<div class="line">
+
+<h3 class="black-text">صلوا من أجل هذه القرابين المقدسة الكريمة و تقدماتنا والذين قدموها
+</h3>
+<h3 class="deacon-text">إبروس إيقئكساستي إيبرتون آجيون تيمون ذورون طوطون كي ثيسيون إيمون كي إبروس فيرون طون.
+</h3>
+     </div>
+<h3 class="red-text">يقول الشعب</h3>
+<div class="line">
+
+<h3 class="black-text">يا رب إرحم
+</h3>
+<h3 class="deacon-text">كيريي إليسون</h3>
+
+
+     </div>
+
+
+         <h2>  التراحيم /المجمع</h2>
+<h3 class="red-text">يقول الكاهن</h3>
+<div class="line">
+
+<h3 class="black-text"> لأن هذا يا رب هو أمر إبنك الوحيد ان نشترك في تذكار قديسيك تفضل يا رب أن تذكر جميع القديسين الذين أرضوك منذ البدء آبائنا القديسن رؤساء الآباء والأنبياء والرسل والمبشرين والإنجيليين والشهداء والمعترفين وكل أرواح الصديقين الذين كملوا في الإيمان وبالأكثر القديسة المملوءة مجداً العذراء كل حين والدة الإله القديسة الطاهرة مريم التي ولدت الله الكلمة بالحقيقة والقديس يوحنا السابق الصابغ والشهيد والقديس إستيفانوس ريس الشمامسة واول الشهداء وناظر الإله الإنجيلي مرقس الرسول الطاهر والشهيد والبطريرك القديس ساويرس ومعلمنا ديوسقوروس والقديس أثناسيوس الرسولي والقديس بطرس خاتم الشهداء ورئيس الكهنة والقديس يوحنا ذهبي الفم والقديس ثيئودوسيوس والقديس ثيئوفيلوس والقديس ديمتريوس والقديس كيرلس والقديس باسيليوس والقديس إغريغوريوس الناطق بالإلهيات والقديس إغريغوريوس الصانع العجائب والقديس إغريغوريوس الآرمني والثلاثمائة والثمانية عشر المجتمعون بنيقية والمائة والخمسون بالقسطنطينية والمائتان بأفسس وأبانا الصديق العظيم أنبا أنطونيوس والبار انبا بولا والثلاثة أنبا مقارات القديسون وجميع اولادهم لباس الصليب وأبونا أنبا بيشوي البار الرجل الكامل حبيب مخلصنا الصالح وأبونا أنبا بولا الطموهي و حزقيال تلميذه وسيداي الأبوان القديسان الروميان مكسيموس ودوماديوس والتسعة والأربعون شهيدا شيوخ شيهيت والقوي القديس أنبا موسي ويحنس كاما القس وأبونا أنبا دانيال القمص وأبونا أنبا أيسيذوروس القس وأبونا أنبا باخوم أب الشركة وتادرس تلميذه وأبونا أنبا شنودة رئيس المتوحدين وانبا ويصا تلميذه والقديس انبا أبرام أسقف الفيوم وكل مصاف قديسيك هؤلاء الذين بسؤالاتهم و طلباتهم إرحمنا كلنا معاً وانقذنا من أجل إسمك القدوس الذي دعي علينا
+</h3>
+<h3 class="deacon-text">إيبيذي إبشويس آواه ساهني بي إنتي بيك مونوجينيس إنشيري إيثرين إرإشقيرإبي إيرإفميقئي إنتي. نيئثؤواب إنتاك آري كاطاكسين إبشويس إنتيك إيرإفميقئي إن نيئثؤواب تيرو إبطقرانك يسجين إبئينيه نينيوتي إثؤواب ني بطريارشيس ني إبروفيتيس ني آبوسطولوس نيريف هي أويش ني أف آنجيليستيس ني مارتيروس ني اومولوجيتيس نيم إبنيقما نيقين إن أثمي إيطاف جوك إيقول خين إفناهتي إنهوؤو ذي ثيئثؤواب إثميه إن أوأوإت أوي إمبارثينوس إنسيونيقين تي ثيئوطوكوس إثؤواب تي آجيا ماريا ثيئيتاس إجفي إفنوتي بي لوغوس خين أوميثمي نيم بي آجيوس يوأنس بي إبروذروموس أمقابتس تيس أووه إم مارتيروس نيم بي آجيوس إستيفانوس بي أرشي ذياكونوس اووه إم إبروطومارتيروس نيم بي ثيئوريموس إن إف آنجيليستيس ماركوس بي آبوسطولوس إثؤواب أووه إم مارتيروس نيم بي بطريارشيس إثؤواب سيقيروس نيم بينساخ ديوسكورس نيم بي آجيوس اثناسيوس بي آبوسطوليكوس نيم بي آجيوس بيترس يبرومارتيروس بي أرشي إرفس نيم بي آجيوس يوأنس بي إخرزوستوموس نيم بي آجيوس ثيئودوسيوس نيم بي آجيوس ثيئوفيلوس نيم بي آجيوس ديمتريوس نيم لي آجيوس كيرلس نيم بي آجيوس فاسيليوس نيم بي آجيوس أغريغوريوس بي ثيئولوغوس نيم بي آجيوس إغريغوريوس بيثاق ماطورغوس نيم بي آجيوس إغريغوريوس بي أرمينيوس نيم بي شمت شي ميت إشمين إيطاف ثوؤوتي خين نيكيئا نيم بي شي تيقي إنتي كوسطانطينوبوليس نيم بي إسناق شي إنتي إيفيسوس. نيم بينيوت إن ذيكيئوس بينشتي آقا أنطونيوس نيم بي إثمي آقا باقلي. نيم بي شومت إثؤواب آقا مكاري نيم نوشيري تيرو إن إسطاقروفورس. نيم بينيوت آقا يؤانس بي هيغومينوس نيم بينوت آقا بيشوي بي إثمي بي رومي إنتي ليوس بي مينريت إنتي بين سوتير إن آغاثوس.نيم بينيوت آقا باقلي بيريم طموه نيم إيزاكيئيل بيف ماثيتيس نيم ناشويس إنيوتي إثؤواب إنروميئوس مكسيموس نيم دوميتيوس نيم بي إهمي إبيسيت إم مارتيروسنيخللوي إنتي شيهيت نيم بي جوري إثؤواب آقا موسي. نيم يوانس كامي بي إبريسقيتيروس نيم بينيوت أقا دانيئيل بيهيغومينوس نيم بينيوت آقا إيسيذوروس بي إبريسقيتيروس نيم بينيوت آقا شينوتي بي أرشي مان إذريتيس نيم آقا فيصابيف ماثيتيس نيم بينيوت آقا آقرام بي إبسكوبو إنتي إفيوم نيم إبخوروس تيرف إنتي نيئؤواب إنطاك ناي إيتي إيقول هيتين نو تيهو نيم طقه ناي نان تيرو إقسوب أووه ماطوجون إثقي بيكران إثؤواب إيطاق موتي إمموف إي إهري إيجون
+</h3>
+</div>
+<h3 class="red-text">يقول الشماس </h3>
+<div class="line">
+
+<h3 class="black-text">القارئون فليقولوا إسماء آبائنا البطاركة القديسين الذين رقدوا الرب ينيح نفوسهم أجميعن ويغفر لنا خطايانا</h3>
+<h3 class="deacon-text">نيئتئوش ماروطاؤؤو إن ني ران إنتي نينيوتي إثؤواب إمباطريارشيس إيطاق إنكوت إبشويس ما إمطون إن نؤ إبسيشي تيرو أووه إنتيف كانين نوقي نان إيقول</h3>
+
+ </div> 
+
+ 
+<h2>لحن بي نيشتي</h2>
+<h3 class="red-text">يقول الشماس </h3>
+<div class="line">
+<h3 class="black-text">العظيم أنبا انطونيوس والبار أنبا بولا، والقديسين الثلاثة مقارات أنبا يحنس القصير، أنبا بيشوي، أنبا
+بولا، أبوينا القديسين الروميين مكسيموس ودوماديوس أنبا موسى أنبا يحنس كاما، أنبا دانيال، أنبا
+إيسيذوروس ، أنبا باخوم ، أنبا شنودة وأنبا بفنوتيوس، أنبا برسوم، أنبا رويس.
+وجميع الذين علموا بكلمة الحق باستقامة الأساقفة الأرثوذكسين والقسوس والشمامسة والإكليروس
+والعلمانين وهؤلاء وجميع الأرثوذكسين آمين.</h3>
+<h3 class="deacon-text">بي نيشتي آفا أنطوني نيم بي إثمي آفا بافلي نيم بي شمت إثؤواب مكاريوس آفا يؤانس بي
+كولوفوس آفا بيشوي آفا بافلي نين يوتي إثواب إنروميئوس ماكسيموس نیم دومیدیوس آفا
+آفا يؤانس كامي آفا دانيئيل آفا إيسيذوروس آفا باخوم آفا شينوتي كي آفا بفنوتي آفا برسوما آفا
+تيجي.
+كي بأن طون دون أورثو ذيذاكسان دون طون لوغون تيبس اليثياس أورثوذكسون إبيسكوبون
+إبريسفيتيرون ذياكونون إكليريكون كي لائكون كي طوطون كي بانطون اورثوذوكسون أمين.</h3>
+</div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+      
+    <div id="prayer-11" class="prayer-content">
+      <div class="prayer-title">    جميع الأواشي
+ </div>
+      
+
+<h3 class="red-text">يقول الكاهن</h3>
+<div class="line">
+<h3 class="black-text">إجعلنا مستحقين كلنا
+يا سيدنا أن نتناول من
+قدساتك طهارة لأنفسنا
+وأجسادنا وأرواحنا لكي
+نكون جسدًا واحدًا
+وروحًا واحدًا ونجد نصيبًا
+وميراثًا مع جميع
+القديسين الذين أرضوك
+منذ البدء</h3>
+<h3 class="deacon-text">آريتين إن إيم إبشاتيرين بين نيب إتشي إيقول خين نيئثؤواب إنتاك إي أوطوقو إنتي نين إبسيشي نيم نين سوما نيم نين إبنيقما آهينا إنتين شوبي إن اوسوما إن أوأوت نيم أو إبنيقما إن أوأوت إنتين جيمي إن أوميروس نيم أو إكليروس نيم نيئثؤواب تيروإيتافراناك يسجين إبئينيه.</h3>
+</div>
 
        
    <h2> أوشية سلام الكنيسة</h2>
@@ -1383,850 +1817,950 @@
 
 
          </div>
-    </div>
 
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
 
+      
+    <div id="prayer-10" class="prayer-content">
+      <div class="prayer-title"> سر حلول الروح القدس: ففيما نحن أيضا + وهذا الخبز
+ </div>
+      
+   <h2> حلول الروح القدس: ففيما نحن أيضا</h2>
        
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving44-box')">
-القربين + بي نيشتي
-    </button>
-    <div id="thanksgiving44-box" class="thanksgiving44-box" aria-hidden="true">
-
-<h2>أوشية القرابين</h2>
-
-         
-
-
-<h3 class="red-text">يقول الكاهن</h3>
-<div class="line">
-
-<h3 class="black-text">أذكر يا رب الذين قدموا لك هذه القرابين والذين قدمت عنهم والذين قدمت بواسطتهم اعطيم كلهم الأجر السمائي
-</h3>
-<h3 class="deacon-text">آري إفميقئي إبشويس إن نيئيطاق إيني ناك إيخون إن ناي ذورون نيم نيئيطاق إينو إيجوؤو نيم نيئيطاق إينو إيقول هيطوطوموي نوؤو تيروإمبي فيكي بي إيقول خين نيفيئوي.
-</h3>
-     </div>
-
-<h3 class="red-text">يقول الشماس</h3>
-<div class="line">
-
-<h3 class="black-text">صلوا من أجل هذه القرابين المقدسة الكريمة و تقدماتنا والذين قدموها
-</h3>
-<h3 class="deacon-text">إبروس إيقئكساستي إيبرتون آجيون تيمون ذورون طوطون كي ثيسيون إيمون كي إبروس فيرون طون.
-</h3>
-     </div>
-<h3 class="red-text">يقول الشعب</h3>
-<div class="line">
-
-<h3 class="black-text">يا رب إرحم
-</h3>
-<h3 class="deacon-text">كيريي إليسون</h3>
-
-
-     </div>
-
-
-         <h2>  التراحيم /المجمع</h2>
-<h3 class="red-text">يقول الكاهن</h3>
-<div class="line">
-
-<h3 class="black-text"> لأن هذا يا رب هو أمر إبنك الوحيد ان نشترك في تذكار قديسيك تفضل يا رب أن تذكر جميع القديسين الذين أرضوك منذ البدء آبائنا القديسن رؤساء الآباء والأنبياء والرسل والمبشرين والإنجيليين والشهداء والمعترفين وكل أرواح الصديقين الذين كملوا في الإيمان وبالأكثر القديسة المملوءة مجداً العذراء كل حين والدة الإله القديسة الطاهرة مريم التي ولدت الله الكلمة بالحقيقة والقديس يوحنا السابق الصابغ والشهيد والقديس إستيفانوس ريس الشمامسة واول الشهداء وناظر الإله الإنجيلي مرقس الرسول الطاهر والشهيد والبطريرك القديس ساويرس ومعلمنا ديوسقوروس والقديس أثناسيوس الرسولي والقديس بطرس خاتم الشهداء ورئيس الكهنة والقديس يوحنا ذهبي الفم والقديس ثيئودوسيوس والقديس ثيئوفيلوس والقديس ديمتريوس والقديس كيرلس والقديس باسيليوس والقديس إغريغوريوس الناطق بالإلهيات والقديس إغريغوريوس الصانع العجائب والقديس إغريغوريوس الآرمني والثلاثمائة والثمانية عشر المجتمعون بنيقية والمائة والخمسون بالقسطنطينية والمائتان بأفسس وأبانا الصديق العظيم أنبا أنطونيوس والبار انبا بولا والثلاثة أنبا مقارات القديسون وجميع اولادهم لباس الصليب وأبونا أنبا بيشوي البار الرجل الكامل حبيب مخلصنا الصالح وأبونا أنبا بولا الطموهي و حزقيال تلميذه وسيداي الأبوان القديسان الروميان مكسيموس ودوماديوس والتسعة والأربعون شهيدا شيوخ شيهيت والقوي القديس أنبا موسي ويحنس كاما القس وأبونا أنبا دانيال القمص وأبونا أنبا أيسيذوروس القس وأبونا أنبا باخوم أب الشركة وتادرس تلميذه وأبونا أنبا شنودة رئيس المتوحدين وانبا ويصا تلميذه والقديس انبا أبرام أسقف الفيوم وكل مصاف قديسيك هؤلاء الذين بسؤالاتهم و طلباتهم إرحمنا كلنا معاً وانقذنا من أجل إسمك القدوس الذي دعي علينا
-</h3>
-<h3 class="deacon-text">إيبيذي إبشويس آواه ساهني بي إنتي بيك مونوجينيس إنشيري إيثرين إرإشقيرإبي إيرإفميقئي إنتي. نيئثؤواب إنتاك آري كاطاكسين إبشويس إنتيك إيرإفميقئي إن نيئثؤواب تيرو إبطقرانك يسجين إبئينيه نينيوتي إثؤواب ني بطريارشيس ني إبروفيتيس ني آبوسطولوس نيريف هي أويش ني أف آنجيليستيس ني مارتيروس ني اومولوجيتيس نيم إبنيقما نيقين إن أثمي إيطاف جوك إيقول خين إفناهتي إنهوؤو ذي ثيئثؤواب إثميه إن أوأوإت أوي إمبارثينوس إنسيونيقين تي ثيئوطوكوس إثؤواب تي آجيا ماريا ثيئيتاس إجفي إفنوتي بي لوغوس خين أوميثمي نيم بي آجيوس يوأنس بي إبروذروموس أمقابتس تيس أووه إم مارتيروس نيم بي آجيوس إستيفانوس بي أرشي ذياكونوس اووه إم إبروطومارتيروس نيم بي ثيئوريموس إن إف آنجيليستيس ماركوس بي آبوسطولوس إثؤواب أووه إم مارتيروس نيم بي بطريارشيس إثؤواب سيقيروس نيم بينساخ ديوسكورس نيم بي آجيوس اثناسيوس بي آبوسطوليكوس نيم بي آجيوس بيترس يبرومارتيروس بي أرشي إرفس نيم بي آجيوس يوأنس بي إخرزوستوموس نيم بي آجيوس ثيئودوسيوس نيم بي آجيوس ثيئوفيلوس نيم بي آجيوس ديمتريوس نيم لي آجيوس كيرلس نيم بي آجيوس فاسيليوس نيم بي آجيوس أغريغوريوس بي ثيئولوغوس نيم بي آجيوس إغريغوريوس بيثاق ماطورغوس نيم بي آجيوس إغريغوريوس بي أرمينيوس نيم بي شمت شي ميت إشمين إيطاف ثوؤوتي خين نيكيئا نيم بي شي تيقي إنتي كوسطانطينوبوليس نيم بي إسناق شي إنتي إيفيسوس. نيم بينيوت إن ذيكيئوس بينشتي آقا أنطونيوس نيم بي إثمي آقا باقلي. نيم بي شومت إثؤواب آقا مكاري نيم نوشيري تيرو إن إسطاقروفورس. نيم بينيوت آقا يؤانس بي هيغومينوس نيم بينوت آقا بيشوي بي إثمي بي رومي إنتي ليوس بي مينريت إنتي بين سوتير إن آغاثوس.نيم بينيوت آقا باقلي بيريم طموه نيم إيزاكيئيل بيف ماثيتيس نيم ناشويس إنيوتي إثؤواب إنروميئوس مكسيموس نيم دوميتيوس نيم بي إهمي إبيسيت إم مارتيروسنيخللوي إنتي شيهيت نيم بي جوري إثؤواب آقا موسي. نيم يوانس كامي بي إبريسقيتيروس نيم بينيوت أقا دانيئيل بيهيغومينوس نيم بينيوت آقا إيسيذوروس بي إبريسقيتيروس نيم بينيوت آقا شينوتي بي أرشي مان إذريتيس نيم آقا فيصابيف ماثيتيس نيم بينيوت آقا آقرام بي إبسكوبو إنتي إفيوم نيم إبخوروس تيرف إنتي نيئؤواب إنطاك ناي إيتي إيقول هيتين نو تيهو نيم طقه ناي نان تيرو إقسوب أووه ماطوجون إثقي بيكران إثؤواب إيطاق موتي إمموف إي إهري إيجون
-</h3>
-</div>
-<h3 class="red-text">يقول الشماس </h3>
-<div class="line">
-
-<h3 class="black-text">القارئون فليقولوا إسماء آبائنا البطاركة القديسين الذين رقدوا الرب ينيح نفوسهم أجميعن ويغفر لنا خطايانا</h3>
-<h3 class="deacon-text">نيئتئوش ماروطاؤؤو إن ني ران إنتي نينيوتي إثؤواب إمباطريارشيس إيطاق إنكوت إبشويس ما إمطون إن نؤ إبسيشي تيرو أووه إنتيف كانين نوقي نان إيقول</h3>
-
- </div> 
-
- 
-<h2>لحن بي نيشتي</h2>
-<h3 class="red-text">يقول الشماس </h3>
-<div class="line">
-<h3 class="black-text">العظيم أنبا انطونيوس والبار أنبا بولا، والقديسين الثلاثة مقارات أنبا يحنس القصير، أنبا بيشوي، أنبا
-بولا، أبوينا القديسين الروميين مكسيموس ودوماديوس أنبا موسى أنبا يحنس كاما، أنبا دانيال، أنبا
-إيسيذوروس ، أنبا باخوم ، أنبا شنودة وأنبا بفنوتيوس، أنبا برسوم، أنبا رويس.
-وجميع الذين علموا بكلمة الحق باستقامة الأساقفة الأرثوذكسين والقسوس والشمامسة والإكليروس
-والعلمانين وهؤلاء وجميع الأرثوذكسين آمين.</h3>
-<h3 class="deacon-text">بي نيشتي آفا أنطوني نيم بي إثمي آفا بافلي نيم بي شمت إثؤواب مكاريوس آفا يؤانس بي
-كولوفوس آفا بيشوي آفا بافلي نين يوتي إثواب إنروميئوس ماكسيموس نیم دومیدیوس آفا
-آفا يؤانس كامي آفا دانيئيل آفا إيسيذوروس آفا باخوم آفا شينوتي كي آفا بفنوتي آفا برسوما آفا
-تيجي.
-كي بأن طون دون أورثو ذيذاكسان دون طون لوغون تيبس اليثياس أورثوذكسون إبيسكوبون
-إبريسفيتيرون ذياكونون إكليريكون كي لائكون كي طوطون كي بانطون اورثوذوكسون أمين.</h3>
-</div>
-</div>
-
-    
-
-
-
-
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving16-box')">
-        لحن بركتهم المقدسة / إريبو إزمو
-      </button>
-    <div id="thanksgiving16-box" class="thanksgiving16-box" aria-hidden="true">
-
-
-
-
-
-
-
-
-
-<h3 class="red-text">يقول الشعب</h3>
+       <h3 class="red-text">يقول الكاهن</h3>
+       <div class="line">
+       <p class="black-text">   ففيما نحن أيضاً نصنع ذكر آلامه المقدسة وقيامته من الأموات وصعوده إلى السموات وجلوسه عن يمكينك أيها الآب وظهوره الثاني الآتي من السموات المخوف المملوء مجداً تقرب لك قرابينك من الذي لكل على كل حال ومن اجل كل حال في كل حال
+       </p>
+      <p class="deacon-text"> إنئيري اون هون إم إفميقئي إن نيف خيسي إثؤواب نيم نيف جين طنف إيقول خين ني إثموؤوت نيم بيف جين شي إي إبشوى إي نيفيئوي نيم بيف جين هيمسي ساتيك أؤي نام إفيو نيم نيف ماه إسنوتي إمباروسيا إثنيو إيقول خين نيفيئوي إتئوي إنهوتي اووه إثميه إن أوأو. تين إير إبروس فيرين ناك إن نيئيتينوك إنذورون إيقول خين نييئينوك كاطا هوب نيقين نيم إتقي هوب نيقين نيم خين هوب نيقين. </p>
+       </div>
+        <h3 class="red-text">يقول الشماس</h3>
+        <div class="line">
+       <p class="black-text">   أسجدوا لله بخوف ورعدة </p>
+      <p class="deacon-text"> أوأوشت إم إفنوتي خين أوهوتي نيم أو إستيرتير.
+      </p>
+        </div>
+       <h3 class="red-text">يقول الشعب </h3>
+       <div class="line">
+          <p class="black-text">نسبحك نباركك نخدمك ونسجد لك</p>
+                  <p class="deacon-text">تينهوس إيروك تين إزمو إيروك تين شمشي إمموك أوأوشت إمموك</p>
+       </div>
+    <h3 class="red-text">يقول الشماس</h3>
     <div class="line">
-
-<h3 class="black-text">بركتهم المقدسة فلتكن معنا آمين المجد لك يا رب يا رب ارحم يا رب ارحم يا رب باركنا يا رب نيحهم آمين
-</h3>
-<h3 class="deacon-text">إريبو إزمو إثؤواب شوبي نيمان آمين ذوكساسي كيريي كيريي إليسون كيريي إليسون كيريي غقلوجيسون كيريي آناباقصون آمين
-
-</h3>
-
-
+       <p class="black-text">  ننصت آمين
+       </p>
+      <p class="deacon-text"> إبروس خومين آمين </p>
      </div>
+       <h3 class="red-text">يقول الكاهن</h3>
+       <div class="line">
+       <p class="black-text">   وهذا الخبز يجعله جسداً مقدساً له
+       </p>
+      <p class="deacon-text"> اووه بأى أويك مين إنتيف آيف إنسوما إفؤواب إنتاف. </p>
+       </div>
+    <h3 class="red-text">يقول الشعب </h3>
+    <div class="line">
+          <p class="black-text">حقا آؤمن</p>
+                  <p class="deacon-text">تي ناهتي آمين
+                  </p>
+    </div>
+         <h3 class="red-text">يقول الكاهن</h3>
+         <div class="line">
+       <h3 class="black-text">   وهذه الكأس أيضاً دماً كريماً للعهد الجديد الذي له </h3>
+      <h3 class="deacon-text"> أووه باى أفوت ذى أون إن إسنوف إتطايوت إنتي تي ذياثيكي إمقيري إنتاف.
+ </h3>
+         </div>
+    <h3 class="red-text">يقول الشعب </h3>
+    <div class="line">
+          <h3 class="black-text">وأيضاً حقا نؤمن</h3>
+                  <h3 class="deacon-text">كي بالين تي ناهتي آمين</h3>
+    </div>
+       
+       <h3 class="red-text">يقول الكاهن</h3>
+       <div class="line">
+       <h3 class="black-text">  ربنا وإلهنا ومخلصنا يسوع المسيح يعطي لغفران الخطايا وحياة أبدية لمن يتناول منه </h3>
+      <h3 class="deacon-text"> بين شويس أووه بين نوتي اووه بين سوتير إيسوس بي إخرستوس إقتي إمموف إإبكو إيقول إنتي ني نوقي نيم أونخ إن إنيه إن نيئثناتشي إيقول إنخيتف. </h3>
+       </div>
+    <h3 class="red-text">يقول الشعب </h3>
+    <div class="line">
+          <h3 class="black-text">  يارب ارحم يارب ارحم يارب ارحم</h3>
+                  <h3 class="deacon-text"> كيري إليسون كيري إليسون كيري إليسون</h3>   
+  </div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
 
+      
+    <div id="prayer-9" class="prayer-content">
+      <div class="prayer-title"> الرشومات </div>
+        <h3 class="red-text">يشير الكاهن بيديه إلى الخبز ثم إلى الخمر وهو يقول</h3>
+                                                             <div class="line">
+
+         <p class="black-text">ووضع لنا هذا السر العظيم الذي للتقوي</p>
+         <p class="deacon-text">أفكودي نان إى إخري إمباي نشتي إمميستيريون إنتي تيميت إيقسبيس.</p>
+                                                             </div>
+         <h3 class="red-text">ثم يبخر يديه فوق المجمرة استعداداً لمسك السر وهو يقول
+         </h3>
+                                                             <div class="line">
+
+        <p class="black-text"> لأنه فيما هو راسم يسلم نفسه للموت عن حياة العالم
+        </p>
+          <p class="deacon-text">إيفثيش غارإيتيف إى إفمو خا إبؤنخ إم بي كوزموس. </p>
+                                                             </div>
+         <h3 class="red-text">يقول الشعب </h3>
+                                                             <div class="line">
+
+         <p class="black-text">نؤمن </p>
+        <p class="deacon-text"> آليثوس بيستيق آومين</p>
+                                                             </div>
+            <h3 class="red-text"> يأخذ الكاهن الخبز على يديه ويرفع اللفافة التي بالصينية ويقبلها بفمه ويضعها على المذبح ويقول    </h3>      
+                                                           <div class="line">
+
+            <p class="black-text"> اخذ خبزاً على يديه الطاهرتين اللتين بلا عيب ولا دنس الطوباويتين المحييتين</p>
+         <p class="deacon-text">أفتشي إن أويك إيجين نيف جيج أثؤواب إنآتتشني أووه إن آتثوليب أووه إم مكاريون أووه إنريف تانخو.
+
+         </p>
+                                                           </div>
+         <h3 class="red-text">يقول الشعب </h3>
+                                                             <div class="line">
+
+          <p class="black-text"> نؤمن ان هذا هو بالحقيقة آمين</p>
+         <p class="deacon-text">تي ناهتي جي فاي بي خين اوميثمي أمين</p>
+                                                             </div>
+          <h3 class="red-text">يقول الكاهن</h3>
+                                                              <div class="line">
+
+       <p class="black-text">ونظر إلى فوق نحو السماء إليك يا الله أباه وسيد كل أحد 
+       </p>
+          <p class="deacon-text">آفجوشت إي إبشوي إي إتفي هاروك فيئتيفوف إنيوت إفنوتي أووه غفنيب إنتي أؤون نيقين</p>
+                                                              </div>
+         <h3 class="red-text">يقول الشعب </h3>
+                                                             <div class="line">
+
+         <p class="black-text"> أمين</p>
+         <p class="deacon-text"> أمين</p>
+                                                             </div>
+          <h3 class="red-text">يقول الكاهن</h3>
+                                                              <div class="line">
+
+         <p class="black-text">وشكر</p>
+         <p class="deacon-text">إيطاف شيبئهموت</p>
+     </div>
+          <h3 class="red-text">يقول الشعب </h3>
+                                                              <div class="line">
+
+         <p class="black-text"> أمين</p>
+         <p class="deacon-text"> أمين</p>
+                                                              </div>
+           <h3 class="red-text">يقول الكاهن</h3>
+                                                               <div class="line">
+
+         <p class="black-text">وباركه</p>
+         <p class="deacon-text">آف إزمو إيروف</p>
+                                                               </div>
+          <h3 class="red-text">يقول الشعب </h3>
+                                                              <div class="line">
+
+         <p class="black-text"> أمين</p>
+         <p class="deacon-text"> أمين</p>
+                                                              </div>
+          <h3 class="red-text">يقول الكاهن</h3>
+                                                              <div class="line">
+
+         <p class="black-text">وقدسه</p>
+         <p class="deacon-text">آف إير آجيازين إمموف</p>
+                                                              </div>
+          <h3 class="red-text">يقول الشعب </h3>
+                                                              <div class="line">
+
+         <p class="black-text"> أمين</p>
+         <p class="deacon-text"> أمين</p>
+                                                              </div>
+          <h3 class="red-text">يقول الشعب </p>
+                                                                <div class="line">
+
+         <p class="black-text">نؤمن ونعترف ونمجد</p>
+         <p class="deacon-text">بيشتيف أومين كي أومولوغومين كي ذوكساذومين</p>
+                                                                </div>
+         <h3 class="red-text">يقسم الكاهن القربانة بتأن إلى ثلثين وثلث بدون فصل بإبهام يده اليمني من اعلي إلى أسفل الثلث عن اليمين والثلثان عن اليسار وينفخ فيها نفخة الروح القدس وهو يقول
+</h3>
+                                                    <div class="line">
+
+         <p class="black-text">وقسمه واعطاه لخواصه التلاميذ القديسين والرسل الأطهار قائلاً: خذوا كلوا منه كلكم لأن هذا هو جسدى</p>
+          <p class="deacon-text">آف فشف أفتيف إنني إيتينيوف إن آجيوس إم متثيتيس أووه إن آبوسطولوس إثؤواب إفجو: إمموس جي تشي أؤوم إيقول إنخيتف تيروفاي غاربي باسوما.
+          </p>
+     </div>
+        <h3 class="red-text">وهنا يفرق رأس القربانة وأسفلها بإصبعه بدون فصل ويضعها بالصينية ثم ينفض يديه داخل الصينية لئلا يكون قد إلتصق بهما شيء من القربانة وهو يقول
+</h3>
+                                                    <div class="line">
+
+          <p class="black-text">الذي يقسم عنكم وعن كثيرين يعطي لمغفرة الخطايا هذا اصنعوه لذكري
+          </p>
+         <p class="deacon-text">إنو نافشف إيجين ثينو نيم هان كي ميش إنسي تيف إي إيكو إيقول إنتي ني نوفي فاي ىريتف إيبا إير إفميقتي.</p>
+     </div>
+          <h3 class="red-text">يقول الشعب </h3>
+                                                              <div class="line">
+
+          <p class="black-text">هذا هو  بالحقيقة آمين</p>
+                  <p class="deacon-text">فاي بي خين أو ميثمي آمين</p>
+                                                              </div>
+                  <h3 class="red-text">يضع الكاهن يده على حافة الكأس ويمر بإصبعه على حافتها ويقول </h3>
+                                                            <div class="line">
+
+                  <p class="black-text"> وهكذا أيضاً الكأس بعد العشاء مزجها من خمر وماء</p>
+         <p class="deacon-text">باى ريتي أون بي كي أفوت مينينسا بيذيبتون أفئوطف إيقول خين أو إرب نيم أو موؤو.
+         </p>
+                                                            </div>
+          <h3 class="red-text">يقول الكاهن</h3>
+                                                              <div class="line">
+
+          <p class="black-text">وشكر</p>
+                  <p class="deacon-text">إيطاف شيبئهموت</p>
+                                                              </div>
+       <h3 class="red-text">يقول الشعب </h3>
+                                                           <div class="line">
+
+         <p class="black-text">حقا</p>
+                  <p class="deacon-text">امين</p>
+                                                           </div>
+         <h3 class="red-text">يقول الكاهن</h3>
+                                                             <div class="line">
+
+          <p class="black-text"> وباركها</p>
+                  <p class="deacon-text">آف إزمو إيروف</p>
+                                                             </div>
+         <h3 class="red-text">يقول الشعب </h3>
+                                                             <div class="line">
+
+         <p class="black-text">حقا</p>
+                  <p class="deacon-text">امين</p>
+                                                             </div>
+         <h3 class="red-text">يقول الكاهن</h3>
+                                                             <div class="line">
+
+          <p class="black-text">وقدسها </p>
+         <p class="deacon-text">آف إير أجيازين إمموف</p>
+                                                             </div>
+         <h3 class="red-text">يقول الشعب </h3>
+                                                             <div class="line">
+
+         <p class="black-text">وأيضاً نؤمن ونعترف ونمجد</p>
+                  
+        <p class="deacon-text">كي بالين بيستيق أومين كي أو مولوغومين كي ذو كساذومين</p>
+                                                             </div>
+        <h3 class="red-text">يمسك الكاهن حافة الكأس بيده وينفخ نفخة الروح القدس ويقول </h3>
+                                                            <div class="line">
+
+         <p class="black-text"> وذاق واعطاها أيضاً لتلاميذه القديسين ورسله الطهار قائلاً
+خذوا اشربوا منها كلكم لأن هذا هو دمي الذي للعهد الجديد الذي يسفك عنكم وعن كثيرين يعطي لمغفرة الخطايا هذا إصنعوه لذكري</p>
+          <p class="deacon-text">آف جيمتيبي أف تيف أون إنني إيتينوف إن آجيوس إم ماثيتيس أووه إن آبوسطولوس إثؤواب إفجوس إمموس.
+جي تشي سو إيقول إنخيتف تيرو فاي غاربي با إسنوف إنتي تي ذيائيكي إمقيري إبطو نافونف إيقول إيجين ثينو نيم هان كي ميش إنسيتيف إي إبكو إيقول إنتي ني نوفي فاي آريتف إيبا إير إفميقئي.
+          </p>    
+                                                             </div>
+      <h3 class="red-text">يقول الشعب </h3>
+                                                          <div class="line">
+
+          <p class="black-text">هذا هو ايضا بالحقيقة امين</p>
+          <p class="deacon-text">فاي أون بي خين أو ميثمي آمين
+          </p>
+                                                             </div>  
+<h3 class="red-text">   يشير الكاهن بيديه إلى الجسد ويقول</h3>
+                                                    <div class="line">
+       
+<p class="black-text">  لأن كل مرة تآكلون من هذا الخبز</p>
+        <p class="deacon-text"> سوب غارنيقين إيتيتين نا او أوم إيقول خين باي أوبك فاي</p>
+                                                             </div>  
+        <h3 class="red-text">      ويشير إلى الكاس ويقول</h3>    
+                                                            <div class="line">
+
+          <p class="black-text">  وتشربون من هذه الكأس</p>
+        <p class="deacon-text"> اووه إيتي تين سو إيقول خين باي ىفوت فاي</p>
+                                                             </div>
+        <h3 class="red-text">   ثم يكمل قائلاً</h3>
+                                                             <div class="line">
+
+         <p class="black-text">  تبشرون بموتي وتعترفون بقيامتي وتذكروني إلى أن أجي</p>
+        <p class="deacon-text"> إيريتين هي اويش إمبابو إيريتين إير أومولوجين إن تا آناسطاسيس إيري تين إيري إمباميقئي شاتي إي</p>
+                                                             </div>
+        <h3 class="red-text">يقول الشعب </h3>
+                                                    <div class="line">
+
+                                             <p class="black-text">              آمين آمين آمين بموتك يارب نبشر و بقيامتك المقدسة وصعودك إلي السموات نعترف نسبحك نباركك نشكرك يارب و نتضرع إليك يا الله</p>
+                                                   <p class="deacon-text">          آمين آمين آمين طون ثاناطون سو كيريي كاطا آنجيلومين كي تين آجيان سو آناسطاسين كي تين أناليم إبسين سوا إنتيس اورانيس. سي أومولوغومين. سي إنومين. سي إقلوغومين سي إفخاريستومين كيريي كي ذي او ميطاسو أوثيئوس إيمون</p>    
+      </div>    
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+      
+    <div id="prayer-8" class="prayer-content">
+      <div class="prayer-title"> تجسد وتأنس + وقام من بين الأموات
+ </div>
+          <h3 class="red-text">يقدم الشماس المجمرة للكاهن فيضع فيها يد يخور ويقول</h3>
+                                                     <div class="line">
+
+         <p class="black-text">تجسد و تأنس وعلمنا طرق الخلاص وأنعم علينا بالميلاد الذي من فوق بواسطة الماء والروح وجلعنا له شعباً مجتمعاً وصيرنا أطهاراً بروحك القدوس هذا الذي أحب خاصته الذين في العالم وأسلم ذاته فداءاً عنا إلى الموت الذي تملك علينا هذا الذي كنا ممسكين به مبيعين من قبل خطايانا نزل إلى الجحيم عن طريق الصليب</p>
+         <p class="deacon-text">آفتشي ساركس أووه آفئير رومي أووه آف إتسافون إيهان مويت إنتي بي أوجاي. إى آفئير خارزستي نان إمبي يسي بي إيقول إم إبشوي هيتين أوموؤو نيم او إبنيقما. آف أيتين ناف إن أو لاؤس إفثويت ىفئيرين شوبي إثؤواب هيتين بيك إبنيقما إثؤواب فاي إيطاف منري ني إيتي نوف إيتخين بي كوزموس آفتيف إممين إمموف إن سوتي خارون إيئفمو إت أوي إنئورو إيئهري إيجون فاي إبطاف أموني إممون إيقول هيططف إنطوي إيقول هيتين نين نوفي أفشيناف إيبيسيت إى آمنتي إيقول هيتين بي إستافروس.</p>
+         </div>
+          <h3 class="red-text">يقول الشعب </h3>
+                                                   <div class="line">
+
+       <p class="black-text">   حقا اؤمن</p>
+         <p class="deacon-text">آمين تي ناهتي</p>
+                                                   </div>
+          <h2>   وقام من بين الأموات / أفطونف إيفول</h2>
+         <h3 class="red-text">يقول الكاهن</h3>
+                                                    <div class="line">
+
+         <p class="black-text">وقام من بين الأموات في اليوم الثالث وصعد إلى السموات وجلس عن يمينك أيها الأب ورسم يوما للمجازاة هذا الذي يظهر فيه ليدين المسكونة بالعدل ويعطي كل واحد كنحو أعماله (أو بحسب أعماله)</p>
+          <p class="deacon-text">آفطونف ايفول خين نيئثموؤت خين لي إيهوؤو إم ماه شمت أفشيناف إي إبشوى إبنيفيئوي أفهيمسي ساتيك أوى نام إفيوت إي أفئوش إن أو إيهوؤوإنتي شيقيو فاى إيتي إفناؤونه إيقوةل إنخيتف إيتهاب إتيئيكوميني خين أوذيكيئو سيتي أووه إفناتي إمبي أواي بي أواي كاتا نيف إهفيئوي.</p>
+                                                    </div>
+            <h3 class="red-text">يقول الشعب </h3>
+                                                    <div class="line">
+
+            <p class="black-text"> كرحمتك يا رب وليس كخطايانا</p>
+          <p class="deacon-text">كاطا طو إيليؤوس سو كيريي كي مي كاطاطس أمرتياس إيمون.</p>
+       
+       </div>
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+      
+    <div id="prayer-7" class="prayer-content">
+      <div class="prayer-title">الشاروبيم يسجدون لك / قدوس قدوس 
+  </div>
+      
+         <h3 class="red-text">يقول الشعب </h3>
+                                           <div class="line">
+
+         <p class="black-text"> الشاروبيم يسجدون لك، والسيرافيم يمجدونك صارخين قائلين: قدوس قدوس،قدوس رب الجنود، السماء والأرض مملوءتان من مجدك الأقدس </p>
+      <p class="deacon-text"> ني شيروفيم سي أو أوشت إمموك نيم ني سيرافيم سي تيؤواو ناك إيف أوش إيقول إقجوإمموس جي آجيوس آجيوس آجيوس كيريوس ساقاؤوت إبلي ريس أو أورانوس كي إيجي تيس آجياس سوذوكسيس</p>
+      </div>
+         
+         
+         <h2>قدوس قدوس / اكؤواب إكؤواب</h2>
+         <h3 class="red-text">يقول الكاهن</h3>
+                                           <div class="line">
+
+          <p class="black-text">آجيوس .آجيوس .آجيوس قدوس قدوس قدوس بالحقيقة أيها الرب إلهنا الذي جبلنا وخلقنا ووضعنا في فردوس النعيم<br><br>
+          
+             وعندما خالفنا وصيتك بغواية الحية سقطنا من الحياة الأبدية و نفينا من فردوس النعيم فلم تتركنا عنك أيضاً إلى افنقضاء بل تعهدتنا دائماً بأنبيائك القديسين وفي أخر الأيام ظهرت لن نحن الجلوس في الظلمة وظلال الموت<br><br> 
+             بإبنك الوحيد الجنس ربنا وإلهنا ومخلصنا يسوع المسيح هذاالذي من الروح القدس ومن العذراء القديسة مريم</p>
+         <p class="deacon-text">آجيوس .آجيوس .آجيوس إكؤواب إكؤواب إكؤواب خين أو ميثمي إبشويس بيننوتي. فيئيطاف إير إبلازين إممون أووه أفثاميون أووه أفكان خين بي بارذيسوس إنتي إبؤونوف<br><br>
+           خين إبجين إيثرين إيربرافينين ذى إنتيك إنتولي هيتين ني آباتي إنتي بيهوف أنهي إيقول خين بي كونخ إن إينيه أووه أقئرإكسوريزين إممون إيقول خين بي بارذيسوس إنتي إبؤونوف. إمبيك كان إنثوك أون شا إيقول آللا أك جيم بين شيني خين أو مون إيقول هيتين نيك إبروفيتيس إثؤواب. أووه خين إيتخائي إنتي نيئيهوؤو أكؤونه نان إيقول أنون خانيئتهيمسي خين إبكاكي نيم إتخيفي إم إفمو<br><br>
+            هيتين بيك مونوجينيس إنشيري بين شويس أووه بيننوتي أووه بينسوتير إيسوس بي إخرستوس فاي إيتي إيقول خين بي إبنيقما إثؤواب نيم إيقول خين تي بارثينوس إثؤواب ماريا</p>
+                                           </div> 
+         <h3 class="red-text">يقول الشعب </h3>
+                                           <div class="line">
+
+         <p class="black-text">حقاً</p>
+          <p class="deacon-text">آمين</p>
+         </div>
+       
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+      
+    <div id="prayer-6" class="prayer-content">
+      <div class="prayer-title">         الرب مع جميعكم + مستحق وعادل 
+ </div>
+      
+
+       <h3 class="red-text">     وبعد إنتهاء صلاة الصلح يرفع الكاهن الإبروسفارين ويسلمه للشمامسة ثم يضع الكاهن اللفافة التي معه على يده اليسري ويأخذ اللفافة التي علي القربانة بيمينه ويرشم بها الشعب أولاً بمثال الصليب ويقول
+       </h3>
+                             <div class="line">
+
+<p class="black-text">الرب مع جميعكم
+</p>      
+      <p class="deacon-text">أوكيريوس ميطابانطون إيمون
+      </p>
+                             </div>
+      <h3 class="red-text">يقول الشعب </h3>
+                            <div class="line">
+
+      <p class="black-text">ومع روحك أيضاً
+      </p>
+         <p class="deacon-text">كي مي طاطو إبنيقماتو سو
+         </p>
+                            </div>
+       <h3 class="red-text">ثم يرشم الخدام إلى جانبي المذبح ويقول
+        </h3>
+                                    <div class="line">
+
+         <p class="black-text"> إرفعوا قلوبكم
+         
+         </p>
+    <p class="deacon-text">آنو إيمون طاس كارذياس
+    </p>
+                                    </div>
+         <h3 class="red-text">يقول الشعب </h3>
+                                     <div class="line">
+
+         <p class="black-text"> هي عند الرب
+         </p>
+      <p class="deacon-text">إيخومين إبروس طون كيريون
+      </p>
+                                     </div>
+         <h3 class="red-text">يقول الكاهن</h3>
+                                     <div class="line">
+
+     <p class="black-text">  فلنشكر الرب
+     </p>
+      <p class="deacon-text">إيفخاريس تيسومين طوكيريو
+      </p>
+                                     </div>
+
+      <h3 class="red-text">يقول الشعب </h3>
+                                  <div class="line">
+
+
+      <p class="black-text">مستحق وعادل
+      </p>
+     <p class="deacon-text">  أكسيون كي ذي كيئون
+     </p>
+                                  </div>
+      <h3 class="red-text">يقول الكاهن</h3>
+                                  <div class="line">
+
+      <p class="black-text">مستحق وعادل مستحق وعادل لأنه حقاً بالحقيقة مستحق وعادل أيها الكائن السيد الرب إله الحق الكائن قبل الدهور والمالك إلى الأبد الساكن في العالي والناظر إلى المتواضعين الذي خلق السماء والأرض والبحر وكل ما فيها أبو ربنا وإلهنا ومخلصنا يسوع المسيح هذا الذي خلقت به كل شيئ ما ري وما لا يري الجالس على كرسي مجده المسجود له من جميع القوات المقدسة
+      </p>
+      <p class="deacon-text">أكسيون كي ذي كيئون أكسيون كي ذي كيئون آليثوس غارخين اوميثمي أكسيون كي ذي كيئون فيئتشوب إننيب إبشويس إفنوتي إنتي تي ميثمي فيئتشوب خاجوؤو إن ني إبنيه أووه إت أوى إن أورو شا إينيه. فيئتشوب خين ني إتتشوسي أووه إت جوشت إيجين نيئتثيقيوت فيئيتاف ثاميو إن إتفي نيم إبكاهي نيم إفيوم نيم نيئتي إنخيتو تيرو. إفيوت إمبين شويس أووه بيننوتي أووه بين سوتير إيسوس بي إخرستوس فاى إيتاك ثاميو إم إبتيرف إيقول هي ططف ني إيتو ناق إيروؤونيم نيئتي إنسيناق إيروؤو آن. فيئت هيمسي هيجين بيإثرونوس إنتي بيف أوأو فيئيتو أوأوشت إمموف هيتين جوم نيفين إثؤواب.
+      </p>
+                                  </div>
+        <h3 class="red-text">يقول الشماس </h3>
+                                                              <div class="line">
+
+        <p class="black-text">أيها الجلوس قفوا
+      </p>
+       <p class="deacon-text">إيكاثي ميني آناسثيتي.
+
+       </p>
+                                  </div>
+      <h3 class="red-text">يقول الكاهن</h3>
+                                 <div class="line">
+
+      <p class="black-text"> الذي يقف أمامه الملائكة ورؤساء الملائكة الرئاسات والسلطات والكراسي والأرباب والقوات
+     </p>
+       <p class="deacon-text">فيئتو أو هي إى راتو ناهراف إنجي ني آنجيلوس نيم ني أرشي آنجيلوس نيم أرشي ني إكسوسيا ني إثرونوس ني ميت شويس ني جوم.
+       </p>
+                                  </div>
+ <h3 class="red-text">يقول الشماس </h3>
+                             <div class="line">
+
+ <p class="black-text">وإلى الشرق أنظروا
+      </p>
+      <p class="deacon-text">إيس أناطولاس إقليبساتي
+      </p>
+                                  </div>
+       <h3 class="red-text">يقول الكاهن</h3>
+                                  <div class="line">
+
+       <p class="black-text">انت هو الذي يقف حولك الشاروبيم الممتلئون أعيناً والسيرافيم ذوو الستة الجنحة يسبحون دائماً بغير سكوت قائلين
+      </p>
+          <p class="deacon-text">إنثوك غاربي إتؤ أو هي إيراتو إم بيك كوتي إنجي ني شيروفيم إثميه إمقال نيم ني سيرافيم نابي سو إن تنه. إيقئير هيمنوس خين أومون إيقول إن أت كارورو إيقجو إمموس.
+          </p>
+                                  </div>
+      <h3 class="red-text">يقول الشماس </h3>
+                                  <div class="line">
+                            
+      <p class="black-text">   ننصت
+        </p>
+         <p class="deacon-text">إبروس خومين
+         </p>
+                                  </div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+      
+    <div id="prayer-5" class="prayer-content">
+      <div class="prayer-title">بشفاعات والدة الاله
+  </div>
+      
+      <p class="black-text">بشفاعات والدة الإله القديسة مريم يا رب انعم لنا بمغفرة خطايانا نسجد لك أيها المسيح مع أبيك الصالح والروح القدس لنك أتيت وخلصتنا رحمة السلام ذبيحة 
+    التسبيح
+      </p>
+         <p class="deacon-text">هيتين ني إبريسفيا إنتي تي ثيئو طوكوس إثؤواب ماريا إبشويس آري إهموت نان إمبي كو إيفول إنتي نين نوفي تين أوأوشت إمموك أوبي إخرستوس نيم بيك يوت إن آغاثوس نيم بي إبنيقما اثؤواب جي آك إى آك سوتي إممون إى ليئوس إيرينيس ثيسيا إيني سيئوس.</p>
+            
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+
+      
+    <div id="prayer-4" class="prayer-content">
+      <div class="prayer-title"> قبلوا
+ </div>
+      
+ <h3 class="red-text">يقول الشماس </h3>
+               <div class="line">
+
+          <p class="black-text">قَبِّلوا بَعضَكُم بَعضًا بقبلةٍ مقدسة يا ربُ ارحم يا ربُ ارحم يا ربُ ارحم.
+نعم يا ربُ الذي هو يسوعُ المسيحُ ابنُ الله الحي إسْمَعنا وإرحمنا.
+
+قَدَّموا قَدَّموا قَدَّموا على الرسمِ قِفوا بخوفٍ ورعدَةٍ، وإلى الشرقِ انظروا، نُنصِتْ
+          </p>
+         <p class="deacon-text">اسبازيستي الليسوس ان فليماتي اجيو. كيريى ليسون كيريى ليسون كيريى ليسون.
+ كيريى ليسون سي ايتي فاي بي ايسوس باخرستوس ابشري أم أفنوتي سوتيم ايرون أووه ناي نان.
+
+ابروس فرين كاطا اطروبو. استاثيتي كاطا اطرومو. ايس اناطولاس  ابليبساتي ابروس خومين
+         </p>
+       </div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+       <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+      
+    <div id="prayer-3" class="prayer-content">
+      <div class="prayer-title">        إفرحي يا مريم    
+ </div>
+      
+         <h3 class="red-text">يقول الشعب </h3>
+                 <div class="line">
+
+             <p class="black-text">افرحي يا مريم العبدة والأم لأن الذي في حجرك الملائكة تسبحه<br><br>
+               والشاروبيم يسجدون له باستحقاق والسيرافيم بغير فتور<br><br>
+                ليس لنا دالة عند ربنا يسوع المسيح سوى طلباتك وشفاعتك يا سيدتنا كلنا السيدة والدة الإله<br><br> 
+                لكي نسبحك مع الشاروبيم قائلين: قدوس قدوس قدوس أيها الرب ضابط الكل السماء والأرض مملوءتان من مجدك وكرامتك<br><br> 
+                نسألك يا ابن الله ان تحفظ حياة بطريركنا أنبا (……) رئيس الكهنة ثبته على كرسيه و شريكه في الخدمه الرسولية أبينا المكرم البا الأنبا (....)مطراننا ثبته علي كرسيه</p> 
+               <p class="deacon-text">أونوف إممو ماريا تى فوكى أووه تيماف جى فيئت خين بى آميرنى آنجيلوس سيهوس إيروف<br><br>
+                 أووه نى شيروفيم سى أوأوشت إمموف إكسيوس نيم نى سيرافيم خين أوميت آت مونك <br><br>
+                  إممون إنتان إنؤو باريسيا خاتين بين شويس إيسوس بى اخرستوس خوريس نى طوفه نيم نى إبريسفيا أوتين شويس إن نيب تيرين تى ثيئوطوكوس<br><br> 
+                  هينا إنتين هوس إيروك نيم نى شيروفيم نيم نى سيرافيم إنؤوش إيفول إنجو إمموس جى: إكؤواب إكؤواب إكؤواب ابشويس بى بانطوكراطور إتفى نيم إبكاهى ميه إيفول خين بيك أو أو نيم بيك طايو<br><br>
+                   تين تيهو إيروك أو إيوس ثيئوس إثريك آريه إى إب أونخ أم بين بطريارشيس آفا (…….) بى أرشى إرفس  نيم بيف كي إشفيري إنليتورغوس بين يوت إثؤواب إن ذيكيؤس افا (....)بي ميت روبوليتيس ماطاجروف هيجين بيف إثرونوس ماطاجروف هيجين بيف إثرونوس</p>           
+      </div>
+   
+
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    </div>
+
+      
+    <div id="prayer-2" class="prayer-content">
+      <div class="prayer-title">       صلاه الصلح 2 (للقديس يوحنا) 
+ </div>
+       
+         <h2>  صلاه الصلح 2(للقديس يوحنا)</h2>
+      <h3 class="red-text">يقول الكاهن</h3>
+              <div class="line">
+
+         <p class="black-text"> عالٍ فوق كل قوة النطق، وكل فكر العقل، غني مواهبك يا سيدنا. لأن ما أخفيته عن الحكماء والفُهماء، هذا اعلنته لنا، نحن الأطفال الصغار. وما اشتهي الانبياء والملوك ان يروه ولم يروا. هذا أنعمت به لنا نحن الخطاه، لكي نخدمه ونتطهر من قِبله. عندما أقمت لنا تدبير إبنك الوحيد الجنس، والسر الخفي الذي لهذه الذبيحة. هذه التي ليس دم الناموس حولها، ولا بر الجسد. لكن الخروف فروَحي، والسكين فنطقية غير جسمية، هذه الذبيحة التي نقدمها لك.</p>
+          <p class="deacon-text">ستشوسي
+سا إبشوي إن جوم نيفين إنتيه اوصاچي : نيم
+چين موك ميك نيڤين إنتيه اونوس : إنجيه إثميت راماؤ
+إنتيه نيك ذوريئا اوو بين نيب.
+ني غار إيتاك هوبو إي قولها هان ساقيف نيم هان كات
+هيت : ناي اكتشوربو نان إيڤول آنون خا نيكوچي إن
+آلوؤي.
+اووه ني إيطا هان إبروفيتيس نيم هان اورؤ إر إبيثيمين
+إناق إرؤ اووه إمبو ناڤ.
+ناي آك إرخاريزتيه إممؤ نان آنون خا نيريف إر نوڤي : هينا
+إنتيف شيمشي إموؤ اووه إنتين توقو إي قول هيتوتو.
+خين إبچين إثريك طاهو نان إيراتس إنتي اوكونوميا
+إنتيه بيك مونوجينيس إن شيري : نيم تيميس تاغوجيا
+إنتيه طاي ثيسيا.
+ثاي إيتيه إممون إسنوف إمبي نوموس إمبيك سوتي :
+اوذيه اووميثمي إنتيه تي صاركس
+اللا
+بي إسوؤ مين اوو إبني ثما تيكون بيه : تي سيفي
+ذيه اولوجيكي تيه اووه إن اتسوما : طاي تيسيا اون ثاي
+إيتينيني إمموس ناك إيخون</p>
+              </div>
+         <h3 class="red-text">يقول الشماس </h3>
+                 <div class="line">
+
+           <p class="black-text">صلوا من أجل السلام الكامل، والمحبة، والقبلة الطاهرة الرسولية</p>
+          <p class="deacon-text">أبروس إفكساستي
+إيبرتيس تيلياس إيرينيس
+كي أغابيس كي طون
+آجيون إسباسمون طون
+آبو سطولون.
+          </p> 
+                 </div>
+           <h3 class="red-text">يقول الشعب </h3>
+                   <div class="line">
+
+             <p class="black-text"> يا ربُ إرحم.</p>
+          <p class="deacon-text"> كيري إيليصون</p>
+                   </div>
+            <h3 class="red-text">يقول الكاهن</h3>
+                    <div class="line">
+
+         <p class="black-text"> نسأل ونطلب من صلاحك يا محب البشر. طهر شفاهنا واعتق عقولنا من كل اخلاط الهيولي. وارسل لنا نعمة روحك القدوس. واجعلنا أهلاً، أن يقبل بعضُنا بعضاً بقبلة مقدسة لكي ننال بغير وقوعنا في دينونة، من موهبتك غير المائتة السمائية، المسيح يسوع ربنا </p>
+          <p class="deacon-text">
+تين تيهو اووه تين طوبه
+إنتيك ميت اغاثوس بي
+ماي رومي.
+ما طوقو إننين إسفوتو :
+اووه إي آك إربين نوس
+إنريمهيه اي قول ها چين
+موجت نيفين إنتيه تي
+هيلي.
+أووه أوو أورب نان إي
+إخري إمبي إهموت إنتي
+بيك إبنفما إثؤواب: أووه
+آريتين إن إمبشا إثرين إير
+اسبازيستي إن نين إيريوو
+خين أووفي إثؤواب. إي
+إب چين تينتشي خين
+اووميت آت هيتين إي
+إيهاب : إي قول خين تيك
+ذوريئا إن آثاموو اووه
+إن إي بورانيون : خين
+بيخريستوس إيسوس بين
+تشويس.</p>
+                    </div>
+
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+      </div>    
+    </div>
+     
+      
+    <div id="prayer-1" class="prayer-content">
+      <div class="prayer-title">صلاة الصلح</div>
+      
 
     <h3 class="red-text">يقول الكاهن</h3>
-        <div class="line">
-
-    <h3 class="black-text">وهؤلاء وكل أحد، يارب، الذين ذكرنا أسماءهم، والذين لم نذكرهم الذين في فكر كل واحد منا، والذين ليسوا فينا. الذين رقدوا وتنيحوا في الايمان بالمسيح. تفضل يارب اذكر نفوس عبيدك ...
-</h3>  
-    <h3 class="deacon-text">أووه ناي نيم أوؤن نيقين إبشويس: ني إيطان طا أو إي نوران نيم ني إيتي إمبين طاؤو أوأوني إتخين إفميقئي إمبي أوواي بي أوواي إممون نيم ني إيتي إتخيتين آن إيطاق إنكوت آق إمطون إم موؤخين إفناهتي إم بي إخرستوس.
-</h3>
-        </div>
+    <div class="line">
+    <p class="black-text">صل</p>  
+    <p class="deacon-text">اشليل </p>
+    </div>
+    <h3 class="red-text">يقول الشماس</p>
+      <div class="line">
+    <p class="black-text">للصلاه قفو</p>
+    <p class="deacon-text">ايبي بروس إفشي إسطاثيتي</p>
+    </div>
+    <h3 class="red-text">يقول الكاهن</h3>
+    <div class="line">
+    <p class="black-text">السلام للكل</p>
+    <p class="deacon-text">إيريني باسي</p>
+    </div>
+    <h3 class="red-text">يقول الشعب</h3>
+    <div class="line">
+    <p class="black-text">ولروحك ايضا</p>
+    <p class="deacon-text">كيطو ابنيفما تي سو</p>
+    </div>
+    <h3 class="red-text">يقول الكاهن</h3>
+    <div class="line">
+    <p class="black-text">
+      يا الله العظيم الأبدي، الذي جبل الإنسان علي غير فساد. والموت الذي دخل إلي العالم بحسد إبليس هدمته، بالظهور المحيى الذي لابنك الوحيد الجنس ربنا وإلهنا ومخلصنا يسوع المسيح. وملأت الأرض من السلام الذي من السموات. هذا الذي أجناد الملائكة يمجدونك به قائلين: المجد لله في الأعالي، وعلي الأرض السلام، وفي الناس المسره
+    </p>
+    <p class="deacon-text">
+      إفنوتي بي نشتي بي شا إينيه في إبطاف كوت إمبي رومي إى إهري إيجين تي ميت أتطاكو. أووه إفمو إيطاف إي إيخون إي بي كوزموس هيتين بي إفثونوس إنتي بي ذيافولوس آك شير شورف. هيتين بي أو أونه إيفول إنريف تنخو إنتي بيك مونوجينيس إنشيري بين شويس أووه بين نوتي أووه بين سوتير إيسوس بي إخرستوس أووه آك موه إم بي كاهي إيفول خين تي هيريني تي إيفول خين نيفيئووي ثاي إت إيري تي ستراتيا إنتي ني آنجيلوس تي أو اوناك إنخيتس إفجو إمموس جي أوأو أو إم إفنوتي خين ني إتتشوسي نيم أو هيريني هيجين بي كاهي نيم أوتيماتي خين ني رومي.
+    </p>
+    </div>
     <h3 class="red-text">يقول الشماس</h3>
         <div class="line">
 
-    <h3 class="black-text">اطلبوا عن آبائنا وإخوتنا الذين رقدوا، وتنيحوا في الإيمان بالمسيح منذ البدء. آبائنا القديسين رؤساء الأساقفة، وآبائنا الأساقفة، وآبائنا القمامصة، وآبائنا القسوس وإخوتنا الشمامسة، وآبائنا الرهبان، وآبائنا العلمانيين، وعن نياح كل المسيحيين. لكي المسيح إلهنا ينيح نفوسهم أجمعين في فردوس النعيم، ونحن أيضاً يصنع معنا رحمةً، ويغفر لنا خطايانا.</h3>  
-    <h3 class="deacon-text"></h3>
+    <p class="black-text">صلوا من أجل السلام الكامل، والمحبة، والقبلة الطاهرة الرسولية.</p>
+    <p class="deacon-text">
+      إبروس إفكساستي إيبرتيس تيلياس إيرينيس كي أغابيس آجيون إسباسمون طون آبوسطولون.
+    </p>
+        </div>
+    <h3 class="red-text">يقول الشعب</h3>
+        <div class="line">
 
+    <p class="black-text">يارب ارحم </p>
+    <p class="deacon-text">كيريي اليسون</p>
         </div>
 
-
-
-
-<h3 class="red-text">يقول الشعب</h3>
-<div class="line">
-
-<h3 class="black-text">يا رب إرحم
-</h3>
-<h3 class="deacon-text">كيريي إليسون</h3>
-</div>
-
-
-
-    
-    <h3 class="red-text">يقول الكاهن</h3>
-            <div class="line">
-
-    <h3 class="black-text">تفضل يارب نيح نفوسهم جميعا في حضن آبائنا القديسين، ابراهيم وإسحق ويعقوب. عُلهُم في موضعِ خضرة، علي ماءِ الراحةِ في فردوسِ النعيمِ الموضع الذي هرب منه الحزنُ و الكآبةُ والتنهدُ في نوِر قديسيك.
-</h3>  
-    <h3 class="deacon-text"></h3>
-            </div>
-</div>
-
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving17-box')">
-أولئك يا رب / كما كان
-      </button>
-    <div id="thanksgiving17-box" class="thanksgiving17-box" aria-hidden="true">
-
-
-
-
-
-
-     
-<h3 class="red-text">يبسط الكاهن يديه ويرفعهما إلى فوق ويقول:</h3>
-    <div class="line">
-
-<h3 class="black-text">أولئك يا رب الذين أخذت نفسوهم نيحهم فيفردوس النعيم في كورة الأحياء إلى الأبد في أورشليم السمائية في ذلك الموضع ونحن أيضا الغرباء في هذا العالم إحفظنا في إيمانك وإنعم علينا بسلامك إلى التمام</h3>
-<h3 class="deacon-text">نيمين إبشويس إي آكتشي إن نو إبسيشي ما إمطون نوؤو خين بي باراذيسوس إنتي إبؤونوف خين إتخورا إنتي نيئيت أونخ شا إبنيه خين يروساليم إنتي إتفي خين بي ما إيتي إمماق أنون ذي هون خانيئتؤوي إنريم إنجويلي إم باي ما آريه إيرون خين بيك ناهتي آريئهموت نان إنتيك هيريني شا أيقول.
-</h3>
-     </div>
-<h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-
-<h3 class="black-text">كما كان وهكذا يكون من جيل إلى جيل وإلى دهر الدهور آمين
-</h3>
-<h3 class="deacon-text">اوس بيرين كي إستي إستين آبو جينيآس يسجي ني آن كي بانطاس طوس إيئوناس طون إيئونون آمين</h3>
-
-     </div>
-
-        </div>
-
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving18-box')">
-        اهدنا إلى ملكوتك / تشي مويت خاجون
-      </button>
-    <div id="thanksgiving18-box" class="thanksgiving18-box" aria-hidden="true">
-
-
-<h3 class="red-text"> يقول الكاهن</h3>
-    <div class="line">
-
-<h3 class="black-text">وإهدنا إلى ملكوتك لكي بهذا كما أيضا في كل شئ يتمجد ويتبارك ويرتفع إسمك العظيم القدوس في كل شيء كريم ومبارك مع يسوع المسيح إبنك الحبيب والروح القدس
-</h3>
-<h3 class="deacon-text">تشي مويت خاجون إيخون إيتيك ميت أوروهينا نيم خين فاي كاطا إفريتي أون خين هوب نيقين إنتيف تشي أوأو أووه إنتيف تشي إزمو أووه إنتيف تشيسي إنجي بيك نشتي إنران إثؤواب خين هوب نيقين إتطايوت أووه إيت إزماروؤت نيم إيسوس بي إخرستوس بيك مينريت إنشيري نيم بي إبنيقما إثؤواب.
-
-</h3>
-
-
-     </div>
-         </div>
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving19-box')">
- وأيضاً فلنشكر / بالين أون مارين
-      </button>
-    <div id="thanksgiving19-box" class="thanksgiving19-box" aria-hidden="true">
-
-
-
-
-<h3 class="red-text">يخضع الكاهن برأسه نحو الكهنة والشمامسة بلا رشم ويقول:</h3>
-    <div class="line">
-
-<h3 class="black-text">السلام للكل</h3>
-<h3 class="deacon-text">إيريني باسي</h3>
-     </div>
-<h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-
-<h3 class="black-text"> ولروحك أيضاً</h3>
-<h3 class="deacon-text">كيطو إبنيقماتي سو
-</h3>
-     </div>
-<h3 class="red-text">يقول الكاهن</h3>
-    <div class="line">
-
-<h3 class="black-text"> وأيضاً فلنشكر الله ضابط الكل ابا ربنا وإلهنا ومخلصنا يسوع المسيح لأنها جعلنا أهلاً الان أن نقف في هذا الموضع المقدس ونرفع أيدينا إلي فوق ونخدم إسمه القدوس هو أيضاً فلنسأله أن يجعلنا مستحقين لشركه وتناول أسراره الإلهية غير المائتة
-</h3>
-<h3 class="deacon-text">بالين أون مارين شيبئهموت إنططق إم إفنوتي بي بانطوكراطور إفيوت إم بين شويس أووه بيننوتي أووه بين سوتير إيسوس بي إخرستوس جي آفثرين إيرإبئمبشا أو تينو إي أوهي إيراتين خين باي ما إثؤواب فاي أووه إيفاي إن نين جيج إي إبشوي أووه إي شمشي إمبيف ران إثؤواب إنثوف أون مارين تيهو إيروف هوبوس إنتيف آيتين إنئيمئبشا إنتي ميت إشقير نيم تي ميت آليميبسيس إنتي نيف ميستيريون إن نوتي أووه إن آثمو.</h3>
-     </div>
-<h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-
-<h3 class="black-text"> حقاً</h3>
-<h3 class="deacon-text">آمين</h3>
-
-     </div>
-          </div>
-
-
-
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving20-box')">
- 
- الجسد المقدس - الدم الكريم
-      </button>
-    <div id="thanksgiving20-box" class="thanksgiving20-box" aria-hidden="true">
-
-
-
-
-<h2>الجسد المقدس</h2>
-<h3 class="red-text">يرفع الكاهن الجسد بيده اليمني ويضعه على يده اليسري ويضع إصبعه السابعة اليمني بجانب الإسباديقون من المكان المقسوم ويقول
-</h3>
-    <div class="line">
-
-<h3 class="black-text">الجسد المقدس
-</h3>
-<h3 class="deacon-text">بي سوما إثؤواب
-</h3>
-     </div>
-<h3 class="red-text">يسجد الشعب قائلاً</h3>
-    <div class="line">
-
-<h3 class="black-text">نسجد للجسد المقدس
-</h3>
-<h3 class="deacon-text">تين أوأوشت إمبيك سوما إثؤواب
-</h3>
-     </div>
- <h2>الدم الكريم</h2>
-<h3 class="red-text">ثم يرفع الكاهن إصبعه من على الجسد ويمده إلى الكأس ويغمس إصبعه بالدم الكريم ويرفعه قليلاً ويرشم داخل الكأس رشماً واحداً وهو يقول
-</h3>
-    <div class="line">
-
-<h3 class="black-text">والدم الكريم</h3>
-<h3 class="deacon-text">نيم بي إسنوف إتطايوت</h3>
-     </div>
-<h3 class="red-text">يقول الشعب
-
-</h3>
-    <div class="line">
-
-<h3 class="black-text">ولدم الكريم</h3>
-<h3 class="deacon-text">نيم بيك إسنوف إتطايوت</h3>
-     </div>
-<h3 class="red-text">ثم يرشم الجسد بالدم رشمين فوق وأسفل ويقول</h3>
-    <div class="line">
-
-<h3 class="black-text">اللذان لمسيحه الضابط الكل الرب إلهنا
-</h3>
-<h3 class="deacon-text">إنتي بيف إخرستوس إنجي بي بانطوكراطور إبشويس بيننوتي</h3>
-     </div>
-<h3 class="red-text">يقول الشماس</h3>
-    <div class="line">
-
-<h3 class="black-text"> آمين آمين صلوا</h3>
-<h3 class="deacon-text">آمين آمين إبروس إفكساستي</h3>
-     </div>
-<h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-
-<h3 class="black-text">يارب ارحم</h3>
-<h3 class="deacon-text">كيري اليسون</h3>
-    </div>
-
-<h3 class="red-text">يقول الكاهن:</h3>
-    <div class="line">
-
-<h3 class="black-text"> السلام للكل</h3>
-<h3 class="deacon-text">إيريني باسي</h3>
-    </div>
-
-<h3 class="red-text">ينهض الشعب قائلاً</h3>
-    <div class="line">
-
-<h3 class="black-text">ولروحك أيضاً</h3>
-<h3 class="deacon-text">كيطوإبنيقماتي سو</h3>
-    </div>
-</div>
-
-
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving21-box')">
-قسمة أيها السيد الرب
-      </button>
-    <div id="thanksgiving21-box" class="thanksgiving21-box" aria-hidden="true">
-
-
-
-<h3 class="red-text">يقول الكاهن</h3>
-    <div class="line">
-
-<h3 class="black-text">أيها السيد الرب إلهنا العظيم الأبدي والمتعجب منه بالمجد حافظ عهده ورحمته |للذين يحبونه بكل قلبهم الذي أعطانا الخلاص من خطايانا بإبنه الوحيد الجنس يسوع المسيح ربنا حيلة كلأحد يا معين الملتجئين إليه ورجاء الذين يصرخون نحوه
-
-الذي يقف أمامه ألوف ألوف وربوات وربوات الملائكة و رؤساء الملائكة المقدسون الشاروبيم والسيرافيم وكل الجمع غير المحصي الذي للقوات السمائية
-
-يا الله الذي قدس هذه القرابين الموضوعة بحلول روحك القدوس عليها وطرتها
-
-طهرنا نحن أيضا يا سيدنا من خطايانا الخفية والظاهرة و كل فكر لا يرضي صلاحك يا الله محب البشر فليبعد عنا
-
-طهر نفوسنا وأجسادنا وأرواحنا وقلوبنا وعيوننا وأفهامنا وأفكارنا ونياتنا
-
-لكي بقلب طاهر ونفس مستنيرة ووجه غير مخزي وإيمان بلا رياء ومحبة كاملة ورجاء ثابت نجسر بدالة بغير خوف أن نطلب إليك يا الله الآب القدوس الذي في السموات ونقول أبانا الذي..
-</h3>
-<h3 class="deacon-text">إفنيب إبشويس بيننوتي بي نشتي بي شا إينيه أووه إينو إير إشفيري إمموف خين أوأوأو. في إيتآريه إيتيفذياثيكي نيم بيفناي إننيئتير آغا بان إمموف خين بوهيت تيرف. فيئيطافتي نان إن أوسوتي إنتي هاننوقي هيتين بيفمونوجينيس إنشيري إيسوس بي إخرستوس بنشويس إبؤنخ إنتي أو أون نيقين تي قوغيثيا إنتي نيئيتاف فوت هاروف تي هيلبيس إنتي نيئتؤوش إي إهري اوقيف.
-
-فيئتو أو هي إيراتو ناهراف إنجي ني انا أنشو إنشو نيم ني أنا عن إثقا إن إثقا إنتي ني آنجيليوس نيم ني أرشي آنجيليوس إثؤواب.
-
-ني شيروقيم ني بي سيرافيم نيم بي ميشي تيرف إن أت أتشي إيبي إمموف إنتي ني جوم إن إيبورانيون.
-
-إفنوتي فيئيطاف إير آجيازين إنناي ذورون ناي إتكي إي إخري هيتين إيجنئي إي إخري إيجوأوإنتي بيك إبنيقما إثؤواب أكتوقوأؤ.
-
-ماتوقون هون بيننيب إيقول هانيننوقي ني إتهيب نيم ني إثؤأونه إيقول أووه ميقئي نيقين إيتي إن إفران آن إنتيك ميت آغاثوس إفنوتي بي ماي رومي ماريف أوي ساقول إممون.
-
-ماتوقون إننين إبسيشي نيم نين سوما نيم نين إبنيقما نيم نين هيت نيم نين قال نيم نين كاتي نيم نين ميقئي نيم نين سيني ذيسيس.
-
-هوبوس خين اوهيت أفؤواب نيمأو إبسيشي إي آستشي أو أويني نيم أوهو إن آتشي شيبي نيم او ناهتي إن آتميتشوقي نيم أو آغابي إسجيك إيقول نيم أو هلبيس إستاجريوت إنتين إيرتولمان خين او باريسيا إن آت إيرهوتي إي طقه إمموك إفنوتي إفيوت إثؤواب إتخين ني فيؤوي اووه إيجوس جي بينيوت.</h3>
-
-
- </div>
-     </div>
-
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving22-box')">
-تحليل الآب / احنوا رؤوسكم 
-      </button>
-    <div id="thanksgiving22-box" class="thanksgiving22-box" aria-hidden="true">
-
-
-      
-<h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-
-<h3 class="black-text">بالمسيح يسوع ربنا</h3>
-<h3 class="deacon-text">خين بي خريستوس إيسوس بين تشويس</h3>
-
-    </div>
-
-
-
-<h3 class="red-text">يقول الشماس</h3>
-    <div class="line">
-
-<h3 class="black-text">أحنوا رؤوسكم للرب</h3>
-<h3 class="deacon-text">طاس كيفالاس إيمون طوكيريو إكليناتي</h3>
-
-    </div>
-
-<h3 class="red-text">يسجد الشعب قائلاً: </h3>
-    <div class="line">
-
-<h3 class="black-text"> أمامك يا رب</h3>
-<h3 class="deacon-text">إينوبيون سو كيريي</h3>
-
-     </div>
-<h3 class="red-text">يقول الشماس</h3>
-    <div class="line">
-
-<h3 class="black-text"> ننصت بخوف الله آمين</h3>
-<h3 class="deacon-text">إبروس خومين ثيئوميطافوقو آمين
-</h3>
-
-     </div>
-
-
-<h3 class="red-text">يقول الكاهن</h3>
-    <div class="line">
-
-<h3 class="black-text"> السلام للكل</h3>
-<h3 class="deacon-text">إيريني باسي</h3>
-
-    </div>
-
-<h3 class="red-text">ينهض الشعب قائلاً:</h3>
-    <div class="line">
-
-<h3 class="black-text"> ومع روحك أيضاً</h3>
-<h3 class="deacon-text"> كيطو إبنيقماتي سو
-</h3>
-    </div>
-
-
-
-
-
-
-
-
-
-         </div>
-
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving14-box')">
-اذكر يارب اجتماعاتنا
-
-      </button>
-    <div id="thanksgiving14-box" class="thanksgiving14-box" aria-hidden="true">
-      
-<h2>اذكر يارب اجتماعاتنا</h2>
-
-
-        <h3 class="red-text">يقول الكاهن</h3>
-            <div class="line">
-
-<h3 class="black-text">أذكر يا رب اجتماعاتنا باركها</h3>
-<h3 class="deacon-text">آري إفميقئي إبشويس إن نين جينثؤوتي إزمو إيرؤو</h3>
-            </div>
-
-<h3 class="red-text">يقول الشماس </h3>
-    <div class="line">
-
-<h3 class="black-text">خلصنا حقًا ومع روحك أيضا ننصت بخوف الله</h3>
-<h3 class="deacon-text">سوتيس آمين كيطوإبنيقماتي سو ميتا فوقو ثيؤبروس خومين
-</h3>
-    </div>
-<h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-
-<h3 class="black-text">آمين يا رب ارحم يا رب إرحم يا رب إرحم</h3>
-<h3 class="deacon-text">آمين كيريي إليسون كيريي إليسون كيريي إليسون</h3>
-
-     </div>
-     </div>
-     
-
-
-
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving13-box')">
-القدسات للقديسين / طا اجياتيس
-
-      </button>
-    <div id="thanksgiving13-box" class="thanksgiving13-box" aria-hidden="true">
-
-<h2>القدسات للقديسين / طا اجياتيس
-</h2>
- <h3 class="red-text">يرفع الكاهن الإسباديقون باحتراس ويرشم به الدم ويغمسه في الدم ثم يرشم به الدم مرة ثانية وهو يقول:</h3>
-     <div class="line">
-
- <p class="black-text">القدسات للقديسين مبارك الرب يسوع المسيح إبن الله وقدوس الروح القدس آمين
- </p>
-<p class="deacon-text">طا آجياتيس آجيس إقلوجيطوس كيريروس إيسوس إخرستوس إيوس ثيئو آجياسموس إبنيقماآجيون آمين.
-</p>
-</div>
-
-<h3 class="red-text">ينهض الشعب وهو يقول:
-</h3>
-    <div class="line">
-
- <p class="black-text">واحد هو الآب القدوس واحد هو الابن القدوس واحد هو الروح القدس آمين</p>
-<p class="deacon-text">إيس أوبان آجيوس باتير إيس أوبان آجيوس غيوس إنطوبانجيون إبنيقما آمين.
-
-</p>
-</div>
-</div>
-
-
-
-       
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving12-box')">
-جسد مقدس / سوما اجيون
-      </button>
-    <div id="thanksgiving12-box" class="thanksgiving12-box" aria-hidden="true">
-
-<h2>جسد مقدس </h2>
- <h3 class="red-text">
-يقول الكاهن:</h3>
-    <div class="line">
-
-
-<p class="black-text">السلام للكل</p>
-<p class="deacon-text">إيريني باسي</p>
-</div>
-
- <h3 class="red-text">يقول الشعب</h3>
-     <div class="line">
-
- <p class="black-text">ولروحك أيضًا</p>
-<p class="deacon-text">كيطو إبنيقماتي سو</p>
-</div>
-
-<h3 class="red-text">ينزل الكاهن يده بالإسبوديقون ويرشم به الجسد ويقول:
-</h3>
-    <div class="line">
-
-<p class="black-text">جسد مقدس ودم كريم حقيقي ليسوع المسيح إبن إلهنا آمين</p>
-<p class="deacon-text">سوما آجيون كي إيما تيميون آليثينون إيسو خرستوطوإيوطو ثيئو إيمون آمين
-</p>
-</div>
-
-<h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-
-<p class="black-text">حقًا</p>
-<p class="deacon-text">آمين
-</p>
-</div>
-
-<h3 class="red-text">
-يرشم الكاهن الجسد ثانية وهو يقول:</h3>
-    <div class="line">
-
-<p class="black-text">مقدس وكريم جسد ودم حقيقي ليسوع المسيح إبن إلهنا آمين
-</p>
-<p class="deacon-text">آجيون تيمون سوما كي إيما آليثينون إيسوخرستوطوثيئو إيمون آمين</p>
-</div>
-
-<h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-
-<p class="black-text">حقًا</p>
-<p class="deacon-text">آمين
-</p>
-</div>
-
-<h3 class="red-text">يرشم الكاهن الجسد ثالثة بالإسبادقيون ثم يرفع يده ويرشم به الدم ثم يضعه في الكأس وهو يقول:</h3>
-    <div class="line">
-
-<p class="black-text">جسد ودم عمانوئيل إلهنا هذا هو بالحقيقة آمين</p>
-<p class="deacon-text">بي سوما نيم بي إسنوف إنتي إممانوئيل بيننوتي فاي بي خين أوميتي آمين.</p>
-</div>
-
-
-
-<h3 class="red-text">يقول الشعب</h3>
-    <div class="line">
-
-<p class="black-text">حقًا أؤمن</p>
-<p class="deacon-text">أمين تي ناهيتي</p>
-</div>
-</div>
-
-
-       
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving10-box')">
-اعتراف الكاهن و الشماس
-      </button>
-    <div id="thanksgiving10-box" class="thanksgiving10-box" aria-hidden="true">
-      
-<h2>اعتراف الكاهن </h2>
-  
-<h3 class="red-text">يقول الكاهن</h3>
-    <div class="line">
-
-<p class="black-text">
-آمين آمين آمين أؤمن أؤمن أؤمن وأعترف إلى النفس الأخير أن هذا هو الجسد المحيي الذي أخذه إبنك الوحيد ربنا وإلهنا ومخلصنا يسوع المسيح من سيدتنا وملكتنا كلنا والدة الإله القديسة الطاهرة مريم وجعله واحدًا مع لاهوته ([1]) بغير اختلاط ولا امتزاج ولا تغيير وأعترف الأعتراف الحسن أمام بيلاطس البنطي وأسلمه عنا على خشبة الصليب المقدسة بإرادته وحده عنا كلنا بالحقيقة أؤمن أن لاهوته لم يفارق ناسوته لحظة واحدة ولا طرفة عين. يعطى عنا خلاصًا و غفرانًا للخطايا وحياة أبدية لمن يتناول منه أؤمن أؤمن أؤمن أن هذا هو بالحقيقة آمين.
-</p>
-<p class="deacon-text">آمين آمين آمين تيناهتي تيناهتي تيناهتي أووه تيئير اومولجين شابي نيفي إنخائية جي ثاي تي تيساريكس إنريف تانخو إبطا بيك مونوجينيس إنشيري بين شويس اووه بيننوتي اووه بينسوتير إيسوس بي إخرستوس تشيتس إيقول خين تين شويإننيب تيرين تيثيئوطوكوس إثؤواب تي آجيا ماريا آف أيس إنؤواي نيم تيفميثنوتي خين أوميت أتموجت نيم اوميت آتثوخ نيم اوميت آتشيقتي إي آفئير أومولوجين إنتي أومولوجيا إيثنانيس ناهرين بونتيوس بيلانوس آفتيس إي إهري إيجون هيجين بي شي إثؤواب إنتي بي إستافروس خين بيف أؤوش إممين إمموف إي إهري إيجون تيرين آليثوس تيناهتي جي إمبي تيفيثنوتي فورج إيتيفميترومي إن أوسوسو إنئو اوت اوذي أوريكي إمقالب إقتي إمموس إيجون إن أو سوتس نيم أوكو إيقول إنتي ني نوفي نيم أو أونخ ان إبنيه إن نيئثناتشي إيقول إنخخيتس تيناهتي تيناهتي تيناهتي جي ثاي تي خين أوميثمي آمين
-</p>
-
-     </div>
-     <h2>اعتراف  الشماس</h2>
-
-<h3 class="red-text">يقول الشماس </h3>
-    <div class="line">
-
-<p class="black-text">آمين آمين آمين أؤمن أؤمن أؤمن أن هذا هو بالحقيقة آمين. أطلبوا عنا وعن كل المسيحيين الذين قالوا لنا من أجلهم أن نذكرهم في بيت الرب. سلام ومحبةربنا يسوع المسيح تكون معنا. رتلوا بنشيد الليلويا. صلوا من أجل التناول بإستحقاق من الأسرار المقدسة الطاهرة السمنائية يا رب إرحم.
-
-</p>
-<p class="deacon-text">آمين آمين آمين تيناهتي تيناهتي تيناهتي جي ثاي تي خين أوميثمي آمين طقه إي إهري إيجون نيم إيجين إخرستيانوس نيقين إيطاف جوس نان إثقيطوجي آريبنميقئي خين إبئي إم إبشويس إي إيريني كي آغابي إيسو إخرستو ميث إيمون إبسالاتي جو الليلويا إبروس إفكساستي إيبرتيس أكسياس ميتالبسيوس أكرانتون كي إيبورانيون تون آجيون ميستيريون كيريي إليسون.
-</p>
-     </div>
-
-
-
-<h3 class="red-text">يقول الشعب </h3>
-    <div class="line">
-
-<p class="black-text">المجد لك يا رب. المجد لك.</p>
-<p class="deacon-text">ذوكساسي كيريي ذو كساسي</p>
-
-
-
-     </div>
-
-
- </div>
-
-
-       
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving15-box')">
-مزمور 150 (سبحوا الله)
-      </button>
-    <div id="thanksgiving15-box" class="thanksgiving15-box" aria-hidden="true">
-      
-
- 
-<h2>مزمور 150 (سبحوا الله)
-</h2>
-                                                <div class="line">
-
-<p class="black-text">سبحوا الله في جميع قديسيه</p>
-<p class="deacon-text">إزمو إي إفنوتي خين نيئثؤواب تيروإنطاف</p>
-     </div>
-                                                <div class="line">
-
-
-<p class="black-text">سبحوه في جلد قوته</p>
-<p class="deacon-text"> إزمو إيروف خين بي تاجرو إنتي تيفجوم</p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text">سبحوه على مقدرته</p>
-<p class="deacon-text"> إزمو إيروف إيئهوي هيجين تيف ميتجوري</p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text">سبحوه ككثرة عظمته</p>
-<p class="deacon-text">إزمو إيروف كاطا إبآشاي إنتي تيف ميتنشتي </p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text">سبحوه بصوت البوق</p>
-<p class="deacon-text">إزمو إيروف خين أو إزمي إنسالين غوس </p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text"> سبحوه بمزمار وقيثارة</p>
-<p class="deacon-text">إزمو إيروف خين أو إبسالتيريون نيم أو كيثارا</p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text"> سبحوه بدفوف وصفوف</p>
-<p class="deacon-text"> إزمو إيروف خين هان كيمكيم نيم هان خوروس</p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text">سبحوه بأوتار و أرغن</p>
-<p class="deacon-text">إزمو إيروف خين هان كاب نيم أوأوغانون</p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text">سبحوه بصنوج حسنة الصوت</p>
-<p class="deacon-text">إزمو إيروف خين هان كيمفالون إني سي تو إزمي</p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text"> سبحوه بصنوج التهليل (2) كل نسمة فلنسبح اسم الرب إلهنا</p>
-<p class="deacon-text">  إزمو إيروف خين هانكيم فالون أوي إشليلوي نيفي نيقين ماروإزمو تيرو إي إفران إم إبشويس بيننوتي</p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text">المجد للأب والابن والروح القدس الآن وكل أوان وإلى دهر الدهور آمين</p>
-<p class="deacon-text">ذوكسابتري كي إيو كي آجيو إبنيقماتي كي نين كي آإي كي إسطوس إي أوناس طون إي أونون آمين</p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text">المجد هو لإلهنا</p>
-
-<p class="deacon-text">ذوكساسي أوثيئوس إيمون</p>
-     </div>
-                                                <div class="line">
-
-<p class="black-text">المجد لإلهنا </p>
-<p class="deacon-text"> بي أوأوفا بيننوتي بي</p>
-     </div>
-                                                <div class="line">
-
-
-<p class="black-text"> يا يسوع المسيح ابن الله إسمعنا وإرحمنا.</p>
-<p class="deacon-text"> إيسوس بي إخرستوس إبشيري إم إفنوتي سوتيم إيرون أووه ناي نان.</p>
-     </div>
-                                               
-
-
-
-
-
-
-
-
-        </div>
-
-        
-        
-       
-      <button class="toggle-btn" onclick="toggleSection('thanksgiving11-box')">
-لحن بي اويك
-    </button>
-    <div id="thanksgiving11-box" class="thanksgiving11-box" aria-hidden="true">
-      
-
-
-<h2>لحن بي اويك</h2>
-
-
-                                           <div class="line">
-
-<p class="black-text">خبز الحياة الذي نزل لنا من السماء، وهب الحياة للعالم.
-</p>
-<p class="deacon-text">بي أويك إنتي إب أونخ إيطاف إي إيبيسيت نان إيفول خين إتفي أفتي إم إب أونخ إمبي كوزموس</p>
-     </div>
-                                                <div class="line">
-<p class="black-text">وأنت أيضًا يا مريم حملت في بطنك المن العقلي الذي آتي من الآب.</p>
-<p class="deacon-text">إنثو هوي ماريا آري فاي خين تي نيجي إمبي ماننا إننوإيطون إيطاف إي إيفول خين إفيوت</p>
-                                                </div>
-                                                                                           <div class="line">
-<p class="black-text">ولدتيه بغير دنس وأعطانا جسده ودمه الكريم فحيينا إلى الأبد.</p>
-<p class="deacon-text"> آري ماسف آتشني ثوليب أفتي نان إمبيف سوما، نيم بيف إسنوف إتطايوت آن اونخ شا إبنيه</p>
-                                                                                           </div>
-                                                                                                                                      <div class="line">
-
- <p class="black-text"> يقوم حولك الشاروبيم والسيرافيم ولا يستطيعون أن ينظروك.</p>                                                                                                                                                                                                                                                                           
-<p class="deacon-text">سيطوؤونو هاروك إنجي ني شيروفيم نيم ني سيرافيم سي إشناق إبروك آن.
-</p>
-                                                                                                                                      </div>
-                                                                                                                                                                                 <div class="line">
-<p class="black-text"> ونحن ننظرك على المذبح ونتناول من جسدك ودمك الكريم.</p>
-<p class="deacon-text"> تين ناق إيروك إم ميني هيجين بي ما إنئير شوؤوشي تين تشي إيقول خين بيك سوما نيم بيك إسنوف إتطايوت.
-</p>
-                                                                                                                                                                                 </div>
-                                                                                                                                                                                                                            <div class="line">
-<p class="black-text"> لأنهم تكلموا من أجلك باعمال كريمة أيتها المدينة المقدسة التي للملك العظيم.</p>
-<p class="deacon-text">إثقي فاي تين تشيسي إممو أكسيوس خين هان إمنولوجيا إم إبروفيتيكون
-</p>
-                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                       <div class="line">
-<p class="black-text">من أجل هذا نعظمك باستحقاق بتماجيد نبوية.</p>
-<p class="deacon-text">جي آف ساجي إيثفيتي إن هان إهفيئوي إتطايوت تيفاكي إثؤواب إنتي بي نشتي إن أورو.
-</p>
-                                                                                                                                                                                                                                                                       </div>
-                                                                                                                                                                                                                                                                                                                  <div class="line">
-<p class="black-text"> نسأل ونطلب أن نفوز برحمة، بشفاعتك عند محب البشر. </p>
-<p class="deacon-text">تين تيهو تين طفه غيثرين شاشني إيفناي هيتين ني إبريسفيا إنطوطف إمبي ماي رومي</p>
-                                                                                                                                                                                                                                                                                                                  </div>
-</div>
-    </div>
+    <h3 class="red-text">يرفع الكاهن اللفافة الموضوعة فوق الأبروسفارين بيديه ويقول الكاهن</h3>
+        <div class="line">
+
+    <p class="black-text">
+      بمسرتك يا الله إملأ قلوبنا من سلامك وطهرنا من كل دنس ومن كل غش ومن كل رياء ومن كل فعل خبيث ومن تذكار الشر الملبس الموت وإجعلنا مستحقين كلنا يا سيدنا أن نقبل بعضنا بعضًا بقبلة مقدسة لكي ننال بغير وقوع في دينونة من موهبتك غير المائتة السمائية بالمسيح يسوع ربنا.
+    </p>
+    <p class="deacon-text">
+خين بيك تيماتي إفنوتي موه إننهيت خين تيك هيريني. أووه ماطوفون إيقول هاثوليب نيفين نيم إكروف نيفين نيم ميتشوفي نيقين نيم بان أورجيا نيقين نيم تي ميت ريف إيبر إفميفئي إنتي تي كاكيا إتئيرفورين إم إفمو. أووه آريتين إن إم إبشاتيرين بين نيب إيثرين إير أسبازيستي إنين إيريؤخين أوفي إثؤواب. إى إيجين تين تشي خين أو ميت أت هي تتين إي إبهاب إيفول خين تيك ذوريا إن أثمو أووه إن إيبورانيون خين بي إخرستوس إيسوس بين شويس. 
+    </p>
   </div>
+<!-- أزرار التنقل الإضافية في الأسفل -->
+      <div class="prayer-actions">
+        <button class="action-btn" onclick="navigatePrayer(1)">
+          <span> السابقة</span> ➔
+        </button>
+        <button class="action-btn close-prayer-btn" onclick="hidePrayers()">
+          الرئيسية
+        </button>
+        <button class="action-btn" onclick="navigatePrayer(-1)">
+          ← <span> التالية</span>
+        </button>
+    
+      </div></div>
+        
+    </div>
+              
 
   <div id="stars-container"></div>
 
   <script>
     const root = document.body;
-    const darkModeToggle = document.getElementById('darkModeToggle');
+    const settingsPanel = document.getElementById("settingsPanel");
+    const mainOptions = document.getElementById("mainOptions");
+    const navTitle = document.getElementById("navTitle");
+    const defaultTitle = "كنيسة مارمينا والأنبا توماس والبابا كيرلس";
+    
+    let fontScale = 1;
 
-    // عند تحميل الصفحة: جلب الحالة من localStorage وتطبيقها
-    document.addEventListener("DOMContentLoaded", () => {
+    // مصفوفة لتخزين معرفات الخانات (الصلوات) وترتيبها للحركة والتنقل
+    let prayerKeys = [];
+    let currentPrayerIndex = -1;
+
+    // دالة لتحديث مصفوفة الخانات تلقائياً من العناصر الموجودة في الصفحة
+    function initPrayerKeys() {
+      const prayers = document.querySelectorAll('.prayer-content');
+      prayerKeys = Array.from(prayers).map(el => el.id.replace('prayer-', ''));
+    }
+
+    // تطبيق حالة الوضع الداكن المجلوبة من LocalStorage (نفس منطق الصفحة الرئيسية)
+    function applySavedTheme() {
       const savedMode = localStorage.getItem("darkMode");
       const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
       if (savedMode === "on" || (!savedMode && prefersDark)) {
         root.classList.add("dark-mode");
-        darkModeToggle.checked = true;
       } else {
         root.classList.remove("dark-mode");
-        darkModeToggle.checked = false;
-      }
-
-      root.classList.add('visible');
-      createCrosses();
-    });
-
-    // تبديل ألوان الوضع الداكن والحفظ لجميع الصفحات
-    darkModeToggle.addEventListener('change', () => {
-      if (darkModeToggle.checked) {
-        root.classList.add('dark-mode');
-        localStorage.setItem("darkMode", "on");
-      } else {
-        root.classList.remove('dark-mode');
-        localStorage.setItem("darkMode", "off");
-      }
-    });
-
-    // فتح وإغلاق الصناديق التفاعلية
-    function toggleSection(boxId) {
-      const box = document.getElementById(boxId);
-      const isExpanded = box.classList.contains('show');
-      
-      document.querySelectorAll('.content > div[id$="-box"]').forEach(el => {
-        if (el.id !== boxId) {
-          el.classList.remove('show');
-          el.setAttribute('aria-hidden', 'true');
-        }
-      });
-
-      if (isExpanded) {
-        box.classList.remove('show');
-        box.setAttribute('aria-hidden', 'true');
-      } else {
-        box.classList.add('show');
-        box.setAttribute('aria-hidden', 'false');
       }
     }
 
-    // توليد خلفية الصلبان المضيئة المتحركة
-    function createCrosses() {
-      const container = document.getElementById('stars-container');
-      const count = 25;
+    // الاستماع للتغيرات التي تحدث في LocalStorage من الصفحات الأخرى لتطبيق الوضع فورياً
+    window.addEventListener("storage", (e) => {
+      if (e.key === "darkMode") {
+        applySavedTheme();
+      }
+    });
 
-      for (let i = 0; i < count; i++) {
-        const cross = document.createElement('div');
-        cross.classList.add('cross');
+    // فتح وإغلاق قائمة الإعدادات
+    function toggleSettings() {
+      if (settingsPanel) settingsPanel.classList.toggle("active");
+    }
 
-        const size = Math.random() * 12 + 8;
-        const posX = Math.random() * 100;
-        const posY = Math.random() * 100;
-        const duration = Math.random() * 3 + 2;
+    // إغلاق لوحة الإعدادات عند الضغط خارجها
+    document.addEventListener("click", (e) => {
+      if (settingsPanel && !settingsPanel.contains(e.target) && !e.target.closest(".icon-btn")) {
+        settingsPanel.classList.remove("active");
+      }
+    });
+
+    // التحكم في إظهار القبطي/العربي
+    function updateTextVisibility() {
+      const showArabicToggle = document.getElementById("showArabicToggle");
+      const showCopticToggle = document.getElementById("showCopticToggle");
+
+      if (showArabicToggle) {
+        if (!showArabicToggle.checked) {
+          root.classList.add("hide-arabic");
+        } else {
+          root.classList.remove("hide-arabic");
+        }
+      }
+
+      if (showCopticToggle) {
+        if (!showCopticToggle.checked) {
+          root.classList.add("hide-coptic");
+        } else {
+          root.classList.remove("hide-coptic");
+        }
+      }
+    }
+
+    // تكبير وتصغير الخط
+    function changeFontSize(delta) {
+      fontScale = Math.min(Math.max(0.8, fontScale + delta), 1.6);
+      document.documentElement.style.setProperty('--font-scale', fontScale);
+      const fontSizeDisplay = document.getElementById("fontSizeDisplay");
+      if (fontSizeDisplay) fontSizeDisplay.innerText = Math.round(fontScale * 100) + "%";
+    }
+
+    // عرض صلاة/خانة معينة
+    function showPrayer(type) {
+      if (prayerKeys.length === 0) initPrayerKeys();
+      currentPrayerIndex = prayerKeys.indexOf(type);
+
+      mainOptions.style.display = "none";
+      document.querySelectorAll('.prayer-content').forEach(el => el.style.display = "none");
+      
+      const targetPrayer = document.getElementById('prayer-' + type);
+      if (targetPrayer) {
+        targetPrayer.style.display = "block";
+        const titleEl = targetPrayer.querySelector('.prayer-title');
+        if (navTitle && titleEl) navTitle.innerText = titleEl.innerText;
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // التنقل إلى الخانة التالية أو السابقة
+    function navigatePrayer(direction) {
+      if (prayerKeys.length === 0) initPrayerKeys();
+      if (currentPrayerIndex === -1) return;
+
+      let newIndex = currentPrayerIndex + direction;
+
+      // التمرير الدائري بين الخانات
+      if (newIndex < 0) {
+        newIndex = prayerKeys.length - 1;
+      } else if (newIndex >= prayerKeys.length) {
+        newIndex = 0;
+      }
+
+      showPrayer(prayerKeys[newIndex]);
+    }
+
+    // إخفاء الصلوات والرجوع للقائمة الرئيسية
+    function hidePrayers() {
+      currentPrayerIndex = -1;
+      document.querySelectorAll('.prayer-content').forEach(el => el.style.display = "none");
+      mainOptions.style.display = "block";
+      if (navTitle) navTitle.innerText = defaultTitle;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // التعامل مع زر الرجوع
+    function handleBack() {
+      if (mainOptions.style.display === "none") {
+        hidePrayers();
+      } else {
+        if (document.referrer && document.referrer !== "") {
+          history.back();
+        } else {
+          location.href = "index.html"; // أو التوجيه للصفحة الرئيسية
+        }
+      }
+    }
+
+    // إنشاء الصلبان المتحركة
+    function createFloatingCrosses() {
+      const container = document.getElementById("crossesContainer");
+      if (!container) return;
+      const crossCount = 15;
+
+      for (let i = 0; i < crossCount; i++) {
+        const cross = document.createElement("div");
+        cross.className = "floating-cross";
+        cross.innerText = "☦";
+        
+        const size = Math.random() * 24 + 16;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 10 + 10;
         const delay = Math.random() * 5;
+        const opacity = Math.random() * 0.2 + 0.1;
 
-        cross.style.setProperty('--size', `${size}px`);
-        cross.style.setProperty('--duration', `${duration}s`);
-        cross.style.setProperty('--delay', `${delay}s`);
-        cross.style.left = `${posX}%`;
-        cross.style.top = `${posY}%`;
+        cross.style.fontSize = `${size}px`;
+        cross.style.left = `${left}%`;
+        cross.style.animationDuration = `${duration}s`;
+        cross.style.animationDelay = `${delay}s`;
+        cross.style.setProperty('--cross-opacity', opacity);
 
         container.appendChild(cross);
       }
     }
-  </script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initPrayerKeys();    // تجهيز قائمة الخانات المتوفرة في الصفحة
+      applySavedTheme();   // قراءة حالة الوضع الداكن فور التحميل
+      root.classList.add("visible");
+      createFloatingCrosses();
+    });
+</script>
 </body>
 </html>
 
