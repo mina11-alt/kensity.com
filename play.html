@@ -10,7 +10,6 @@
 
   <style>
     :root {
-      /* الألوان الموحدة للمشروع */
       --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
       --text-light: #1e293b;
       --card-bg-light: rgba(255, 255, 255, 0.9);
@@ -50,7 +49,7 @@
 
     /* الشريط العلوي */
     .top-navbar {
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid rgba(212, 175, 55, 0.25);
@@ -89,7 +88,7 @@
 
     .site-title {
       font-weight: 800;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: var(--navy-primary);
     }
 
@@ -97,7 +96,7 @@
       color: var(--gold-primary);
     }
 
-    /* زر Switch للوضع الداكن */
+    /* Switch الوضع الداكن */
     .theme-switch-wrapper {
       display: flex;
       align-items: center;
@@ -132,7 +131,7 @@
     }
 
     .slider .icon {
-      font-size: 14px;
+      font-size: 13px;
       user-select: none;
     }
 
@@ -176,10 +175,11 @@
       padding: 30px;
       border-radius: 24px;
       box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
-      max-width: 520px;
+      max-width: 560px;
       width: 100%;
       text-align: center;
       transition: background 0.4s, border-color 0.4s;
+      position: relative;
     }
 
     body.dark-mode .card {
@@ -189,7 +189,7 @@
     }
 
     h1 {
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       font-size: 1.6rem;
       font-weight: 800;
       color: var(--navy-primary);
@@ -199,17 +199,39 @@
       color: var(--gold-primary);
     }
 
-    /* تنسيق النص والسؤال الاحترافي */
+    /* شريط التقدم */
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: rgba(0,0,0,0.08);
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    body.dark-mode .progress-bar-container {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold-primary), var(--gold-dark));
+      transition: width 0.3s ease;
+      border-radius: 10px;
+    }
+
+    /* صندوق السؤال */
     .question-box {
       background: rgba(212, 175, 55, 0.08);
       border: 1px solid rgba(212, 175, 55, 0.3);
       border-radius: 16px;
       padding: 20px;
-      font-size: 1.25rem;
+      font-size: 1.2rem;
       font-weight: 700;
       line-height: 1.6;
-      margin-bottom: 25px;
-      min-height: 100px;
+      margin-bottom: 20px;
+      min-height: 95px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -224,7 +246,6 @@
       border-color: rgba(212, 175, 55, 0.2);
     }
 
-    /* حركة ظهور السؤال النصي بشكل انسيابي */
     .fade-in {
       animation: fadeInScale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
@@ -244,22 +265,22 @@
     .options button {
       display: block;
       width: 100%;
-      margin: 12px 0;
+      margin: 10px 0;
       padding: 14px;
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       font-family: 'Tajawal', sans-serif;
       font-weight: 700;
       border: 1px solid var(--gold-primary);
       border-radius: 14px;
       cursor: pointer;
       background: linear-gradient(135deg, var(--navy-primary) 0%, #2c3e50 100%);
-      color: var(--gold-primary);
+      color: #ffffff;
       box-shadow: 0 4px 10px rgba(26, 42, 64, 0.15);
       transition: all 0.25s ease;
       user-select: none;
     }
 
-    .options button:hover {
+    .options button:hover:not(:disabled) {
       background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
       color: #ffffff;
       border-color: transparent;
@@ -267,27 +288,36 @@
       box-shadow: 0 6px 15px rgba(212, 175, 55, 0.3);
     }
 
-    .options button:active {
-      transform: translateY(0);
+    /* درجات ألوان الإجابات الصحيحة والفرعية */
+    .options button.correct-btn {
+      background: #16a34a !important;
+      border-color: #15803d !important;
+      color: #ffffff !important;
+    }
+
+    .options button.wrong-btn {
+      background: #dc2626 !important;
+      border-color: #b91c1c !important;
+      color: #ffffff !important;
     }
 
     /* التوقيت والنتيجة */
     #timer {
       font-weight: 800;
-      font-size: 1.1rem;
-      margin-top: 20px;
+      font-size: 1.05rem;
+      margin-top: 15px;
       color: #e11d48;
       background: rgba(225, 29, 72, 0.1);
       display: inline-block;
-      padding: 8px 18px;
+      padding: 6px 16px;
       border-radius: 20px;
     }
 
     #result {
-      margin-top: 20px;
-      font-size: 1.2rem;
+      margin-top: 15px;
+      font-size: 1.15rem;
       font-weight: 800;
-      min-height: 35px;
+      min-height: 30px;
       line-height: 1.5;
     }
 
@@ -299,12 +329,33 @@
       color: #dc2626 !important;
     }
 
+    /* زر الإعادة */
+    .restart-btn {
+      margin-top: 20px;
+      padding: 12px 28px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      font-family: 'Tajawal', sans-serif;
+      background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-dark) 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .restart-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 18px rgba(212, 175, 55, 0.4);
+    }
+
     @media (max-width: 600px) {
       .card {
         padding: 20px 15px;
       }
       .question-box {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         padding: 15px;
       }
       .options button {
@@ -312,7 +363,7 @@
         padding: 12px;
       }
       .site-title {
-        font-size: 0.95rem;
+        font-size: 0.85rem;
       }
     }
   </style>
@@ -323,17 +374,14 @@
   <div class="top-navbar">
     <div class="navbar-left">
       <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
-      <span class="site-title">كنيسة مارمينا والأنبا توماس</span>
+      <span class="site-title">كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</span>
     </div>
     
     <!-- زر تبديل الوضع الداكن -->
     <div class="theme-switch-wrapper">
       <label class="theme-switch" for="darkModeToggle">
         <input type="checkbox" id="darkModeToggle" />
-        <div class="slider">
-          <span class="icon">☀️</span>
-          <span class="icon">🌙</span>
-        </div>
+        
       </label>
     </div>
   </div>
@@ -342,35 +390,160 @@
   <div class="main-container">
     <div class="card">
       <h1>🧠 لعبة مين أنا؟</h1>
+      
+      <!-- شريط التقدم -->
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
       <div id="question" class="question-box">جارٍ تحميل السؤال...</div>
       <div class="options" id="options"></div>
       <div id="timer">⏱️ الوقت المتبقي: <span id="time">30</span> ثانية</div>
       <div id="result"></div>
+      <div id="restartContainer"></div>
     </div>
   </div>
 
   <script>
+    // قائمة الأسئلة المحدثة مع إضافة الألقاب الكنسية والأنبيائية
     const allQuestions = [
-      { q: "أساعد الفقراء كثيرًا وأعطي الهدايا سرًا. من أنا؟", options: ["القديس نيقولاوس", "القديس أثناسيوس", "القديس أغسطينوس", "القديس بولس"], correct: "القديس نيقولاوس" },
-      { q: "أنا أول من أسس الرهبنة في العالم. من أنا؟", options: ["الأنبا أنطونيوس", "الأنبا باخوميوس", "القديس أثناسيوس الرسولي", "القديس مقاريوس"], correct: "الأنبا أنطونيوس" },
-      { q: "أنا كتبت قانون الإيمان في مجمع نيقية. من أنا؟", options: ["القديس أثناسيوس الرسولي", "القديس كيرلس", "القديس بولس الرسول", "القديس بطرس"], correct: "القديس أثناسيوس الرسولي" },
-      { q: "كنت رئيسًا للعشارين وتبت وصرت من أعمدة الكنيسة. من أنا؟", options: ["زكا", "بولس", "متى"], correct: "زكا" },
-      { q: "نجوت من آتون النار ولم تحترق. من أنا؟", options: ["دانيال", "الثلاثة فتية", "موسى"], correct: "الثلاثة فتية" },
-      { q: "أنا كاروز الديار المصرية. من أنا؟", options: ["القديس مرقس الرسول", "القديس بولس", "القديس يوحنا", "القديس يعقوب"], correct: "القديس مرقس الرسول" },
-      { q: "أنا النبي الذي ابتلعه الحوت. من أنا؟", options: ["يونان", "إيليا", "موسى", "إشعياء"], correct: "يونان" },
-      { q: "أنا الملك الذي بنى الهيكل في أورشليم. من أنا؟", options: ["سليمان", "داود", "شاول", "هرودس"], correct: "سليمان" },
-      { q: "أنا الرسول الذي أنكر يسوع ثلاث مرات. من أنا؟", options: ["بطرس", "يوحنا", "يعقوب", "توما"], correct: "بطرس" },
-      { q: "أنا المرأة التي كانت أم يسوع. من أنا؟", options: ["مريم العذراء", "مريم المجدلية", "مريم أخت لعازر", "حنة"], correct: "مريم العذراء" },
-      { q: "أنا الملك الذي قتل جالوت. من أنا؟", options: ["داود", "سليمان", "شاول", "هرودس"], correct: "داود" },
-      { q: "أنا الرسول الذي شكك في قيامة المسيح حتى لمس جراحه. من أنا؟", options: ["توما", "بطرس", "يوحنا", "بولس"], correct: "توما" },
-      { q: "أنا الرسول الذي كتب أغلب رسائل العهد الجديد. من أنا؟", options: ["بولس", "بطرس", "يوحنا", "يعقوب"], correct: "بولس" },
-      { q: "أنا النبي الذي كتب سفر المزامير. من أنا؟", options: ["داود", "صموئيل", "إشعياء", "حزقيال"], correct: "داود" },
-      { q: "أنا الرسول الذي كان صيادًا قبل أن يتبع المسيح. من أنا؟", options: ["بطرس", "يوحنا", "يعقوب", "توما"], correct: "بطرس" },
-      { q: "أنا المرأة التي كانت زوجة إبراهيم وأم إسحاق. من أنا؟", options: ["سارة", "هاجر", "مريم", "راحيل"], correct: "سارة" },
-      { q: "أنا المرأة التي كانت أم يوحنا المعمدان. من أنا؟", options: ["إليصابات", "مريم", "حنة", "راحيل"], correct: "إليصابات" }
+      { 
+        q: "أساعد الفقراء كثيرًا وأعطي الهدايا سرًا. من أنا؟", 
+        options: [
+          "القديس نيقولاوس  (سانتا كلوز)", 
+          "القديس أثناسيوس الرسولي حامي الإيمان", 
+          "القديس أغسطينوس ", 
+          "القديس بولس الرسول "
+        ], 
+        correct: "القديس نيقولاوس  (سانتا كلوز)" 
+      },
+      { 
+        q: "أنا أول من أسس الرهبنة في العالم. من أنا؟", 
+        options: [
+          "القديس العظيم الأنبا أنطونيوس  ", 
+          "القديس العظيم الأنبا باخوميوس أب الشركة", 
+          "القديس أثناسيوس الرسولي حامي الإيمان", 
+          " الأنبا مقار "
+        ], 
+        correct: "القديس العظيم الأنبا أنطونيوس  " 
+      },
+      { 
+        q: "أنا كتبت قانون الإيمان في مجمع نيقية. من أنا؟", 
+        options: [
+          "القديس أثناسيوس الرسولي حامي الإيمان", 
+          "البابا كيرلس  عمود الدين", 
+          "القديس بولس الرسول  ", 
+          "القديس بطرس الرسول  "
+        ], 
+        correct: "القديس أثناسيوس الرسولي حامي الإيمان" 
+      },
+      { 
+        q: "كنت رئيسًا للعشارين . من أنا؟", 
+        options: [
+          " زكا العشار ", 
+          "القديس بولس الرسول", 
+          "القديس متى الرسول "
+        ], 
+        correct: " زكا العشار " 
+      },
+      { 
+        q: "نجونا من آتون النار . من نحن؟", 
+        options: [
+          " الثلاثة فتية القديسين", 
+          "ابونا  دانيال النبي", 
+          " ابونا موسى النبي "
+        ], 
+        correct: " الثلاثة فتية القديسين" 
+      },
+      { 
+        q: "أنا كاروز الديار المصرية . من أنا؟", 
+        options: [
+          "القديس مرقس الرسول ", 
+          "القديس بولس الرسول  ", 
+          "القديس يوحنا الحبيب", 
+          "القديس يعقوب الرسول  "
+        ], 
+        correct: "القديس مرقس الرسول " 
+      },
+      { 
+        q: "أنا النبي الذي ابتلعه الحوت وقضيت في بطنه 3 أيام. من أنا؟", 
+        options: [
+          "  ابونا يونان النبي ", 
+          "  ابونا إيليا النبي ", 
+          "  ابونا موسى النبي", 
+          "  ابونا إشعياء النبي "
+        ], 
+        correct:"  ابونا يونان النبي "
+      },
+      { 
+        q: "أنا الملك الحكيم الذي بنيت هيكل الرب في أورشليم. من أنا؟", 
+        options: [
+          "  ابونا سليمان النبي", 
+          " ابونا داود النبي ", 
+        
+          "الملك هيرودس"
+        ], 
+        correct: "  ابونا سليمان النبي" 
+      },
+      { 
+        q: "أنا الرسول الذي أنكرت يسوع ثلاث مرات. من أنا؟", 
+        options: [
+          "القديس بطرس الرسول  ", 
+          "القديس يوحنا  الرسول", 
+          "القديس يعقوب بن زبدي", 
+          "القديس توما الرسول"
+        ], 
+        correct: "القديس بطرس الرسول  " 
+      },
+      { 
+        q: "أنا القديسة  أم ربنا يسوع المسيح له كل المجد . من أنا؟", 
+        options: [
+          "القديسة العذراء مريم والدة الإله", 
+          "القديسة مريم المجدلية", 
+          "القديسة مريم أخت لعازر", 
+          "القديسة حنة أم العذراء"
+        ], 
+        correct: "القديسة العذراء مريم والدة الإله" 
+      },
+     
+      { 
+        q: "أنا الرسول الذي شكك في القيامة حتى لمس أثر المسامير. من أنا؟", 
+        options: [
+          "القديس توما الرسول ", 
+          "القديس بطرس الرسول", 
+          "القديس يوحنا الإنجيلي", 
+          "القديس بولس الرسول"
+        ], 
+        correct: "القديس توما الرسول " 
+      },
+
+      { 
+        q: "أنا الرسول الذي كتبت 14 رسالة في العهد الجديد. من أنا؟", 
+        options: [
+          "القديس بولس الرسول  ", 
+          "القديس بطرس الرسول", 
+          "القديس يوحنا ", 
+          "القديس يعقوب الرسول"
+        ], 
+        correct: "القديس بولس الرسول  " 
+      },
+      
+      { 
+        q: "أنا أم القديس يوحنا القديس المعمدان وزوجة ابونا زكريا الكاهن. من أنا؟", 
+        options: [
+          "القديسة إليصابات أخت العذراء", 
+          "القديسة العذراء مريم", 
+          "القديسة حنة أم العذراء"
+        
+        ], 
+      
+    
+  
+  
+        correct: "القديسة إليصابات أخت العذراء" 
+      }
     ];
 
-    // دالة لخلط العناصر عشوائياً
     function shuffleArray(array) {
       for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -378,9 +551,7 @@
       }
     }
 
-    shuffleArray(allQuestions);
-    const questions = allQuestions.slice(0, 8);
-
+    let questions = [];
     let currentIndex = 0;
     let score = 0;
     let timeLeft = 30;
@@ -389,6 +560,17 @@
     const questionEl = document.getElementById('question');
     const optionsDiv = document.getElementById('options');
     const resultEl = document.getElementById('result');
+    const progressBar = document.getElementById('progressBar');
+    const restartContainer = document.getElementById('restartContainer');
+
+    function initGame() {
+      shuffleArray(allQuestions);
+      questions = allQuestions.slice(0, 8); // اختيار 8 أسئلة عشوائية
+      currentIndex = 0;
+      score = 0;
+      restartContainer.innerHTML = '';
+      loadQuestion();
+    }
 
     function loadQuestion() {
       clearInterval(timer);
@@ -397,13 +579,16 @@
         showFinalResult();
         return;
       }
+
+      // تحديث شريط التقدم
+      const progressPercent = (currentIndex / questions.length) * 100;
+      progressBar.style.width = `${progressPercent}%`;
       
       const currentQ = questions[currentIndex];
 
-      // حركة إعادة التحميل الاحترافية للنص
       questionEl.classList.remove('fade-in');
       void questionEl.offsetWidth; // Trigger reflow
-      questionEl.innerText = currentQ.q;
+      questionEl.innerText = `(${currentIndex + 1}/${questions.length}) ${currentQ.q}`;
       questionEl.classList.add('fade-in');
 
       let options = [...currentQ.options];
@@ -413,7 +598,7 @@
       options.forEach(option => {
         const btn = document.createElement('button');
         btn.innerText = option;
-        btn.onclick = () => checkAnswer(option);
+        btn.onclick = () => checkAnswer(option, btn);
         optionsDiv.appendChild(btn);
       });
 
@@ -430,45 +615,63 @@
           clearInterval(timer);
           resultEl.className = 'wrong-text';
           resultEl.innerText = `⏰ انتهى الوقت! الإجابة الصحيحة: ${currentQ.correct}`;
+          highlightCorrectAnswer(currentQ.correct);
           disableOptions();
           currentIndex++;
-          setTimeout(loadQuestion, 2200);
+          setTimeout(loadQuestion, 2400);
         }
       }, 1000);
     }
 
-    function checkAnswer(selected) {
+    function checkAnswer(selected, btnElement) {
       clearInterval(timer);
       disableOptions();
       
       const currentQ = questions[currentIndex];
       if (selected === currentQ.correct) {
         score++;
+        btnElement.classList.add('correct-btn');
         resultEl.className = 'correct-text';
-        resultEl.innerText = '✅ إجابة صحيحة!';
+        resultEl.innerText = '✅ إجابة صحيحة !';
       } else {
+        btnElement.classList.add('wrong-btn');
+        highlightCorrectAnswer(currentQ.correct);
         resultEl.className = 'wrong-text';
-        resultEl.innerText = `❌ إجابة خاطئة. الصحيحة: ${currentQ.correct}`;
+        resultEl.innerText = `❌ إجابة خاطئة. الصحيحة هي:\n${currentQ.correct}`;
       }
       
       currentIndex++;
-      setTimeout(loadQuestion, 2200);
+      setTimeout(loadQuestion, 2400);
+    }
+
+    function highlightCorrectAnswer(correctText) {
+      const btns = optionsDiv.querySelectorAll('button');
+      btns.forEach(b => {
+        if (b.innerText === correctText) {
+          b.classList.add('correct-btn');
+        }
+      });
     }
 
     function disableOptions() {
       const btns = optionsDiv.querySelectorAll('button');
-      btns.forEach(b => b.style.pointerEvents = 'none');
+      btns.forEach(b => b.disabled = true);
     }
 
     function showFinalResult() {
+      progressBar.style.width = '100%';
       questionEl.classList.remove('fade-in');
       void questionEl.offsetWidth;
-      questionEl.innerText = `🎉 انتهت اللعبة!\n نتيجتك: ${score} من ${questions.length}`;
+      questionEl.innerText = `🎉 انتهت اللعبة!\n نتيجتك النهائية: ${score} من ${questions.length}`;
       questionEl.classList.add('fade-in');
 
       optionsDiv.innerHTML = '';
       document.getElementById('timer').style.display = 'none';
-      resultEl.innerText = '';
+      resultEl.innerText = score >= 5 ? '👏 ممتاز جداً! معلوماتك القبطية والكتابية رائعة.' : '👍 محاولة جيدة! تشجع للمزيد من القراءة والتعلم.';
+      resultEl.className = 'correct-text';
+
+      // إضافة زر العودة
+      restartContainer.innerHTML = '<button class="restart-btn" onclick="initGame()">🔄 اللعب مرة أخرى</button>';
     }
 
     // إدارة الوضع الداكن
@@ -491,7 +694,7 @@
         root.classList.add("dark-mode");
         darkModeToggle.checked = true;
       }
-      loadQuestion();
+      initGame();
     };
   </script>
 </body>
