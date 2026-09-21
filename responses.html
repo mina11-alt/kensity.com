@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>مردات القداس - كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* متغيرات الوضع الفاتح */
+      --bg-gradient-light: linear-gradient(135deg, #f8fafc 0%, #e2ebf0 100%);
+      --text-light: #1e293b;
+      --card-bg-light: rgba(255, 255, 255, 0.75);
+      --card-border-light: rgba(212, 175, 55, 0.3);
+
+      /* متغيرات الوضع الداكن */
+      --bg-gradient-dark: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+      --text-dark: #f8fafc;
+      --card-bg-dark: rgba(30, 41, 59, 0.7);
+      --card-border-dark: rgba(212, 175, 55, 0.2);
+
+      /* الهوية البصرية */
+      --gold-primary: #d4af37;
+      --gold-light: #f3e5ab;
+      --gold-dark: #b8860b;
+      --navy-primary: #1a2a40;
+      --navy-light: #2c3e50;
+      --accent-glow: rgba(212, 175, 55, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      direction: rtl;
+      background: var(--bg-gradient-light);
+      background-attachment: fixed;
+      color: var(--text-light);
+      transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease;
+      opacity: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    body.visible {
+      opacity: 1;
+    }
+
+    body.dark-mode {
+      background: var(--bg-gradient-dark);
+      background-attachment: fixed;
+      color: var(--text-dark);
+    }
+
+    /* خلفية الصلبان المتحركة */
+    .crosses-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-cross {
+      position: absolute;
+      bottom: -100px;
+      color: var(--gold-primary);
+      opacity: 0.12;
+      user-select: none;
+      animation: floatUp 14s linear infinite;
+      filter: drop-shadow(0 0 5px var(--gold-primary));
+    }
+
+    body.dark-mode .floating-cross {
+      opacity: 0.2;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(0.8);
+        opacity: 0;
+      }
+      15% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      85% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      100% {
+        transform: translateY(-115vh) rotate(360deg) scale(1.1);
+        opacity: 0;
+      }
+    }
+
+    /* الشريط العلوي */
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border-light);
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: all 0.4s ease;
+    }
+
+    body.dark-mode .top-navbar {
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom: 1px solid var(--card-border-dark);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .navbar-left img {
+      height: 46px;
+      width: 46px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .navbar-left img:hover {
+      transform: rotate(5deg) scale(1.05);
+    }
+
+    .site-title {
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--navy-primary);
+      transition: color 0.4s ease;
+    }
+
+    body.dark-mode .site-title {
+      color: var(--gold-primary);
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .back-btn {
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--gold-primary);
+      color: var(--navy-primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode .back-btn {
+      color: var(--gold-primary);
+    }
+
+    .back-btn:hover {
+      background: var(--gold-primary);
+      color: #fff;
+      transform: translateX(-3px);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+
+    /* الحاوية الرئيسية */
+    .main-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 110px 20px 40px;
+      gap: 25px;
+      max-width: 850px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 10px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .page-header h1 {
+      font-size: 2.2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--navy-primary), var(--gold-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 5px;
+    }
+
+    body.dark-mode .page-header h1 {
+      background: linear-gradient(135deg, #ffffff, var(--gold-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* تصميم كارت المرد الفاخر */
+    .response-card {
+      background: var(--card-bg-light);
+      border: 1px solid var(--card-border-light);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 28px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      width: 100%;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      position: relative;
+      overflow: hidden;
+    }
+
+    body.dark-mode .response-card {
+      background: var(--card-bg-dark);
+      border-color: var(--card-border-dark);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .response-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+      opacity: 0.8;
+    }
+
+    .response-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--gold-primary);
+      box-shadow: 0 15px 35px var(--accent-glow);
+    }
+
+    .response-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--navy-primary);
+      margin-bottom: 16px;
+      border-bottom: 2px dashed var(--card-border-light);
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    body.dark-mode .response-title {
+      color: var(--gold-primary);
+      border-bottom-color: var(--card-border-dark);
+    }
+
+    .sub-section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold-dark);
+      margin: 20px 0 10px 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    body.dark-mode .sub-section-title {
+      color: var(--gold-light);
+    }
+
+    .speaker {
+      display: inline-block;
+      font-weight: 800;
+      font-size: 0.85rem;
+      color: #ffffff;
+      background: linear-gradient(135deg, var(--gold-dark), var(--gold-primary));
+      padding: 3px 12px;
+      border-radius: 12px;
+      margin-top: 14px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 8px rgba(184, 134, 11, 0.25);
+    }
+
+    .text-arabic {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 10px;
+      color: var(--text-light);
+    }
+
+    body.dark-mode .text-arabic {
+      color: var(--text-dark);
+    }
+
+    .text-coptic-transliterated {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 10px;
+      color: #0284c7;
+      font-weight: 500;
+    }
+
+    body.dark-mode .text-coptic-transliterated {
+      color: #38bdf8;
+    }
+
+    /* تنسيقات المشغل الصوتي */
+    .audio-wrapper {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    audio {
+      width: 100%;
+      height: 42px;
+      border-radius: 30px;
+      outline: none;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.08));
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .top-navbar { padding: 0 15px; }
+      .site-title { font-size: 0.9rem; }
+      .page-header h1 { font-size: 1.7rem; }
+      .main-container { padding-top: 95px; }
+      .response-card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- الشريط العلوي -->
+  <header class="top-navbar">
+    <div class="navbar-left">
+      <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
+      <span class="site-title">كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</span>
+    </div>
+    <div class="navbar-right">
+      <button class="back-btn" onclick="history.back()" title="رجوع">←</button>
+    </div>
+  </header>
+
+  <!-- خلفية الصلبان المتحركة -->
+  <div class="crosses-container" id="crossesContainer"></div>
+
+  <!-- المحتوى الرئيسي -->
+  <main class="main-container">
+    <div class="page-header">
+      <h1>مردات القداس الإلهي</h1>
+    </div>
+
+    <!-- 1. مردات صلاة الشكر -->
+    <div class="response-card">
+      <div class="response-title">🎵 مردات صلاة الشكر في رفع بخور عشية وباكر</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إيبى إبروس إفشى إستاثيتى</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إبروس إيف إكساستي</p>
+      <p class="text-arabic">صلوا</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">طوبه هينا إنتى إفنوتي ناى نان إنتيف شينهيت خارون إنتيف سوتيم إيرون إنتيف إيرفويثين إيرون إنتيف تشى إن نى تيهو نيم نى طوبه إنتى نى إثؤواب إنتاف إنطوطو إى إهرى إيجون إبي آغاثون إنسيو نيفين إنتيف كانين نوڤي نان إيڤول.</p>
+      <p class="text-arabic">اطلبوا لكي يرحمنا الله ويتراءف علينا ويسمعنا ويعيننا ويقبل سؤالات وطلبات قديسيه منهم بالصلاح عنا في كل حين ويغفر لنا خطايانا.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.58 PM (2).mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 2. مردات الإنجيل -->
+    <div class="response-card">
+      <div class="response-title">📖 مردات الإنجيل</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">صلوا من أجل الإنجيل المقدس.</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إسطاثي تيه ميطا فوفو ثيؤو آكو صومين طو أجيو إيف أنجيليو.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.48.49 PM (1).mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 3. مردات ختام أبانا الذي -->
+    <div class="response-card">
+      <div class="response-title">مردات ختام أبانا الذي</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">طاس كيفالاس إيمون طوكيريو إكليناتي</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إبروس خومين ثيئوميطافوفو آمين</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.03 PM (1).mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 4. مرد أوشية القرابين في تقديم الحمل -->
+    <div class="response-card">
+      <div class="response-title">مرد أوشية القرابين في تقديم الحمل</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إبروس إيفئكساستي إيبرتون آجيون تيمون ذورون طوطون كي ثيسيون إيمون كي إبروس فيرون طون.</p>
+      <p class="text-arabic">صلوا من أجل هذه القرابين المقدسة الكريمة وتقدماتنا والذين قدموها.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.04 PM (1).mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 5. مردات في رفع الحمل -->
+    <div class="response-card">
+      <div class="response-title">مردات رفع الحمل (عند رشم الخبز والكأس)</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">آمين.. آمين.. آمين.</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إسباتير آجيوس إس إيوس آجيوس. إن إبنيفما آجيون آمين. إيفلوجيطوس كيريوس أوثيئوس إسطوس إيئوناس آمين. نيئثنوس تيرو إزمو إبشويس. مارو إزمو إيروف إنجى نيلاؤس تيرو. جى آبيف ناى تاجرو إى إهرى إيجون اووه تى ميثمى إنتى إبشويس شوب إينيه آمين الليلويا.</p>
+      <p class="text-arabic">واحد هو الآب القدوس، واحد هو الابن القدوس، واحد هو الروح القدس آمين. مبارك الرب الإله إلى الأبد آمين. يا جميع الأمم باركوا الرب ولتباركه جميع الشعوب لأن رحمته ثبتت علينا وحق الرب يدوم إلى الأبد آمين هلليلويا.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.58 PM (1).mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 6. مرد صلاة الشكر في رفع الحمل -->
+    <div class="response-card">
+      <div class="response-title">مردات صلاة الشكر في رفع الحمل</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إيبى إبروس إفشى إستاثيتى</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إبروس إيف إكساستي</p>
+      <p class="text-arabic">صلوا</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">طوبه هينا إنتى إفنوتي ناى نان إنتيف شينهيت خارون إنتيف سوتيم إيرون إنتيف إيرفويثين إيرون إنتيف تشى إن نى تيهو نيم نى طوبه إنتى نى إثؤواب إنتاف إنطوطو إى إهرى إيجون إبي آغاثون إنسيو نيفين إنتيف أي تين إن إمبشا إثرين تشى إيڤول خين تي كينونيا: إنتيه نيــف ميستيريون إثؤواب: إت إزمارؤوت إي بي كو إيڤول إنتيه نين نوڤي.</p>
+      <p class="text-arabic">اطلبوا لكي يرحمنا الله ويتراءف علينا ويسمعنا ويعيننا ويقبل سؤالات وطلبات قديسيه منهم بالصلاح عنا في كل حين، ويجعلنا مستحقين أن ننال من شركة أسراره المُقدَّسة المباركة لمغفرة خطايانا.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.57 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div> 
+
+    <!-- 7. مرد قانون الإيمان -->
+    <div class="response-card">
+      <div class="response-title">✝️ مرد قانون الإيمان</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">انصوفيا ثيئو ابروس خومين كيريى ليسون، كيريى ليسون، خين أوميثمى</p>
+      <p class="text-arabic">أنصتوا بحكمة الله، يا رب ارحم، يا رب ارحم، بالحقيقة.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.05 PM (2).mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 8. مردات صلاة الصلح -->
+    <div class="response-card">
+      <div class="response-title">🕊️ مردات صلاة الصلح</div>
+      
+      <div class="sub-section-title">في القداس الباسيلي:</div>
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">ايبي بروس إفشي إسطاثيتي</p>
+      <p class="text-arabic">صلوا من أجل السلام الكامل، والمحبة، والقبلة الطاهرة الرسولية.</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">قَبِّلوا بَعضَكُم بَعضًا بقبلةٍ مقدسة.. يا ربُ ارحم، يا ربُ ارحم، يا ربُ ارحم. نعم يا ربُ الذي هو يسوعُ المسيحُ ابنُ الله الحي إسْمَعنا وإرحمنا. قَدَّموا قَدَّموا قَدَّموا على الرسمِ قِفوا بخوفٍ ورعدَةٍ، وإلى الشرقِ انظروا، نُنصِتْ.</p>
+
+      <div class="sub-section-title">في القداس الغوريغوري:</div>
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">قبلوا بعضكم بعضاً بقبلة مقدسة.. يارب ارحم، يا رب ارحم، يارب ارحم. الذي هو يسوع المسيح ابن الله اسمعنا وارحمنا. فلنقف حسناً، لنقف بتقوى، نقف باتصال، نقف بسلام، نقف بخوف الله ورعدة وخشوع. أيها الاكليروس وكل الشعب بطلبة وشكر بهدوء وسكوت. أرفعوا أعينكم الى ناحية المشرق لتنظروا المذبح وجسد ودم عمانوئيل إلهنا موضعين عليه..</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/New folder/WhatsApp Audio 2026-09-19 at 7.49.03 PM - Copy.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت (الباسيلي).
+        </audio>
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.51.36 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت (الغوريغوري).
+        </audio>
+      </div>
+    </div>
+
+    <!-- 9. مردات تتلى بعد صلاة الصلح -->
+    <div class="response-card">
+      <div class="response-title">مردات تتلى بعد صلاة الصلح</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">أيها الجلوس قفوا</p>
+      <p class="text-coptic-transliterated">إيكاثي ميني آناسثيتي.</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">وإلى الشرق أنظروا</p>
+      <p class="text-coptic-transliterated">إيس أناطولاس إبليبساتي</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">ننصت</p>
+      <p class="text-coptic-transliterated">إبروس خومين</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.48.44 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 10. مرد الرشومات -->
+    <div class="response-card">
+      <div class="response-title">مرد الرشومات</div>
+      
+      <div class="sub-section-title">في القداس الباسيلي:</div>
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">أسجدوا لله بخوف ورعدة.</p>
+      <p class="text-coptic-transliterated">أوأوشت إم إفنوتي خين أوهوتي نيم أو إستيرتير.</p>
+      <p class="text-arabic">ننصت آمين.</p>
+
+      <div class="sub-section-title">في القداس الغوريغوري:</div>
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">أسجدوا للحمل كلمة الله.. ننصت آمين.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.47.31 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 11. أوشية السلامة -->
+    <div class="response-card">
+      <div class="response-title">مرد أوشية السلامة</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">صلوا من أجل سلام الواحدة المقدسة الجامعة الرسولية كنيسة الله الأرثوذكسية.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.47.33 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 12. أوشية الآباء -->
+    <div class="response-card">
+      <div class="response-title">مرد أوشية الآباء</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">صلوا من أجل رئيس كهنتنا البابا أنبا (...) بابا وبطريرك ورئيس أساقفة المدينة العظمى الإسكندرية وشريكه في الخدمة الرسولية أبينا (المطران أو الأسقف) المكرم الأنبا (...) وسائر أساقفتنا الأرثوذكسيين.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.47.32 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 13. أوشية خلاص العالم -->
+    <div class="response-card">
+      <div class="response-title">مرد أوشية خلاص العالم</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">صلوا من أجل خلاص العالم ومدينتنا هذه وسائر المدن والأقاليم والجزائر والأديرة.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.05 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 14. أوشية الأنهار والزروع والأهوية -->
+    <div class="response-card">
+      <div class="response-title">مرد أوشية (الأنهار / الزروع / الأهوية)</div>
+      
+      <div class="sub-section-title">أوشية المياه (من 12 بؤونة إلى 9 بابه):</div>
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">أطلبوا عن صعود مياه الأنهار في هذه السنة لكي يباركها المسيح إلهنا ويصعدها كمقدارها ويفرح وجه الأرض ويعولنا نحن البشر ويعطي النجاة للدواب ويغفر لنا خطايانا.</p>
+
+      <div class="sub-section-title">أوشية الزروع والعشب (من 10 بابه إلى 10 طوبة):</div>
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">أطلبوا عن الزروع والعشب ونبات الحقل في هذه السنة لكي يباركها المسيح إلهنا لتنمو وتكثر إلى أن تكمل بثمرة عظيمة ويتحنن على جبلته التي صنعتها يداه ويغفر لنا خطايانا.</p>
+
+      <div class="sub-section-title">أوشية الأهوية وثمار الأرض (من 11 طوبة إلى 11 بؤونة):</div>
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">اطلبوا عن أهوية السماء وثمرات الأرض والشجر والكروم وكل شجرة مثمرة في كل المسكونة لكي يباركها المسيح إلهنا ويكملها سالمة بغير ألم ويغفر لنا خطايانا.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.05 PM (1).mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div> 
+
+    <!-- 15. أوشية القرابين الباسيلي -->
+    <div class="response-card">
+      <div class="response-title">مرد أوشية القرابين (القداس الباسيلي)</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إبروس إيفئكساستي إيبرتون آجيون تيمون ذورون طوطون كي ثيسيون إيمون كي إبروس فيرون طون.</p>
+      <p class="text-arabic">صلوا من أجل هذه القرابين المقدسة الكريمة وتقدماتنا والذين قدموها.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.04 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 16. مرد المجمع -->
+    <div class="response-card">
+      <div class="response-title">مرد المجمع</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">القارئون فليقولوا أسماء آبائنا البطاركة القديسين الذين رقدوا، الرب ينيح نفوسهم جميعاً ويغفر لنا خطايانا.</p>
+      <p class="text-coptic-transliterated">نيئتئوش ماروطاؤؤو إن ني ران إنتي نينيوتي إثؤواب إمباطريارشيس إيطاف إنكوت إبشويس ما إمطون إن نؤ إبسيشي تيرو أووه إنتيف كانين نوفي نان إيفول.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.58 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div> 
+
+    <!-- 17. مرد بينشتي -->
+    <div class="response-card">
+      <div class="response-title">مرد بينشتي (بعد المجمع)</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">بي نيشتي آفا أنطوني نيم بي إثمي آفا بافلي نيم بي شمت إثؤواب مكاريوس آفا يؤانس بي كولوفوس آفا بيشوي آفا بافلي نين يوتي إثواب إنروميئوس ماكسيموس نیم دومیدیوس آفا يؤانس كامي آفا دانيئيل آفا إيسيذوروس آفا باخوم آفا شينوتي كي آفا بفنوتي آفا برسوما آفا تيجي... آمين.</p>
+      <p class="text-arabic">العظيم أنبا أنطونيوس والبار أنبا بولا، والقديسين الثلاثة مقارات، أنبا يحنس القصير، أنبا بيشوي، أنبا بولا، أبوينا القديسين الروميين مكسيموس ودوماديوس، أنبا موسى، أنبا يحنس كاما، أنبا دانيال، أنبا إيسيذوروس، أنبا باخوم، أنبا شنودة وأنبا بفنوتيوس، أنبا برسوم، أنبا رويس.. وجميع الأرثوذكسيين آمين.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.50.52 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div> 
+
+    <!-- 18. مرد آمين آمين صلوا -->
+    <div class="response-card">
+      <div class="response-title">مرد آمين آمين صلوا</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">آمين آمين صلوا</p>
+      <p class="text-coptic-transliterated">آمين آمين إبروس إفكساستي</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.04 PM (2).mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 19. مردات ختام القسمة -->
+    <div class="response-card">
+      <div class="response-title">مردات ختام أبانا الذي (في ختام القسمة)</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">طاس كيفالاس إيمون طوكيريو إكليناتي</p>
+      <p class="text-arabic">أحنوا رؤوسكم للرب.</p>
+
+      <span class="speaker">الشماس</span>
+      <p class="text-coptic-transliterated">إبروس خومين ثيئوميطافوفو آمين</p>
+      <p class="text-arabic">ننصت بخوف الله آمين.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.49.06 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 20. مرد الاعتراف -->
+    <div class="response-card">
+      <div class="response-title">✨ مرد الاعتراف</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">آمين آمين آمين أؤمن أؤمن أؤمن أن هذا هو بالحقيقة آمين. أطلبوا عنا وعن كل المسيحيين الذين قالوا لنا من أجلهم أن نذكرهم في بيت الرب. سلام ومحبة ربنا يسوع المسيح تكون معنا. رتلوا بنشيد الليلويا. صلوا من أجل التناول بإستحقاق من الأسرار المقدسة الطاهرة السماوية يا رب إرحم.</p>
+      <p class="text-coptic-transliterated">آمين آمين آمين تيناهتي تيناهتي تيناهتي جي ثاي تي خين أوميثمي آمين طقه إي إهري إيجون نيم إيجين إخرستيانوس نيفين إيطاف جوس نان إثفيطوجي آريبنميفئي خين إبئي إم إبشويس إي إيريني كي آغابي إيسو إخرستو ميث إيمون إبسالاتي جو الليلويا إبروس إفكساستي إيبرتيس أكسياس ميتالبسيوس أكرانتون كي إيبورانيون تون آجيون ميستيريون كيريي إليسون.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.50.53 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+    <!-- 21. مرد سوتيس آمين -->
+    <div class="response-card">
+      <div class="response-title">مرد سوتيس آمين</div>
+      
+      <span class="speaker">الشماس</span>
+      <p class="text-arabic">خلصت حقًا ومع روحك أيضا ننصت بخوف الله.</p>
+      <p class="text-coptic-transliterated">سوتيس آمين كيطوإبنيفماتي سو ميتا فوفو ثيؤبروس خومين.</p>
+
+      <div class="audio-wrapper">
+        <audio controls preload="none">
+          <source src="audio alhan/WhatsApp Audio 2026-09-19 at 7.48.50 PM.mp4" type="audio/mpeg">
+          متصفحك لا يدعم تشغيل الصوت.
+        </audio>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const root = document.body;
+
+    // تطبيق الثيم المحفوظ
+    function applySavedTheme() {
+      const savedMode = localStorage.getItem("darkMode");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      if (savedMode === "on" || (!savedMode && prefersDark)) {
+        root.classList.add("dark-mode");
+      } else {
+        root.classList.remove("dark-mode");
+      }
+    }
+
+    // زر الرجوع
+    function goBack() {
+      if (document.referrer && document.referrer !== "") {
+        history.back();
+      } else {
+        location.href = "index.html";
+      }
+    }
+
+    // إنشاء الصلبان المتحركة
+    function createFloatingCrosses() {
+      const container = document.getElementById("crossesContainer");
+      if (!container) return;
+      const crossCount = 14;
+
+      for (let i = 0; i < crossCount; i++) {
+        const cross = document.createElement("div");
+        cross.className = "floating-cross";
+        cross.innerText = "☦";
+        
+        const size = Math.random() * 24 + 18;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 10 + 12;
+        const delay = Math.random() * 8;
+        const opacity = Math.random() * 0.15 + 0.1;
+
+        cross.style.fontSize = `${size}px`;
+        cross.style.left = `${left}%`;
+        cross.style.animationDuration = `${duration}s`;
+        cross.style.animationDelay = `${delay}s`;
+        cross.style.setProperty('--cross-opacity', opacity);
+
+        container.appendChild(cross);
+      }
+    }
+
+    // التزامن عند تغيير الثيم في شاشة أخرى
+    window.addEventListener("storage", (e) => {
+      if (e.key === "darkMode") {
+        applySavedTheme();
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      applySavedTheme();
+      root.classList.add("visible");
+      createFloatingCrosses();
+    });
+  </script>
+</body>
+</html>
