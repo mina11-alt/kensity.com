@@ -662,10 +662,56 @@
         text-align: right;
         text-align-last: right;
       }}
+
+      /* حاوية الصلبان الشاملة للفيو-بورت */
+.crosses-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* لتفادي حجب الضغطات عن الأزرار والعناصر */
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* التنسيق الأساسي لكل صليب */
+.floating-cross {
+  position: absolute;
+  bottom: -100px;
+  color: #d4af37; /* لون ذهبي */
+  opacity: 0.15;
+  user-select: none;
+  animation: floatUp 15s linear infinite;
+}
+
+/* درجة الوضوح في الوضع الداكن (Dark Mode) */
+body.dark-mode .floating-cross {
+  opacity: 0.25;
+}
+
+/* أنيميشن الصعود والدوران */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: var(--cross-opacity, 0.2);
+  }
+  90% {
+    opacity: var(--cross-opacity, 0.2);
+  }
+  100% {
+    transform: translateY(-110vh) rotate(360deg);
+    opacity: 0;
+  }
+}
 </style>             
 </head>
 <body>
-
+<!-- خلفية الصلبان المتحركة -->
+<div class="crosses-container" id="crossesContainer"></div>
   <!-- الشريط العلوي -->
 
   <!-- الشريط العلوي -->
@@ -821,7 +867,7 @@
         <button class="nav-btn" onclick="showPrayer('12')">
           <span class="btn-text">
             <span class="cross-icon">☦</span>
-                        <span>القربين + المجمع+ بي نيشتي</span>
+                        <span>المجمع+ بي نيشتي</span>
 
           </span>
           <span class="arrow">◀</span>
@@ -1478,44 +1524,11 @@
 
       
     <div id="prayer-12" class="prayer-content">
-      <div class="prayer-title">القربين + بي نيشتي
+      <div class="prayer-title">  المجمع + بي نيشتي
   </div>
       
 
 
-       
-
-<h2>أوشية القرابين</h2>
-
-         
-
-
-<h3 class="red-text">يقول الكاهن</h3>
-<div class="line">
-
-<h3 class="black-text">أذكر يا رب الذين قدموا لك هذه القرابين والذين قدمت عنهم والذين قدمت بواسطتهم اعطيم كلهم الأجر السمائي
-</h3><div class="rule-divider"></div>
-<h3 class="deacon-text">آري إفميفئي إبشويس إن نيئيطاق إيني ناك إيخون إن ناي ذورون نيم نيئيطاق إينو إيجوؤو نيم نيئيطاق إينو إيفول هيطوطوموي نوؤو تيروإمبي فيكي بي إيفول خين نيفيئوي.
-</h3>
-     </div>
-
-<h3 class="red-text">يقول الشماس</h3>
-<div class="line">
-
-<h3 class="black-text">صلوا من أجل هذه القرابين المقدسة الكريمة و تقدماتنا والذين قدموها
-</h3><div class="rule-divider"></div>
-<h3 class="deacon-text">إبروس إيفئكساستي إيبرتون آجيون تيمون ذورون طوطون كي ثيسيون إيمون كي إبروس فيرون طون.
-</h3>
-     </div>
-<h3 class="red-text">يقول الشعب</h3>
-<div class="line">
-
-<h3 class="black-text">يا رب إرحم
-</h3><div class="rule-divider"></div>
-<h3 class="deacon-text">كيريي إليسون</h3>
-
-
-     </div>
 
 
          <h2>  التراحيم /المجمع</h2>
@@ -1586,7 +1599,7 @@
 </div>
 
        
-   <h2> أوشية سلام الكنيسة</h2>
+   <h2> أوشية السلامه </h2>
     
 
 <h3 class="red-text">يقول الكاهن</h3>
@@ -1603,7 +1616,7 @@
 
 <h3 class="red-text">يقول الشماس</h3>
 <div class="line">
-<h3 class="black-text">صلوا من أجل سلام كنيسة الله الواحدة المقدسة الجامعة الرسولية الأرثوذكسية
+<h3 class="black-text">صلوا من أجل سلام الواحدة المقدسة الجامعة الرسولية كنيسة الله  الأرثوذكسية
 </h3><div class="rule-divider"></div>
 <h3 class="deacon-text">إبروس إيفئكساستي إيبيرتيس إيريئيس تيس آجياس مونيس كاثوليكي كي ىبوسطوليكيس اورثوذوكسوطوثيئو إككليسياس.</h3>
 </div>
@@ -1621,9 +1634,9 @@
 </h2>
 <h3 class="red-text">يقول الكاهن</h3>
 <div class="line">
-<h3 class="black-text">هذا التي إقتنيتها لك بالدم الكريم الذي لمسيحك إحفظها بسلام وجميع الأساقفة الأرثوذكسيين الذين فيها واولاً أذكر يا رب ابانا الطوباوي المكرم رئيس الأساقفة بطريركنا البابا أنبا (…) وشريكه في الخدمة الرسولية ابينا (المطران او الاسقف)المكرم الأنبا (..)</h3>
+<h3 class="black-text">هذا التي إقتنيتها لك بالدم الكريم الذي لمسيحك إحفظها بسلام وجميع الأساقفة الأرثوذكسيين الذين فيها واولاً أذكر يا رب ابانا الطوباوي المكرم رئيس الأساقفة بطريركنا البابا أنبا (....) وشريكه في الخدمة الرسولية ابينا (المطران او الاسقف)المكرم الأنبا (....)</h3>
 <div class="rule-divider"></div><h3 class="deacon-text">
-ثاي إيطاك إجفوس ناك إيفول هيتين بي إسنوف إتطايوت إنتي بيك إخرستوس آريه إيروس خين او هيريني نيم ني إبيسكوبوس تيرو إن اورثوذكسوس إيتي إنخيتس إنشورب مين آري إفميفئي إبشويس إمبين مكاريس إنيوت إتطايوت إن أرشي إبيسكوبوس بين بطريارشيس بابا آفا (…)نيم بيف كيشفير إنلي تورغوس بينيوت إن إبيسكوبوس افا
+ثاي إيطاك إجفوس ناك إيفول هيتين بي إسنوف إتطايوت إنتي بيك إخرستوس آريه إيروس خين او هيريني نيم ني إبيسكوبوس تيرو إن اورثوذكسوس إيتي إنخيتس إنشورب مين آري إفميفئي إبشويس إمبين مكاريس إنيوت إتطايوت إن أرشي إبيسكوبوس بين بطريارشيس بابا آفا (....)نيم بيف كيشفير إنلي تورغوس بينيوت إن إبيسكوبوس افا  (....)
 </h3>
 </div>
 
@@ -1640,7 +1653,7 @@
 
 <div class="red-text">يقول الشماس</div>
 <div class="line">
-<h3 class="black-text">صلوا من أجل رئيس كهنتنا البابا أنبا (…) بابا وبطريرك ورئيس أساقفة المدينة العظمي الإسكندرية  وشريكه في الخدمة الرسولية ابينا (المطران او الاسقف)المكرم الأنبا () وسائر أساقفتنا الأرثوذكسيين
+<h3 class="black-text">صلوا من أجل رئيس كهنتنا البابا أنبا (....) بابا وبطريرك ورئيس أساقفة المدينة العظمي الإسكندرية  وشريكه في الخدمة الرسولية ابينا (المطران او الاسقف)المكرم الأنبا (....) وسائر أساقفتنا الأرثوذكسيين
 </h3>
         <div class="rule-divider"></div>
 
@@ -1696,8 +1709,8 @@
 
 
        
-<h2>أوشية الموضع</h2>     
 
+<h2>أوشية الرحمه</h2>     
 
 
 
@@ -1720,6 +1733,7 @@
 <h3 class="deacon-text">إيليسون إيماس أوثيئوس اوبانطوكراطور
 </h3>
 </div>
+<h2>أوشية العالم</h2>     
 
 <h3 class="red-text">يقول الكاهن</h3>
 <div class="line">
@@ -1809,7 +1823,7 @@
 
 
 
-<h2>أوشية الزروع من 10 بابه إلى 10 طوبه</h2>
+<h2>أوشية الزروع والعشب من 10 بابه إلى 10 طوبه</h2>
 
 
 
@@ -1828,7 +1842,7 @@
 <h3 class="red-text">يقول الشماس </h3>
 <div class="line">
 
-<h3 class="black-text">أطلبوا عن الزروع والعشب ونبات الحقل في هذه النسة لكي يباركها المسيح إلهنا لتنمو و تكثر إلى أن تكمل بثمرة عظيمة ويتحنن على جبلته التي صنعتها بداه ويغفر لنا خطايانا
+<h3 class="black-text">أطلبوا عن الزروع والعشب ونبات الحقل في هذه النسة لكي يباركها المسيح إلهنا لتنمو و تكثر إلى أن تكمل بثمرة عظيمة ويتحنن على جبلته التي صنعتها بيداه ويغفر لنا خطايانا
 </h3><div class="rule-divider"></div>
 <h3 class="deacon-text">طقه إيجين ني سيتي نيم مي سيم نيم ني روت إنتي إتكوي خين تاي رومبي ثاي هينا إنتي بي إخرستوس بيننوتي إزمو إيروؤو إنتو آي آي أووه إينتو آشاي شا إنتو جوك إيفول خين أونشتي إن كاربوس أووه إنتيف شينهيت خابيف إبلازما إيتانيف جيج ثاميوف إنتيف كانين نوفي نان إيفول</h3>
 
@@ -1866,7 +1880,7 @@
 <h3 class="red-text">يقول الشماس</h3>
 <div class="line">
 
-<h3 class="black-text">أطلبوا عن أهوية السماء وثمرات الأرض والسجر والكروم وكل شجرة مثمرة في كل المسكونة لكي يباركها المسيح إلهنا و يكملها سالمة بغير آفة و يغفر لنا خطايانا
+<h3 class="black-text">أطلبوا عن أهوية السماء وثمرات الأرض والسجر والكروم وكل شجرة مثمرة في كل المسكونة لكي يباركها المسيح إلهنا و يكملها سالمة بغير آلم  و يغفر لنا خطايانا
 </h3><div class="rule-divider"></div>
 <h3 class="deacon-text">طقه إيجين ني آإيرإنتي إتفي نيم ني كاربوس إنتي إبكاهي نيم فاي إششين نيم فاني ما إن ألولي نيم إششين نيفين إنريفتي كاربوس إيتخين تي أى كومبني تيرس هينا إنتي بي إخرستوس بين نوتي إزمو إيروؤو إنتيف جوك إيفول خين أو هيريني أتشني إمكاه إنتيف كانين نوفي نان إيفول
 </h3>
@@ -1904,6 +1918,39 @@
 
          </div>
 
+       
+
+<h2>أوشية القرابين</h2>
+
+         
+
+
+<h3 class="red-text">يقول الكاهن</h3>
+<div class="line">
+
+<h3 class="black-text">أذكر يا رب الذين قدموا لك هذه القرابين والذين قدمت عنهم والذين قدمت بواسطتهم اعطيم كلهم الأجر السمائي
+</h3><div class="rule-divider"></div>
+<h3 class="deacon-text">آري إفميفئي إبشويس إن نيئيطاق إيني ناك إيخون إن ناي ذورون نيم نيئيطاق إينو إيجوؤو نيم نيئيطاق إينو إيفول هيطوطوموي نوؤو تيروإمبي فيكي بي إيفول خين نيفيئوي.
+</h3>
+     </div>
+
+<h3 class="red-text">يقول الشماس</h3>
+<div class="line">
+
+<h3 class="black-text">صلوا من أجل هذه القرابين المقدسة الكريمة و تقدماتنا والذين قدموها
+</h3><div class="rule-divider"></div>
+<h3 class="deacon-text">إبروس إيفئكساستي إيبرتون آجيون تيمون ذورون طوطون كي ثيسيون إيمون كي إبروس فيرون طون.
+</h3>
+     </div>
+<h3 class="red-text">يقول الشعب</h3>
+<div class="line">
+
+<h3 class="black-text">يا رب إرحم
+</h3><div class="rule-divider"></div>
+<h3 class="deacon-text">كيريي إليسون</h3>
+
+
+     </div>
 <!-- أزرار التنقل الإضافية في الأسفل -->
       <div class="prayer-actions">
         <button class="action-btn" onclick="navigatePrayer(1)">
@@ -2184,7 +2231,7 @@
         <h3 class="red-text">يقول الشعب </h3>
                                                     <div class="line">
 
-                                             <p class="black-text">              آمين آمين آمين بموتك يارب نبشر و بقيامتك المقدسة وصعودك إلي السموات نعترف نسبحك نباركك نشكرك يارب و نتضرع إليك يا الله</p>
+                                             <p class="black-text">             آمين آمين آمين بموتك يارب نبشر و بقيامتك المقدسة وصعودك إلي السموات نعترف نسبحك نباركك نشكرك يارب و نتضرع إليك يا الهنا</p>
                                                    <p class="deacon-text">          آمين آمين آمين طون ثاناطون سو كيريي كاطا آنجيلومين كي تين آجيان سو آناسطاسين كي تين أناليم إبسين سوا إنتيس اورانيس. سي أومولوغومين. سي إنومين. سي إفلوغومين سي إفخاريستومين كيريي كي ذي او ميطاسو أوثيئوس إيمون</p>    
       </div>    
 
@@ -2457,7 +2504,7 @@
          <p class="deacon-text">اسبازيستي الليسوس ان فليماتي اجيو. كيريى ليسون كيريى ليسون كيريى ليسون.
   سي كيري ايتي فاي بي ايسوس باخرستوس ابشري أم أفنوتي سوتيم ايرون أووه ناي نان.
 
-ابروس فرين كاطا اطروبو. استاثيتي كاطا اطرومو. ايس اناطولاس  ابليبساتي ابروس خومين
+ابروس فرين ابروس فرين ابروس فرين كاطا اطروبو. استاثيتي كاطا اطرومو. ايس اناطولاس  ابليبساتي ابروس خومين
          </p>
        </div>
 <!-- أزرار التنقل الإضافية في الأسفل -->
@@ -2827,33 +2874,39 @@
         }
       }
     }
+// دالة إنشاء الصلبان المتحركة
+function createFloatingCrosses() {
+  const container = document.getElementById("crossesContainer");
+  if (!container) return;
+  
+  const crossCount = 14; // عدد الصلبان المتحركة في الشاشة
 
-    // إنشاء الصلبان المتحركة
-    function createFloatingCrosses() {
-      const container = document.getElementById("crossesContainer");
-      if (!container) return;
-      const crossCount = 15;
+  for (let i = 0; i < crossCount; i++) {
+    const cross = document.createElement("div");
+    cross.className = "floating-cross";
+    cross.innerText = "☦"; // يمكنك تغيير الرمز إلى ✝ إذا أردت
+    
+    // قيم عشوائية لكل صليب (الحجم، الموقع الأفقي، سرعة الحركة، التأخير، الشفافية)
+    const size = Math.random() * 26 + 18; // الحجم بين 18px و 44px
+    const left = Math.random() * 100; // الموقع الأفقي بالنسبة المئوية
+    const duration = Math.random() * 12 + 10; // ممدة الحركة بين 10 و 22 ثانية
+    const delay = Math.random() * 10; // التأخير عند البداية
+    const opacity = Math.random() * 0.2 + 0.1; // مدى الشفافية
 
-      for (let i = 0; i < crossCount; i++) {
-        const cross = document.createElement("div");
-        cross.className = "floating-cross";
-        cross.innerText = "☦";
-        
-        const size = Math.random() * 24 + 16;
-        const left = Math.random() * 100;
-        const duration = Math.random() * 10 + 10;
-        const delay = Math.random() * 5;
-        const opacity = Math.random() * 0.2 + 0.1;
+    cross.style.fontSize = `${size}px`;
+    cross.style.left = `${left}%`;
+    cross.style.animationDuration = `${duration}s`;
+    cross.style.animationDelay = `${delay}s`;
+    cross.style.setProperty('--cross-opacity', opacity);
 
-        cross.style.fontSize = `${size}px`;
-        cross.style.left = `${left}%`;
-        cross.style.animationDuration = `${duration}s`;
-        cross.style.animationDelay = `${delay}s`;
-        cross.style.setProperty('--cross-opacity', opacity);
+    container.appendChild(cross);
+  }
+}
 
-        container.appendChild(cross);
-      }
-    }
+// تشغيل الدالة تلقائياً بمجرد تحميل الصفحة
+document.addEventListener("DOMContentLoaded", () => {
+  createFloatingCrosses();
+});
 
     document.addEventListener("DOMContentLoaded", () => {
       initPrayerKeys();    // تجهيز قائمة الخانات المتوفرة في الصفحة
