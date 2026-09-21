@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
- <title>كنيسة مارمينا والأنبا توماس و البابا كيرلس السادس
- </title>  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <title>كنيسة مارمينا والأنبا توماس و البابا كيرلس السادس
+</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
 
@@ -97,70 +98,19 @@
     }
 
     /* الشريط العلوي */
-    .top-navbar {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-      height: 65px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      transition: background 0.4s ease, border-color 0.4s ease;
-    }
-
-    body.dark-mode .top-navbar {
-      background: rgba(15, 23, 42, 0.85);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
-    }
-
-    .navbar-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .navbar-left img {
-      height: 42px;
-      width: 42px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 2px solid var(--gold-primary);
-    }
-
-    .site-title {
-      font-weight: 800;
-      font-size: 1.05rem;
-      color: var(--navy-primary);
-      transition: color 0.4s ease;
-    }
-
-    body.dark-mode .site-title {
-      color: var(--gold-primary);
-    }
-
-    .navbar-right {
-      display: flex;
-      align-items: center;
-    }
-
     .back-btn {
-      background: none;
-      border: none;
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--gold-primary);
       color: var(--navy-primary);
-      font-size: 1.4rem;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: color 0.3s, transform 0.2s;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
     }
 
     body.dark-mode .back-btn {
@@ -168,10 +118,67 @@
     }
 
     .back-btn:hover {
+      background: var(--gold-primary);
+      color: #fff;
       transform: translateX(-3px);
-      color: var(--gold-dark);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+    .top-navbar {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border-light);
+      height: 70px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      transition: all 0.4s ease;
     }
 
+    body.dark-mode .top-navbar {
+      background: rgba(15, 23, 42, 0.85);
+      border-bottom: 1px solid var(--card-border-dark);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .navbar-left img {
+      height: 46px;
+      width: 46px;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid var(--gold-primary);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .navbar-left img:hover {
+      transform: rotate(5deg) scale(1.05);
+    }
+
+    .site-title {
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--navy-primary);
+      letter-spacing: -0.2px;
+      transition: color 0.4s ease;
+    }
+
+    body.dark-mode .site-title {
+      color: var(--gold-primary);
+    }
     /* المحتوى الرئيسي */
     .content {
       padding: 95px 15px 100px;
@@ -370,6 +377,7 @@
       }
     }
 
+
   </style>
 </head>
 <body>
@@ -386,7 +394,7 @@
 
     <div class="navbar-right">
       <!-- زر الرجوع -->
-      <button class="back-btn" onclick="goBack()" title="رجوع">←</button>
+      <button class="back-btn" onclick="history.back()" title="رجوع">←</button>
     </div>
   </div>
 
@@ -416,7 +424,7 @@
   <!-- الزر العائم -->
   <button class="floating-btn" onclick="location.href='tawzea.html'">
     <span class="plus-icon">+</span>
-    <span>التوزيع +  القسمة +  التناول</span>
+    <span>التوزيع + صلوات القسمة + صلوات التناول</span>
   </button>
 
   <script>
@@ -451,7 +459,7 @@
       for (let i = 0; i < count; i++) {
         const cross = document.createElement('div');
         cross.classList.add('cross');
-        cross.innerText = '✟';
+        cross.innerText = '☦';
 
         const size = Math.random() * 14 + 12;
         const posX = Math.random() * 100;
