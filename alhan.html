@@ -3,25 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
- <title>كنيسة مارمينا والأنبا توماس و البابا كيرلس السادس
- </title>  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <title>كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
   <style>
     :root {
-      /* الهوية البصرية الكحلية والذهبية */
-      --bg-gradient-light: radial-gradient(circle at 50% 20%, #ffffff 0%, #edf4f8 60%, #e2ebf0 100%);
+      /* متغيرات الوضع الفاتح */
+      --bg-gradient-light: linear-gradient(135deg, #f8fafc 0%, #e2ebf0 100%);
       --text-light: #1e293b;
-      --card-bg-light: rgba(255, 255, 255, 0.85);
-      
-      --bg-gradient-dark: radial-gradient(circle at 50% 20%, #1e293b 0%, #0f172a 100%);
-      --text-dark: #f8fafc;
-      --card-bg-dark: rgba(30, 41, 59, 0.85);
+      --card-bg-light: rgba(255, 255, 255, 0.75);
+      --card-border-light: rgba(212, 175, 55, 0.3);
 
+      /* متغيرات الوضع الداكن */
+      --bg-gradient-dark: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+      --text-dark: #f8fafc;
+      --card-bg-dark: rgba(30, 41, 59, 0.7);
+      --card-border-dark: rgba(212, 175, 55, 0.2);
+
+      /* الهوية البصرية */
       --gold-primary: #d4af37;
+      --gold-light: #f3e5ab;
       --gold-dark: #b8860b;
       --navy-primary: #1a2a40;
+      --navy-light: #2c3e50;
+      --accent-glow: rgba(212, 175, 55, 0.25);
     }
 
     * {
@@ -36,17 +43,16 @@
       background: var(--bg-gradient-light);
       background-attachment: fixed;
       color: var(--text-light);
-      transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease, transform 0.6s ease;
+      transition: background 0.5s ease, color 0.5s ease, opacity 0.6s ease;
       opacity: 0;
-      transform: scale(0.98) translateY(10px);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
     body.visible {
       opacity: 1;
-      transform: scale(1) translateY(0);
     }
 
     body.dark-mode {
@@ -55,153 +61,191 @@
       color: var(--text-dark);
     }
 
+    /* خلفية الصلبان المتحركة */
+    .crosses-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .floating-cross {
+      position: absolute;
+      bottom: -100px;
+      color: var(--gold-primary);
+      opacity: 0.12;
+      user-select: none;
+      animation: floatUp 14s linear infinite;
+      filter: drop-shadow(0 0 5px var(--gold-primary));
+    }
+
+    body.dark-mode .floating-cross {
+      opacity: 0.2;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) rotate(0deg) scale(0.8);
+        opacity: 0;
+      }
+      15% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      85% {
+        opacity: var(--cross-opacity, 0.2);
+      }
+      100% {
+        transform: translateY(-115vh) rotate(360deg) scale(1.1);
+        opacity: 0;
+      }
+    }
+
     /* الشريط العلوي */
     .top-navbar {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-      height: 65px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--card-border-light);
+      height: 70px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 20px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      padding: 0 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       z-index: 1000;
-      transition: background 0.4s ease;
+      transition: all 0.4s ease;
     }
 
     body.dark-mode .top-navbar {
       background: rgba(15, 23, 42, 0.85);
-      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+      border-bottom: 1px solid var(--card-border-dark);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     .navbar-left {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .navbar-left img {
-      height: 42px;
-      width: 42px;
+      height: 46px;
+      width: 46px;
       object-fit: cover;
       border-radius: 50%;
       border: 2px solid var(--gold-primary);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .navbar-left img:hover {
+      transform: rotate(5deg) scale(1.05);
     }
 
     .site-title {
       font-weight: 800;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       color: var(--navy-primary);
+      letter-spacing: -0.2px;
+      transition: color 0.4s ease;
     }
 
     body.dark-mode .site-title {
       color: var(--gold-primary);
     }
 
-    /* زر Switch للوضع الداكن */
-    .theme-switch-wrapper {
-      display: flex;
-      align-items: center;
-    }
-
-    .theme-switch {
-      display: inline-block;
-      height: 30px;
-      position: relative;
-      width: 60px;
-    }
-
-    .theme-switch input {
-      display: none;
-    }
-
-    .slider {
-      background-color: #cbd5e1;
-      bottom: 0;
-      cursor: pointer;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: 0.4s;
-      border-radius: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 6px;
-      border: 1px solid rgba(0,0,0,0.1);
-    }
-
-    .slider .icon {
-      font-size: 14px;
-      user-select: none;
-    }
-
-    .slider:before {
-      background-color: #fff;
-      bottom: 3px;
-      content: "";
-      height: 22px;
-      left: 3px;
-      position: absolute;
-      transition: 0.4s;
-      width: 22px;
-      border-radius: 50%;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-
-    input:checked + .slider {
-      background-color: var(--navy-primary);
-      border-color: var(--gold-primary);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(30px);
-      background-color: var(--gold-primary);
-    }
-
     /* المحتوى الرئيسي */
     .content {
-      padding: 110px 20px 30px;
-      max-width: 800px;
-      margin: auto;
+      padding: 120px 20px 40px;
+      max-width: 900px;
+      margin: 0 auto;
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      width: 100%;
+      position: relative;
+      z-index: 1;
     }
 
-    /* كرت الإعلان الاحترافي */
-    .announcement-card {
-      background: var(--card-bg-light);
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 40px 30px;
-      border-radius: 24px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
-      width: 100%;
+    .page-header {
       text-align: center;
+      margin-bottom: 40px;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--navy-primary);
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, var(--navy-primary), var(--gold-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    body.dark-mode .page-header h1 {
+      background: linear-gradient(135deg, #ffffff, var(--gold-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .page-header p {
+      color: #64748b;
+      font-size: 1.1rem;
+      font-weight: 500;
+      transition: color 0.4s ease;
+    }
+
+    body.dark-mode .page-header p {
+      color: #94a3b8;
+    }
+
+    /* شبكة الأزرار */
+    .navigation-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      width: 100%;
+    }
+
+    /* تصميم الكارت الفاخر */
+    .nav-card {
+      background: var(--card-bg-light);
+      border: 1px solid var(--card-border-light);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 35px 25px;
+      border-radius: 24px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text-light);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       position: relative;
       overflow: hidden;
-      animation: floatCard 4s ease-in-out infinite alternate;
-      transition: background 0.4s, border-color 0.4s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    body.dark-mode .announcement-card {
+    body.dark-mode .nav-card {
       background: var(--card-bg-dark);
-      border-color: rgba(212, 175, 55, 0.2);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+      border-color: var(--card-border-dark);
+      color: var(--text-dark);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     }
 
-    .announcement-card::before {
+    /* شريط علوي جمالي داخل الكارت */
+    .nav-card::before {
       content: "";
       position: absolute;
       top: 0;
@@ -209,209 +253,274 @@
       right: 0;
       height: 4px;
       background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+      opacity: 0.8;
+      transition: opacity 0.3s, height 0.3s;
     }
 
-    .badge {
-      display: inline-block;
+    /* شارة علوية توضيحية */
+    .card-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
       background: rgba(212, 175, 55, 0.15);
       color: var(--gold-dark);
-      border: 1px solid rgba(212, 175, 55, 0.4);
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-size: 0.9rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      margin-bottom: 20px;
+      padding: 4px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(212, 175, 55, 0.3);
     }
 
-    body.dark-mode .badge {
+    body.dark-mode .card-badge {
       color: var(--gold-primary);
-      background: rgba(212, 175, 55, 0.1);
     }
 
-    h1 {
-      font-size: 1.8rem;
+    .nav-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: var(--gold-primary);
+      box-shadow: 0 20px 40px var(--accent-glow);
+    }
+
+    .nav-card:hover::before {
+      height: 6px;
+    }
+
+    /* الحاوية الدائرية للأيقونة */
+    .icon-wrapper {
+      width: 75px;
+      height: 75px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      transition: all 0.4s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+    }
+
+    .nav-card:hover .icon-wrapper {
+      background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+    }
+
+    .nav-card .icon {
+      font-size: 2.2rem;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-card:hover .icon {
+      filter: brightness(1.2);
+    }
+
+    .nav-card h2 {
+      font-size: 1.4rem;
       font-weight: 800;
       color: var(--navy-primary);
-      line-height: 1.6;
       margin-bottom: 10px;
+      transition: color 0.4s ease;
     }
 
-    body.dark-mode h1 {
-      color: var(--gold-primary);
+    body.dark-mode .nav-card h2 {
+      color: #ffffff;
     }
 
-    p.sub-text {
-      font-size: 1.05rem;
+    .nav-card p {
+      font-size: 0.95rem;
       color: #64748b;
-      font-weight: 500;
+      line-height: 1.6;
+      transition: color 0.4s ease;
+      margin-bottom: 15px;
     }
 
-    body.dark-mode p.sub-text {
+    body.dark-mode .nav-card p {
       color: #94a3b8;
     }
 
-    /* حركة حيوية خفيفة للكرت */
-    @keyframes floatCard {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-6px); }
-    }
-
-    /* صندوق التقويم المطور */
-    #date-box {
-      background: var(--card-bg-light);
-      border: 1px solid rgba(212, 175, 55, 0.25);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding: 22px;
-      margin: 30px auto 40px;
-      max-width: 500px;
-      width: 100%;
-      border-radius: 20px;
-      text-align: center;
-      font-size: 1.05rem;
+    /* سهم التنقل التفاعلي أسفل الكارت */
+    .card-action {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
       font-weight: 700;
-      line-height: 1.9;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.04);
-      color: var(--text-light);
-      transition: background 0.4s;
-    }
-
-    body.dark-mode #date-box {
-      background: var(--card-bg-dark);
-      border-color: rgba(212, 175, 55, 0.15);
-      color: var(--text-dark);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-    }
-
-    .date-title {
       color: var(--gold-dark);
-      font-size: 1.2rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-      border-bottom: 1px dashed rgba(212, 175, 55, 0.3);
-      padding-bottom: 8px;
+      transition: all 0.3s ease;
     }
 
-    body.dark-mode .date-title {
+    body.dark-mode .card-action {
       color: var(--gold-primary);
     }
 
+    .nav-card:hover .card-action {
+      gap: 10px;
+      letter-spacing: 0.3px;
+    }
+
+    .card-action span {
+      transition: transform 0.3s ease;
+    }
+
+    .nav-card:hover .card-action span {
+      transform: translateX(-5px);
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* تجاوب مع الشاشات الصغيرة */
     @media (max-width: 600px) {
       .top-navbar {
         padding: 0 15px;
       }
       .site-title {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+      }
+      .page-header h1 {
+        font-size: 1.6rem;
       }
       .content {
-        padding-top: 95px;
-      }
-      h1 {
-        font-size: 1.35rem;
-      }
-      .announcement-card {
-        padding: 30px 18px;
+        padding-top: 100px;
       }
     }
+        .back-btn {
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid var(--gold-primary);
+      color: var(--navy-primary);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    body.dark-mode .back-btn {
+      color: var(--gold-primary);
+    }
+
+    .back-btn:hover {
+      background: var(--gold-primary);
+      color: #fff;
+      transform: translateX(-3px);
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+    }
+
   </style>
 </head>
 <body>
 
   <!-- الشريط العلوي -->
-  <div class="top-navbar">
+  <header class="top-navbar">
     <div class="navbar-left">
       <img src="صوره الكنيسه.jpeg" alt="شعار الكنيسة" />
-      <span class="site-title">كنيسة مارمينا والأنبا توماس و البابا كيرلس السادس</span>
+      <span class="site-title">كنيسة مارمينا والأنبا توماس والبابا كيرلس السادس</span>
     </div>
-    
-    <div class="navbar-right">
-      <!-- زر تبديل الوضع الداكن المطور -->
-      <div class="theme-switch-wrapper">
-        <label class="theme-switch" for="darkModeToggle">
-          <input type="checkbox" id="darkModeToggle" />
-          
-        </label>
-      </div>
+     <div class="navbar-right">
+      <button class="back-btn" onclick="history.back()" title="رجوع">←</button>
     </div>
-  </div>
+  </header>
+
+  <!-- خلفية الصلبان المتحركة -->
+  <div class="crosses-container" id="crossesContainer"></div>
 
   <!-- المحتوى الرئيسي -->
-  <div class="content">
-    <div class="announcement-card">
-      <span class="badge">📣 إعلان هام</span>
-      <h1>ستتوافر المردات والألحان قريباً</h1>
-      <p class="sub-text">نحن نعمل على إعداد المحتوى ليكون متاحاً لكم في أقرب وقت.</p>
+  <main class="content">
+    
+    <div class="page-header">
+      <h1>مرحبًا بكم في  صفحه المردات و الالحان</h1>
+      <p>اختر القسم الذي ترغب في استعراضه</p>
     </div>
 
-    <!-- صندوق التقويم -->
-    <div id="date-box">📅 جاري تحميل التقويم...</div>
-  </div>
+    <!-- شبكة التنقل بين الصفحات -->
+    <div class="navigation-grid">
+      
+      <!-- القسم الأول: مردات القداس -->
+      <a href="responses.html" class="nav-card">
+        <span class="card-badge">الطقس والمردات</span>
+        <div class="icon-wrapper">
+          <span class="icon">🎶</span>
+        </div>
+        <h2>مردات القداس</h2>
+        <p>استمع واقرأ المردات  الخاصة بالقداس .</p>
+        <div class="card-action">
+          تصفح الآن <span>←</span>
+        </div>
+      </a>
+
+    </div>
+  </main>
 
   <script>
     const root = document.body;
-    const darkModeToggle = document.getElementById("darkModeToggle");
 
-    darkModeToggle.addEventListener("change", () => {
-      const enabled = darkModeToggle.checked;
-      if (enabled) {
+    // قراءة وتطبيق وضع الألوان المحفوظ في LocalStorage تلقائياً
+    function applySavedTheme() {
+      const savedMode = localStorage.getItem("darkMode");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      if (savedMode === "on" || (!savedMode && prefersDark)) {
         root.classList.add("dark-mode");
-        localStorage.setItem("darkMode", "on");
       } else {
         root.classList.remove("dark-mode");
-        localStorage.setItem("darkMode", "off");
+      }
+    }
+
+    // مزامنة حالة الوضع مباشرة إذا تغيرت من نافذة/صفحة أخرى
+    window.addEventListener("storage", (e) => {
+      if (e.key === "darkMode") {
+        applySavedTheme();
       }
     });
 
-    function getCopticDate(gDate) {
-      const copticMonths = [
-        "توت", "بابه", "هاتور", "كيهك", "طوبه", "أمشير",
-        "برمهات", "برموده", "بشنس", "بؤونه", "أبيب", "مسري", "نسيء"
-      ];
-      const gYear = gDate.getFullYear();
-      let newYearDay = (gYear % 4 === 3) ? 12 : 11;
-      let copticNewYear = new Date(gYear, 8, newYearDay);
-      if (gDate < copticNewYear) {
-        const prevYear = gYear - 1;
-        newYearDay = (prevYear % 4 === 3) ? 12 : 11;
-        copticNewYear = new Date(prevYear, 8, newYearDay);
+    // إنشاء الصلبان المتحركة
+    function createFloatingCrosses() {
+      const container = document.getElementById("crossesContainer");
+      if (!container) return;
+      const crossCount = 14;
+
+      for (let i = 0; i < crossCount; i++) {
+        const cross = document.createElement("div");
+        cross.className = "floating-cross";
+        cross.innerText = "☦";
+        
+        const size = Math.random() * 24 + 18;
+        const left = Math.random() * 100;
+        const duration = Math.random() * 10 + 12;
+        const delay = Math.random() * 8;
+        const opacity = Math.random() * 0.15 + 0.1;
+
+        cross.style.fontSize = `${size}px`;
+        cross.style.left = `${left}%`;
+        cross.style.animationDuration = `${duration}s`;
+        cross.style.animationDelay = `${delay}s`;
+        cross.style.setProperty('--cross-opacity', opacity);
+
+        container.appendChild(cross);
       }
-      const diffDays = Math.floor((gDate - copticNewYear) / (1000 * 60 * 60 * 24));
-      const month = Math.floor(diffDays / 30);
-      const day = (diffDays % 30) + 1;
-      const copticYear = copticNewYear.getFullYear() - 283;
-      return { day, month: copticMonths[month], year: copticYear };
     }
 
-    function displayDates() {
-      const today = new Date();
-      const days = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-      const dayName = days[today.getDay()];
-      const gDay = today.getDate();
-      const gMonth = today.toLocaleString('ar-EG', { month: 'long' });
-      const gYear = today.getFullYear();
-      const gregorian = `${gDay} ${gMonth} ${gYear}`;
-      const coptic = getCopticDate(today);
-      const copticDate = `${coptic.day} ${coptic.month} ${coptic.year} ش`;
-      
-      document.getElementById("date-box").innerHTML = `
-        <div class="date-title">📅 التقويم اليومي</div>
-        <div><strong>اليوم:</strong> ${dayName}</div>
-        <div><strong>التاريخ الميلادي:</strong> ${gregorian}</div>
-        <div><strong>التاريخ القبطي:</strong> ${copticDate}</div>
-      `;
-    }
-
+    // عند تحميل الصفحة
     document.addEventListener("DOMContentLoaded", () => {
-      if (localStorage.getItem("darkMode") === "on") {
-        root.classList.add("dark-mode");
-        darkModeToggle.checked = true;
-      }
-      
+      applySavedTheme();
       root.classList.add("visible");
-      displayDates();
+      createFloatingCrosses();
 
       if (!sessionStorage.getItem("welcomeShown")) {
-        alert("👋 مرحبًا بك في تطبيق كنيسة مارمينا والأنبا توماس!");
+        // تم إزالة التنبيه المزعج alert واستبداله بتجربة سلسة
         sessionStorage.setItem("welcomeShown", "yes");
       }
     });
